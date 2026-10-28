@@ -1,0 +1,63 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/shops/repair_station.gd" id="1_repair"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_station"]
+size = Vector3(1.2, 1.9, 0.8)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cabinet"]
+albedo_color = Color(0.32, 0.4, 0.36, 1)
+metallic = 0.3
+roughness = 0.7
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_screen"]
+albedo_color = Color(0.2, 1, 0.45, 1)
+emission_enabled = true
+emission = Color(0.2, 1, 0.45, 1)
+emission_energy_multiplier = 1.5
+
+[sub_resource type="BoxMesh" id="BoxMesh_cabinet"]
+material = SubResource("StandardMaterial3D_cabinet")
+size = Vector3(1.2, 1.9, 0.8)
+
+[sub_resource type="BoxMesh" id="BoxMesh_screen"]
+material = SubResource("StandardMaterial3D_screen")
+size = Vector3(0.7, 0.45, 0.02)
+
+[sub_resource type="BoxMesh" id="BoxMesh_cross_h"]
+material = SubResource("StandardMaterial3D_screen")
+size = Vector3(0.3, 0.08, 0.02)
+
+[sub_resource type="BoxMesh" id="BoxMesh_cross_v"]
+material = SubResource("StandardMaterial3D_screen")
+size = Vector3(0.08, 0.3, 0.02)
+
+[node name="RepairStation" type="StaticBody3D"]
+script = ExtResource("1_repair")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0)
+shape = SubResource("BoxShape3D_station")
+
+[node name="Cabinet" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0)
+mesh = SubResource("BoxMesh_cabinet")
+
+[node name="Screen" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.35, -0.41)
+mesh = SubResource("BoxMesh_screen")
+
+[node name="CrossH" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, -0.41)
+mesh = SubResource("BoxMesh_cross_h")
+
+[node name="CrossV" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, -0.41)
+mesh = SubResource("BoxMesh_cross_v")
+
+[node name="Sign" type="Label3D" parent="."]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 2.25, -0.2)
+modulate = Color(0.3, 1, 0.5, 1)
+font_size = 64
+outline_size = 10
+text = "REPAIR"

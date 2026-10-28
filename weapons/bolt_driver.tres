@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="WeaponData" format=3]
+
+[ext_resource type="Script" path="res://scripts/weapons/weapon_data.gd" id="1_data"]
+[ext_resource type="PackedScene" path="res://scenes/weapons/bolt_driver_view.tscn" id="2_view"]
+
+[resource]
+script = ExtResource("1_data")
+display_name = "Bolt Driver"
+fire_sound = &"bolt_shot"
+view_scene = ExtResource("2_view")
+damage = 50.0
+max_range = 150.0
+rounds_per_minute = 200.0
+automatic = false
+magazine_size = 8
+max_reserve = 56
+reload_time = 2.0
+hip_spread_degrees = 3.5
+ads_spread_degrees = 0.05
+moving_spread_degrees = 3.0
+airborne_spread_degrees = 4.0
+spread_per_shot_degrees = 1.0
+max_bloom_degrees = 2.0
+bloom_recovery = 6.0
+recoil_pitch_degrees = 2.5
+recoil_yaw_degrees = 0.4
+ads_recoil_multiplier = 0.5
+ads_fov = 40.0
+ads_time = 0.25
+ads_move_speed_multiplier = 0.5
+hip_position = Vector3(0.22, -0.2, -0.45)
+ads_position = Vector3(0, -0.068, -0.25)

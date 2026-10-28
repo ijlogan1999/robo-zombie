@@ -1,0 +1,12 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+
+# Exported game builds
+/builds/
+/export/
+
+# Python and editor clutter
+__pycache__/
+*.tmp
+.vscode/

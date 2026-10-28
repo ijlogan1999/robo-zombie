@@ -1,0 +1,93 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/level/room.gd" id="1_room"]
+[ext_resource type="Material" path="res://materials/junk_floor.tres" id="2_floor"]
+[ext_resource type="Material" path="res://materials/junk_prop.tres" id="3_prop"]
+[ext_resource type="Material" path="res://materials/junk_rust.tres" id="4_rust"]
+[ext_resource type="Material" path="res://materials/hazard.tres" id="5_hazard"]
+[ext_resource type="PackedScene" path="res://scenes/game/next_round_button.tscn" id="6_button"]
+[ext_resource type="PackedScene" path="res://scenes/shops/wall_buy.tscn" id="7_wall_buy"]
+[ext_resource type="Resource" path="res://weapons/rivet_gun.tres" id="8_rivet"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_pad"]
+material = ExtResource("5_hazard")
+size = Vector2(9, 9)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_pad_inner"]
+material = ExtResource("2_floor")
+size = Vector2(8, 8)
+
+[node name="LandingPad" type="Node3D"]
+script = ExtResource("1_room")
+display_name = "Landing Pad"
+can_rotate = false
+
+[node name="Floor" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+use_collision = true
+size = Vector3(32, 1, 32)
+material = ExtResource("2_floor")
+
+[node name="PadMarkOuter" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, 0)
+mesh = SubResource("PlaneMesh_pad")
+
+[node name="PadMarkInner" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+mesh = SubResource("PlaneMesh_pad_inner")
+
+[node name="WreckHull" type="CSGBox3D" parent="."]
+transform = Transform3D(0.94, 0, -0.342, 0.06, 0.985, 0.165, 0.337, -0.174, 0.925, -8, 1.1, -7)
+use_collision = true
+size = Vector3(7, 2.5, 3.5)
+material = ExtResource("4_rust")
+
+[node name="WreckFin" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.5, 2.8, -7.8)
+use_collision = true
+size = Vector3(0.4, 1.6, 2)
+material = ExtResource("3_prop")
+
+[node name="CrateHigh" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0.75, -8)
+use_collision = true
+size = Vector3(2, 1.5, 2)
+material = ExtResource("3_prop")
+
+[node name="CrateLow" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.5, 0.375, -5.5)
+use_collision = true
+size = Vector3(1.5, 0.75, 1.5)
+material = ExtResource("3_prop")
+
+[node name="Barrels" type="CSGBox3D" parent="."]
+transform = Transform3D(0.966, 0, -0.259, 0, 1, 0, 0.259, 0, 0.966, -10, 0.6, 7)
+use_collision = true
+size = Vector3(2.5, 1.2, 1.5)
+material = ExtResource("4_rust")
+
+[node name="NextRoundButton" parent="." instance=ExtResource("6_button")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0, 9)
+
+[node name="WallBuyRivetGun" parent="." instance=ExtResource("7_wall_buy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 1.5, 15.4)
+weapon = ExtResource("8_rivet")
+cost = 150
+ammo_cost = 75
+
+[node name="WardenSpawn" type="Marker3D" parent="." groups=["warden_spawn"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 2)
+
+[node name="Spawns" type="Node3D" parent="."]
+
+[node name="SpawnNW" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 0.2, -13)
+
+[node name="SpawnNE" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 0.2, -13)
+
+[node name="SpawnSW" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 0.2, 13)
+
+[node name="SpawnSE" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 0.2, 13)

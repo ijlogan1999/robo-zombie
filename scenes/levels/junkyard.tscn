@@ -1,0 +1,68 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="1_player"]
+[ext_resource type="Script" path="res://scripts/game/runtime_nav_bake.gd" id="2_nav"]
+[ext_resource type="Script" path="res://scripts/level/section.gd" id="3_section"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/junkyard/landing_pad.tscn" id="4_landing"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/junkyard/trade_post.tscn" id="5_trade"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/junkyard/scrap_heap.tscn" id="6_heap"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/junkyard/crusher_pit.tscn" id="7_crusher"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/junkyard/conveyor_yard.tscn" id="8_conveyor"]
+[ext_resource type="PackedScene" path="res://scenes/level/gate.tscn" id="9_gate"]
+[ext_resource type="Material" path="res://materials/junk_wall.tres" id="10_wall"]
+[ext_resource type="PackedScene" path="res://scenes/game/round_manager.tscn" id="11_rounds"]
+[ext_resource type="Script" path="res://scripts/level/game_level.gd" id="12_level"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
+sky_top_color = Color(0.42, 0.55, 0.72, 1)
+sky_horizon_color = Color(0.78, 0.66, 0.52, 1)
+ground_horizon_color = Color(0.78, 0.66, 0.52, 1)
+
+[sub_resource type="Sky" id="Sky_main"]
+sky_material = SubResource("ProceduralSkyMaterial_sky")
+
+[sub_resource type="Environment" id="Environment_main"]
+background_mode = 2
+sky = SubResource("Sky_main")
+ambient_light_source = 3
+tonemap_mode = 2
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_section"]
+cell_size = 0.25
+cell_height = 0.25
+agent_height = 2.0
+agent_radius = 0.5
+agent_max_climb = 0.25
+
+[node name="Junkyard" type="Node3D"]
+script = ExtResource("12_level")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_main")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 10, 0)
+shadow_enabled = true
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+navigation_mesh = SubResource("NavigationMesh_section")
+script = ExtResource("2_nav")
+
+[node name="Section" type="Node3D" parent="NavigationRegion3D" groups=["section"]]
+script = ExtResource("3_section")
+start_room = ExtResource("4_landing")
+required_rooms = Array[PackedScene]([ExtResource("5_trade")])
+optional_rooms = Array[PackedScene]([ExtResource("6_heap"), ExtResource("7_crusher"), ExtResource("8_conveyor")])
+gate_scene = ExtResource("9_gate")
+wall_material = ExtResource("10_wall")
+
+[node name="Player" parent="." instance=ExtResource("1_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 10)
+
+[node name="RoundManager" parent="." instance=ExtResource("11_rounds")]
+
+[node name="Spawned" type="Node3D" parent="." groups=["spawn_root"]]
+
+[node name="NetSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://scenes/enemies/scrapper.tscn", "res://scenes/enemies/skitter.tscn", "res://scenes/enemies/bolter.tscn", "res://scenes/enemies/warden.tscn", "res://scenes/pickups/scrap_pickup.tscn")
+spawn_path = NodePath("../Spawned")

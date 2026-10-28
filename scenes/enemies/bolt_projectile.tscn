@@ -1,0 +1,30 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/bolt_projectile.gd" id="1_bolt"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_bolt"]
+radius = 0.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bolt"]
+shading_mode = 0
+albedo_color = Color(0.4, 0.85, 1, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_bolt"]
+material = SubResource("StandardMaterial3D_bolt")
+radius = 0.16
+height = 0.32
+
+[node name="BoltProjectile" type="Area3D"]
+script = ExtResource("1_bolt")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_bolt")
+
+[node name="Glow" type="MeshInstance3D" parent="."]
+cast_shadow = 0
+mesh = SubResource("SphereMesh_bolt")
+
+[node name="Light" type="OmniLight3D" parent="."]
+light_color = Color(0.4, 0.85, 1, 1)
+light_energy = 1.5
+omni_range = 3.0

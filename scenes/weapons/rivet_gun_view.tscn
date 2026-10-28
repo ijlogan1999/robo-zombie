@@ -1,0 +1,95 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rust"]
+albedo_color = Color(0.55, 0.3, 0.16, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_steel"]
+albedo_color = Color(0.4, 0.42, 0.45, 1)
+metallic = 0.6
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_scrap"]
+albedo_color = Color(0.25, 0.45, 0.35, 1)
+roughness = 0.8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_flash"]
+shading_mode = 0
+albedo_color = Color(1, 0.75, 0.3, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_body"]
+material = SubResource("StandardMaterial3D_rust")
+size = Vector3(0.08, 0.1, 0.36)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_barrel"]
+material = SubResource("StandardMaterial3D_steel")
+top_radius = 0.018
+bottom_radius = 0.022
+height = 0.3
+
+[sub_resource type="BoxMesh" id="BoxMesh_mag"]
+material = SubResource("StandardMaterial3D_steel")
+size = Vector3(0.05, 0.15, 0.06)
+
+[sub_resource type="BoxMesh" id="BoxMesh_grip"]
+material = SubResource("StandardMaterial3D_scrap")
+size = Vector3(0.05, 0.12, 0.06)
+
+[sub_resource type="BoxMesh" id="BoxMesh_plate"]
+material = SubResource("StandardMaterial3D_scrap")
+size = Vector3(0.01, 0.07, 0.18)
+
+[sub_resource type="BoxMesh" id="BoxMesh_sight"]
+material = SubResource("StandardMaterial3D_steel")
+size = Vector3(0.01, 0.03, 0.01)
+
+[sub_resource type="SphereMesh" id="SphereMesh_flash"]
+material = SubResource("StandardMaterial3D_flash")
+radius = 0.04
+height = 0.08
+
+[node name="RivetGunView" type="Node3D"]
+
+[node name="Body" type="MeshInstance3D" parent="."]
+cast_shadow = 0
+mesh = SubResource("BoxMesh_body")
+
+[node name="Barrel" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0.02, -0.3)
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_barrel")
+
+[node name="Magazine" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.966, -0.259, 0, 0.259, 0.966, 0, -0.1, -0.06)
+cast_shadow = 0
+mesh = SubResource("BoxMesh_mag")
+
+[node name="Grip" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.94, 0.342, 0, -0.342, 0.94, 0, -0.09, 0.11)
+cast_shadow = 0
+mesh = SubResource("BoxMesh_grip")
+
+[node name="ScrapPlate" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.045, 0.005, -0.02)
+cast_shadow = 0
+mesh = SubResource("BoxMesh_plate")
+
+[node name="SightPost" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.065, -0.14)
+cast_shadow = 0
+mesh = SubResource("BoxMesh_sight")
+
+[node name="Muzzle" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, -0.47)
+
+[node name="Flash" type="Node3D" parent="Muzzle"]
+visible = false
+
+[node name="Light" type="OmniLight3D" parent="Muzzle/Flash"]
+light_color = Color(1, 0.7, 0.35, 1)
+light_energy = 2.0
+omni_range = 4.0
+
+[node name="Glow" type="MeshInstance3D" parent="Muzzle/Flash"]
+cast_shadow = 0
+mesh = SubResource("SphereMesh_flash")

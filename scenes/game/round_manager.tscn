@@ -1,0 +1,181 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/game/round_manager.gd" id="1_rounds"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/scrapper.tscn" id="2_scrapper"]
+[ext_resource type="Script" path="res://scripts/ui/round_hud.gd" id="3_hud"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/warden.tscn" id="4_warden"]
+[ext_resource type="Script" path="res://scripts/ui/run_over_screen.gd" id="5_run_over"]
+[ext_resource type="Script" path="res://scripts/game/spawn_entry.gd" id="6_entry"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/skitter.tscn" id="7_skitter"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/bolter.tscn" id="8_bolter"]
+[ext_resource type="Script" path="res://scripts/ui/pause_menu.gd" id="9_pause"]
+
+[sub_resource type="Resource" id="SpawnEntry_scrapper"]
+script = ExtResource("6_entry")
+scene = ExtResource("2_scrapper")
+
+[sub_resource type="Resource" id="SpawnEntry_skitter"]
+script = ExtResource("6_entry")
+scene = ExtResource("7_skitter")
+first_round = 3
+weight = 3.0
+weight_per_round = 0.5
+
+[sub_resource type="Resource" id="SpawnEntry_bolter"]
+script = ExtResource("6_entry")
+scene = ExtResource("8_bolter")
+first_round = 4
+weight = 2.0
+weight_per_round = 0.3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_run_over"]
+bg_color = Color(0.05, 0.02, 0.02, 0.85)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_warden_bg"]
+bg_color = Color(0, 0, 0, 0.6)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_warden_fill"]
+bg_color = Color(0.95, 0.6, 0.1, 1)
+
+[node name="RoundManager" type="Node"]
+script = ExtResource("1_rounds")
+robot_scene = ExtResource("2_scrapper")
+warden_scene = ExtResource("4_warden")
+spawn_table = Array[ExtResource("6_entry")]([SubResource("SpawnEntry_scrapper"), SubResource("SpawnEntry_skitter"), SubResource("SpawnEntry_bolter")])
+
+[node name="RoundHUD" type="CanvasLayer" parent="."]
+script = ExtResource("3_hud")
+
+[node name="RoundNumber" type="Label" parent="RoundHUD"]
+offset_left = 24.0
+offset_top = 48.0
+offset_right = 224.0
+offset_bottom = 128.0
+theme_override_colors/font_color = Color(0.9, 0.2, 0.15, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 64
+text = "1"
+
+[node name="Remaining" type="Label" parent="RoundHUD"]
+offset_left = 24.0
+offset_top = 128.0
+offset_right = 424.0
+offset_bottom = 156.0
+theme_override_font_sizes/font_size = 18
+text = "Robots left: 0"
+
+[node name="Banner" type="Label" parent="RoundHUD"]
+visible = false
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -400.0
+offset_top = 120.0
+offset_right = 400.0
+offset_bottom = 190.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.9, 0.2, 0.15, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 48
+text = "ROUND 1"
+horizontal_alignment = 1
+
+[node name="WardenPanel" type="Control" parent="RoundHUD"]
+visible = false
+layout_mode = 3
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = 24.0
+offset_right = 300.0
+offset_bottom = 84.0
+grow_horizontal = 2
+mouse_filter = 2
+
+[node name="Name" type="Label" parent="RoundHUD/WardenPanel"]
+layout_mode = 0
+offset_right = 600.0
+offset_bottom = 28.0
+theme_override_colors/font_color = Color(0.95, 0.6, 0.1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 20
+text = "THE WARDEN"
+horizontal_alignment = 1
+
+[node name="Health" type="ProgressBar" parent="RoundHUD/WardenPanel"]
+layout_mode = 0
+offset_top = 32.0
+offset_right = 600.0
+offset_bottom = 50.0
+theme_override_styles/background = SubResource("StyleBoxFlat_warden_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_warden_fill")
+max_value = 4000.0
+value = 4000.0
+show_percentage = false
+
+[node name="RunOverScreen" type="CanvasLayer" parent="."]
+layer = 10
+script = ExtResource("5_run_over")
+
+[node name="Panel" type="Panel" parent="RunOverScreen"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_run_over")
+
+[node name="Title" type="Label" parent="RunOverScreen/Panel"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -160.0
+offset_right = 400.0
+offset_bottom = -70.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.3, 0.25, 1)
+theme_override_font_sizes/font_size = 72
+text = "SIGNAL LOST"
+horizontal_alignment = 1
+
+[node name="Summary" type="Label" parent="RunOverScreen/Panel"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -60.0
+offset_right = 400.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 28
+text = "You made it to round 1"
+horizontal_alignment = 1
+
+[node name="Restart" type="Button" parent="RunOverScreen/Panel"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -120.0
+offset_top = 20.0
+offset_right = 120.0
+offset_bottom = 72.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 24
+text = "New run"
+
+[node name="PauseMenu" type="CanvasLayer" parent="."]
+script = ExtResource("9_pause")

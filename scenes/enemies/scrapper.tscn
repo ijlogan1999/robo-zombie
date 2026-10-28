@@ -1,0 +1,99 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/robot.gd" id="1_robot"]
+[ext_resource type="Script" path="res://scripts/combat/health_component.gd" id="2_health"]
+[ext_resource type="PackedScene" path="res://scenes/pickups/scrap_pickup.tscn" id="3_scrap"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_robot"]
+radius = 0.45
+height = 1.7
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_scrap"]
+albedo_color = Color(0.5, 0.42, 0.32, 1)
+metallic = 0.4
+roughness = 0.8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eyes"]
+albedo_color = Color(1, 0.2, 0.1, 1)
+emission_enabled = true
+emission = Color(1, 0.2, 0.1, 1)
+emission_energy_multiplier = 1.5
+
+[sub_resource type="BoxMesh" id="BoxMesh_body"]
+material = SubResource("StandardMaterial3D_scrap")
+size = Vector3(0.8, 0.8, 0.55)
+
+[sub_resource type="BoxMesh" id="BoxMesh_head"]
+material = SubResource("StandardMaterial3D_scrap")
+size = Vector3(0.5, 0.38, 0.45)
+
+[sub_resource type="BoxMesh" id="BoxMesh_eyes"]
+material = SubResource("StandardMaterial3D_eyes")
+size = Vector3(0.36, 0.08, 0.05)
+
+[sub_resource type="BoxMesh" id="BoxMesh_arm"]
+material = SubResource("StandardMaterial3D_scrap")
+size = Vector3(0.18, 0.75, 0.18)
+
+[sub_resource type="BoxMesh" id="BoxMesh_leg"]
+material = SubResource("StandardMaterial3D_scrap")
+size = Vector3(0.22, 0.55, 0.22)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_net"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+
+[node name="Scrapper" type="CharacterBody3D"]
+script = ExtResource("1_robot")
+scrap_scene = ExtResource("3_scrap")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+shape = SubResource("CapsuleShape3D_robot")
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("2_health")
+max_health = 60.0
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+path_desired_distance = 0.6
+target_desired_distance = 1.0
+radius = 0.45
+height = 1.7
+
+[node name="Meshes" type="Node3D" parent="."]
+
+[node name="Body" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0)
+mesh = SubResource("BoxMesh_body")
+
+[node name="Head" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55, -0.05)
+mesh = SubResource("BoxMesh_head")
+
+[node name="Eyes" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.58, -0.29)
+mesh = SubResource("BoxMesh_eyes")
+
+[node name="ArmLeft" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.52, 0.9, -0.05)
+mesh = SubResource("BoxMesh_arm")
+
+[node name="ArmRight" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.52, 0.9, -0.05)
+mesh = SubResource("BoxMesh_arm")
+
+[node name="LegLeft" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2, 0.28, 0)
+mesh = SubResource("BoxMesh_leg")
+
+[node name="LegRight" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0.28, 0)
+mesh = SubResource("BoxMesh_leg")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_net")

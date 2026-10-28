@@ -1,0 +1,7 @@
+# Normalize EOL for all files that Git considers text files.
+* text=auto eol=lf
+# Binary libraries from the GodotSteam add-on
+*.dll binary
+*.so binary
+*.dylib binary
+*.wav binary

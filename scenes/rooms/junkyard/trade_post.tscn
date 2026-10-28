@@ -1,0 +1,96 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/level/room.gd" id="1_room"]
+[ext_resource type="Material" path="res://materials/junk_floor.tres" id="2_floor"]
+[ext_resource type="Material" path="res://materials/junk_prop.tres" id="3_prop"]
+[ext_resource type="Material" path="res://materials/junk_rust.tres" id="4_rust"]
+[ext_resource type="Material" path="res://materials/hazard.tres" id="5_hazard"]
+[ext_resource type="PackedScene" path="res://scenes/shops/repair_station.tscn" id="6_repair"]
+[ext_resource type="PackedScene" path="res://scenes/shops/perk_machine.tscn" id="7_perk"]
+[ext_resource type="PackedScene" path="res://scenes/shops/wall_buy.tscn" id="8_wall_buy"]
+[ext_resource type="Resource" path="res://weapons/pipe_shotgun.tres" id="9_shotgun"]
+[ext_resource type="Resource" path="res://weapons/bolt_driver.tres" id="10_bolt"]
+[ext_resource type="PackedScene" path="res://scenes/shops/hack_uplink.tscn" id="11_uplink"]
+
+[node name="TradePost" type="Node3D"]
+script = ExtResource("1_room")
+display_name = "Trade Post"
+
+[node name="Floor" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+use_collision = true
+size = Vector3(32, 1, 32)
+material = ExtResource("2_floor")
+
+[node name="Shack" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+use_collision = true
+size = Vector3(10, 4, 6)
+material = ExtResource("3_prop")
+
+[node name="ShackRoof" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.15, 0)
+use_collision = true
+size = Vector3(12, 0.3, 8)
+material = ExtResource("4_rust")
+
+[node name="CoverEast" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0.6, 6)
+use_collision = true
+size = Vector3(1.5, 1.2, 3)
+material = ExtResource("4_rust")
+
+[node name="CoverWest" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0.6, -6)
+use_collision = true
+size = Vector3(1.5, 1.2, 3)
+material = ExtResource("4_rust")
+
+[node name="PerkMachine" parent="." instance=ExtResource("7_perk")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -2.5, 0, 3.6)
+
+[node name="RepairStation" parent="." instance=ExtResource("6_repair")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 2.5, 0, 3.6)
+
+[node name="WallBuyPipeShotgun" parent="." instance=ExtResource("8_wall_buy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 1.5, -3.1)
+weapon = ExtResource("9_shotgun")
+cost = 300
+ammo_cost = 150
+
+[node name="WallBuyBoltDriver" parent="." instance=ExtResource("8_wall_buy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 1.5, -3.1)
+weapon = ExtResource("10_bolt")
+cost = 450
+ammo_cost = 225
+
+[node name="SignSouth" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.9, 4.05)
+modulate = Color(0.3, 1, 0.5, 1)
+font_size = 96
+outline_size = 14
+text = "TRADE POST"
+
+[node name="SignNorth" type="Label3D" parent="."]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 4.9, -4.05)
+modulate = Color(0.3, 1, 0.5, 1)
+font_size = 96
+outline_size = 14
+text = "TRADE POST"
+
+[node name="Spawns" type="Node3D" parent="."]
+
+[node name="SpawnNW" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 0.2, -13)
+
+[node name="SpawnNE" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 0.2, -13)
+
+[node name="SpawnSW" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 0.2, 13)
+
+[node name="SpawnSE" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 0.2, 13)
+
+[node name="HackUplink" parent="." instance=ExtResource("11_uplink")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 5.5, 0, 0)

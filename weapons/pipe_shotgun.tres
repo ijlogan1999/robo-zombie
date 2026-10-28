@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="WeaponData" format=3]
+
+[ext_resource type="Script" path="res://scripts/weapons/weapon_data.gd" id="1_data"]
+[ext_resource type="PackedScene" path="res://scenes/weapons/pipe_shotgun_view.tscn" id="2_view"]
+
+[resource]
+script = ExtResource("1_data")
+display_name = "Pipe Shotgun"
+fire_sound = &"shotgun_shot"
+view_scene = ExtResource("2_view")
+damage = 14.0
+pellets = 8
+max_range = 30.0
+rounds_per_minute = 80.0
+automatic = false
+magazine_size = 6
+max_reserve = 36
+reload_time = 2.4
+hip_spread_degrees = 6.0
+ads_spread_degrees = 4.0
+moving_spread_degrees = 1.0
+airborne_spread_degrees = 1.5
+spread_per_shot_degrees = 0.0
+max_bloom_degrees = 0.0
+recoil_pitch_degrees = 4.0
+recoil_yaw_degrees = 1.0
+ads_recoil_multiplier = 0.7
+ads_fov = 70.0
+hip_position = Vector3(0.22, -0.2, -0.42)
+ads_position = Vector3(0, -0.098, -0.3)

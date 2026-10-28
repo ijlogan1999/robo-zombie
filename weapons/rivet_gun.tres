@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WeaponData" format=3]
+
+[ext_resource type="Script" path="res://scripts/weapons/weapon_data.gd" id="1_data"]
+[ext_resource type="PackedScene" path="res://scenes/weapons/rivet_gun_view.tscn" id="2_view"]
+
+[resource]
+script = ExtResource("1_data")
+display_name = "Rivet Gun"
+view_scene = ExtResource("2_view")
+damage = 22.0
+rounds_per_minute = 450.0
+automatic = true
+magazine_size = 30
+max_reserve = 210
+reload_time = 1.8

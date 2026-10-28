@@ -1,0 +1,235 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="1_player"]
+[ext_resource type="PackedScene" path="res://scenes/test/target_dummy.tscn" id="2_dummy"]
+[ext_resource type="Script" path="res://scripts/game/runtime_nav_bake.gd" id="3_nav"]
+[ext_resource type="PackedScene" path="res://scenes/game/round_manager.tscn" id="4_rounds"]
+[ext_resource type="PackedScene" path="res://scenes/shops/repair_station.tscn" id="5_repair"]
+[ext_resource type="PackedScene" path="res://scenes/shops/perk_machine.tscn" id="6_perk"]
+[ext_resource type="PackedScene" path="res://scenes/game/next_round_button.tscn" id="7_button"]
+[ext_resource type="PackedScene" path="res://scenes/shops/wall_buy.tscn" id="8_wall_buy"]
+[ext_resource type="Resource" path="res://weapons/rivet_gun.tres" id="9_rivet"]
+[ext_resource type="Resource" path="res://weapons/pipe_shotgun.tres" id="10_shotgun"]
+[ext_resource type="Resource" path="res://weapons/bolt_driver.tres" id="11_bolt"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
+sky_top_color = Color(0.42, 0.55, 0.72, 1)
+sky_horizon_color = Color(0.78, 0.66, 0.52, 1)
+ground_horizon_color = Color(0.78, 0.66, 0.52, 1)
+
+[sub_resource type="Sky" id="Sky_main"]
+sky_material = SubResource("ProceduralSkyMaterial_sky")
+
+[sub_resource type="Environment" id="Environment_main"]
+background_mode = 2
+sky = SubResource("Sky_main")
+ambient_light_source = 3
+tonemap_mode = 2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_floor"]
+albedo_color = Color(0.36, 0.34, 0.32, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wall"]
+albedo_color = Color(0.72, 0.4, 0.2, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_prop"]
+albedo_color = Color(0.3, 0.42, 0.55, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hazard"]
+albedo_color = Color(0.9, 0.75, 0.15, 1)
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_room"]
+cell_size = 0.25
+cell_height = 0.25
+agent_height = 2.0
+agent_radius = 0.5
+agent_max_climb = 0.25
+
+[node name="TestRoom" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_main")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 10, 0)
+shadow_enabled = true
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+navigation_mesh = SubResource("NavigationMesh_room")
+script = ExtResource("3_nav")
+
+[node name="Geometry" type="Node3D" parent="NavigationRegion3D"]
+
+[node name="Floor" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+use_collision = true
+size = Vector3(60, 1, 60)
+material = SubResource("StandardMaterial3D_floor")
+
+[node name="WallNorth" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -30.5)
+use_collision = true
+size = Vector3(62, 6, 1)
+material = SubResource("StandardMaterial3D_wall")
+
+[node name="WallSouth" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 30.5)
+use_collision = true
+size = Vector3(62, 6, 1)
+material = SubResource("StandardMaterial3D_wall")
+
+[node name="WallEast" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30.5, 3, 0)
+use_collision = true
+size = Vector3(1, 6, 60)
+material = SubResource("StandardMaterial3D_wall")
+
+[node name="WallWest" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.5, 3, 0)
+use_collision = true
+size = Vector3(1, 6, 60)
+material = SubResource("StandardMaterial3D_wall")
+
+[node name="WallRunLeft" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 2.5, -18)
+use_collision = true
+size = Vector3(1, 5, 24)
+material = SubResource("StandardMaterial3D_prop")
+
+[node name="WallRunRight" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 2.5, -18)
+use_collision = true
+size = Vector3(1, 5, 24)
+material = SubResource("StandardMaterial3D_prop")
+
+[node name="SlideTunnelRoof" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 2.05, 0)
+use_collision = true
+size = Vector3(6, 1.9, 8)
+material = SubResource("StandardMaterial3D_hazard")
+
+[node name="SlideTunnelPillarA" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.25, 0.55, 0)
+use_collision = true
+size = Vector3(0.5, 1.1, 8)
+material = SubResource("StandardMaterial3D_hazard")
+
+[node name="SlideTunnelPillarB" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.75, 0.55, 0)
+use_collision = true
+size = Vector3(0.5, 1.1, 8)
+material = SubResource("StandardMaterial3D_hazard")
+
+[node name="Ramp" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 0.965926, 0.258819, 0, -0.258819, 0.965926, -14, 1.3, -10)
+use_collision = true
+size = Vector3(6, 1, 14)
+material = SubResource("StandardMaterial3D_prop")
+
+[node name="CrateLow" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 0.375, 8)
+use_collision = true
+size = Vector3(1.5, 0.75, 1.5)
+material = SubResource("StandardMaterial3D_prop")
+
+[node name="CrateHigh" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 0.75, 5.5)
+use_collision = true
+size = Vector3(2, 1.5, 2)
+material = SubResource("StandardMaterial3D_prop")
+
+[node name="RepairBayWallA" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 1.5, 27.5)
+use_collision = true
+size = Vector3(0.5, 3, 5)
+material = SubResource("StandardMaterial3D_wall")
+
+[node name="RepairBayWallB" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.5, 1.5, 27.5)
+use_collision = true
+size = Vector3(0.5, 3, 5)
+material = SubResource("StandardMaterial3D_wall")
+
+[node name="RepairBayRoof" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 3.15, 27.5)
+use_collision = true
+size = Vector3(5.5, 0.3, 5)
+material = SubResource("StandardMaterial3D_wall")
+
+[node name="Player" parent="." instance=ExtResource("1_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 20)
+
+[node name="Targets" type="Node3D" parent="."]
+
+[node name="DummyNear" parent="Targets" instance=ExtResource("2_dummy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
+
+[node name="DummyMidLeft" parent="Targets" instance=ExtResource("2_dummy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, 2)
+
+[node name="DummyMidRight" parent="Targets" instance=ExtResource("2_dummy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 2)
+
+[node name="DummyFar" parent="Targets" instance=ExtResource("2_dummy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -28)
+
+[node name="RobotSpawns" type="Node3D" parent="."]
+
+[node name="SpawnNorthWest" type="Marker3D" parent="RobotSpawns" groups=["robot_spawns"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 0.2, -26)
+
+[node name="SpawnNorthEast" type="Marker3D" parent="RobotSpawns" groups=["robot_spawns"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 0.2, -26)
+
+[node name="SpawnWest" type="Marker3D" parent="RobotSpawns" groups=["robot_spawns"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 0.2, 0)
+
+[node name="SpawnEast" type="Marker3D" parent="RobotSpawns" groups=["robot_spawns"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 0.2, 0)
+
+[node name="SpawnSouthWest" type="Marker3D" parent="RobotSpawns" groups=["robot_spawns"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 0.2, 26)
+
+[node name="SpawnSouthEast" type="Marker3D" parent="RobotSpawns" groups=["robot_spawns"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 0.2, 26)
+
+[node name="RoundManager" parent="." instance=ExtResource("4_rounds")]
+
+[node name="Shops" type="Node3D" parent="."]
+
+[node name="RepairStation" parent="Shops" instance=ExtResource("5_repair")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 29.4)
+
+[node name="RepairBaySign" type="Label3D" parent="Shops"]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 6, 3.6, 25)
+modulate = Color(0.3, 1, 0.5, 1)
+font_size = 72
+outline_size = 12
+text = "REPAIR BAY"
+
+[node name="PerkMachine" parent="Shops" instance=ExtResource("6_perk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 29.4)
+
+[node name="NextRoundButton" parent="." instance=ExtResource("7_button")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, 16)
+
+[node name="WardenSpawn" type="Marker3D" parent="." groups=["warden_spawn"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, -20)
+
+[node name="WallBuyRivetGun" parent="Shops" instance=ExtResource("8_wall_buy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 1.5, 29.9)
+weapon = ExtResource("9_rivet")
+cost = 150
+ammo_cost = 75
+
+[node name="WallBuyPipeShotgun" parent="Shops" instance=ExtResource("8_wall_buy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.5, 1.5, 29.9)
+weapon = ExtResource("10_shotgun")
+cost = 300
+ammo_cost = 150
+
+[node name="WallBuyBoltDriver" parent="Shops" instance=ExtResource("8_wall_buy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21, 1.5, 29.9)
+weapon = ExtResource("11_bolt")
+cost = 450
+ammo_cost = 225

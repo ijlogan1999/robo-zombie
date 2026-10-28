@@ -1,0 +1,67 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/level/room.gd" id="1_room"]
+[ext_resource type="Material" path="res://materials/junk_floor.tres" id="2_floor"]
+[ext_resource type="Material" path="res://materials/junk_prop.tres" id="3_prop"]
+[ext_resource type="Material" path="res://materials/junk_rust.tres" id="4_rust"]
+[ext_resource type="Material" path="res://materials/hazard.tres" id="5_hazard"]
+
+[node name="ConveyorYard" type="Node3D"]
+script = ExtResource("1_room")
+display_name = "Conveyor Yard"
+
+[node name="Floor" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+use_collision = true
+size = Vector3(32, 1, 32)
+material = ExtResource("2_floor")
+
+[node name="Platform" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 1.25, -8)
+use_collision = true
+size = Vector3(8, 2.5, 8)
+material = ExtResource("3_prop")
+
+[node name="PlatformCover" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 3, -10.5)
+use_collision = true
+size = Vector3(1.5, 1, 1.5)
+material = ExtResource("4_rust")
+
+[node name="Ramp" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.965926, 0.258819, 0, -0.258819, 0.965926, -8, 1.008, 0.605)
+use_collision = true
+size = Vector3(4, 0.5, 9.7)
+material = ExtResource("3_prop")
+
+[node name="ConveyorA" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0.4, 0)
+use_collision = true
+size = Vector3(3, 0.8, 16)
+material = ExtResource("5_hazard")
+
+[node name="ConveyorB" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0.4, -9)
+use_collision = true
+size = Vector3(6, 0.8, 2.5)
+material = ExtResource("5_hazard")
+
+[node name="Hopper" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 1.75, 11)
+use_collision = true
+size = Vector3(3, 3.5, 3)
+material = ExtResource("4_rust")
+
+[node name="Spawns" type="Node3D" parent="."]
+
+[node name="SpawnNE" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 0.2, -13)
+
+[node name="SpawnSW" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 0.2, 13)
+
+[node name="SpawnSE" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 0.2, 13)
+
+[node name="SpawnPlatform" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 2.7, -10)

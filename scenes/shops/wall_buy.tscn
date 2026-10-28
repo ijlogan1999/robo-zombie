@@ -1,0 +1,61 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/shops/wall_buy.gd" id="1_wall_buy"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_board"]
+size = Vector3(1.8, 0.9, 0.15)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_board"]
+albedo_color = Color(0.28, 0.24, 0.2, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_frame"]
+albedo_color = Color(0.9, 0.75, 0.15, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_board"]
+material = SubResource("StandardMaterial3D_board")
+size = Vector3(1.8, 0.9, 0.06)
+
+[sub_resource type="BoxMesh" id="BoxMesh_frame_h"]
+material = SubResource("StandardMaterial3D_frame")
+size = Vector3(1.9, 0.05, 0.08)
+
+[sub_resource type="BoxMesh" id="BoxMesh_frame_v"]
+material = SubResource("StandardMaterial3D_frame")
+size = Vector3(0.05, 0.95, 0.08)
+
+[node name="WallBuy" type="StaticBody3D"]
+script = ExtResource("1_wall_buy")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_board")
+
+[node name="Board" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_board")
+
+[node name="FrameTop" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.47, 0)
+mesh = SubResource("BoxMesh_frame_h")
+
+[node name="FrameBottom" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.47, 0)
+mesh = SubResource("BoxMesh_frame_h")
+
+[node name="FrameLeft" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.95, 0, 0)
+mesh = SubResource("BoxMesh_frame_v")
+
+[node name="FrameRight" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.95, 0, 0)
+mesh = SubResource("BoxMesh_frame_v")
+
+[node name="Display" type="Node3D" parent="."]
+transform = Transform3D(0, 0, -2.2, 0, 2.2, 0, 2.2, 0, 0, 0, 0, -0.12)
+
+[node name="Sign" type="Label3D" parent="."]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0.75, -0.05)
+modulate = Color(1, 0.85, 0.3, 1)
+font_size = 40
+outline_size = 8
+text = "WEAPON
+0"

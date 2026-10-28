@@ -1,0 +1,101 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pipe"]
+albedo_color = Color(0.35, 0.37, 0.4, 1)
+metallic = 0.7
+roughness = 0.55
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rust"]
+albedo_color = Color(0.5, 0.26, 0.13, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tape"]
+albedo_color = Color(0.15, 0.15, 0.15, 1)
+roughness = 1.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_flash"]
+shading_mode = 0
+albedo_color = Color(1, 0.75, 0.3, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_barrel"]
+material = SubResource("StandardMaterial3D_pipe")
+top_radius = 0.026
+bottom_radius = 0.026
+height = 0.5
+
+[sub_resource type="BoxMesh" id="BoxMesh_receiver"]
+material = SubResource("StandardMaterial3D_rust")
+size = Vector3(0.11, 0.11, 0.22)
+
+[sub_resource type="BoxMesh" id="BoxMesh_stock"]
+material = SubResource("StandardMaterial3D_rust")
+size = Vector3(0.06, 0.09, 0.22)
+
+[sub_resource type="BoxMesh" id="BoxMesh_grip"]
+material = SubResource("StandardMaterial3D_tape")
+size = Vector3(0.05, 0.12, 0.06)
+
+[sub_resource type="TorusMesh" id="TorusMesh_band"]
+material = SubResource("StandardMaterial3D_tape")
+inner_radius = 0.05
+outer_radius = 0.075
+
+[sub_resource type="BoxMesh" id="BoxMesh_sight"]
+material = SubResource("StandardMaterial3D_pipe")
+size = Vector3(0.012, 0.025, 0.012)
+
+[sub_resource type="SphereMesh" id="SphereMesh_flash"]
+material = SubResource("StandardMaterial3D_flash")
+radius = 0.07
+height = 0.14
+
+[node name="PipeShotgunView" type="Node3D"]
+
+[node name="BarrelLeft" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -0.028, 0.03, -0.32)
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_barrel")
+
+[node name="BarrelRight" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0.028, 0.03, -0.32)
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_barrel")
+
+[node name="Receiver" type="MeshInstance3D" parent="."]
+cast_shadow = 0
+mesh = SubResource("BoxMesh_receiver")
+
+[node name="Stock" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.966, 0.259, 0, -0.259, 0.966, 0, -0.03, 0.2)
+cast_shadow = 0
+mesh = SubResource("BoxMesh_stock")
+
+[node name="Grip" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.94, 0.342, 0, -0.342, 0.94, 0, -0.1, 0.06)
+cast_shadow = 0
+mesh = SubResource("BoxMesh_grip")
+
+[node name="TapeBand" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.03, -0.38)
+cast_shadow = 0
+mesh = SubResource("TorusMesh_band")
+
+[node name="SightBead" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.068, -0.55)
+cast_shadow = 0
+mesh = SubResource("BoxMesh_sight")
+
+[node name="Muzzle" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, -0.6)
+
+[node name="Flash" type="Node3D" parent="Muzzle"]
+visible = false
+
+[node name="Light" type="OmniLight3D" parent="Muzzle/Flash"]
+light_color = Color(1, 0.7, 0.35, 1)
+light_energy = 3.0
+omni_range = 5.0
+
+[node name="Glow" type="MeshInstance3D" parent="Muzzle/Flash"]
+cast_shadow = 0
+mesh = SubResource("SphereMesh_flash")

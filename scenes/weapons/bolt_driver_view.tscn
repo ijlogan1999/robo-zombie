@@ -1,0 +1,122 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_steel"]
+albedo_color = Color(0.42, 0.44, 0.47, 1)
+metallic = 0.75
+roughness = 0.4
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_scrap"]
+albedo_color = Color(0.3, 0.38, 0.5, 1)
+roughness = 0.8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_copper"]
+albedo_color = Color(0.85, 0.45, 0.2, 1)
+metallic = 0.8
+roughness = 0.3
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lens"]
+albedo_color = Color(0.3, 0.8, 1, 1)
+emission_enabled = true
+emission = Color(0.3, 0.8, 1, 1)
+emission_energy_multiplier = 0.8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_flash"]
+shading_mode = 0
+albedo_color = Color(0.6, 0.85, 1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_body"]
+material = SubResource("StandardMaterial3D_scrap")
+size = Vector3(0.07, 0.09, 0.4)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_barrel"]
+material = SubResource("StandardMaterial3D_steel")
+top_radius = 0.014
+bottom_radius = 0.016
+height = 0.45
+
+[sub_resource type="TorusMesh" id="TorusMesh_coil"]
+material = SubResource("StandardMaterial3D_copper")
+inner_radius = 0.018
+outer_radius = 0.034
+
+[sub_resource type="BoxMesh" id="BoxMesh_scope"]
+material = SubResource("StandardMaterial3D_steel")
+size = Vector3(0.04, 0.04, 0.16)
+
+[sub_resource type="BoxMesh" id="BoxMesh_lens"]
+material = SubResource("StandardMaterial3D_lens")
+size = Vector3(0.03, 0.03, 0.01)
+
+[sub_resource type="BoxMesh" id="BoxMesh_grip"]
+material = SubResource("StandardMaterial3D_steel")
+size = Vector3(0.05, 0.12, 0.06)
+
+[sub_resource type="BoxMesh" id="BoxMesh_mag"]
+material = SubResource("StandardMaterial3D_copper")
+size = Vector3(0.04, 0.1, 0.05)
+
+[sub_resource type="SphereMesh" id="SphereMesh_flash"]
+material = SubResource("StandardMaterial3D_flash")
+radius = 0.035
+height = 0.07
+
+[node name="BoltDriverView" type="Node3D"]
+
+[node name="Body" type="MeshInstance3D" parent="."]
+cast_shadow = 0
+mesh = SubResource("BoxMesh_body")
+
+[node name="Barrel" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0.015, -0.38)
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_barrel")
+
+[node name="CoilA" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.015, -0.3)
+cast_shadow = 0
+mesh = SubResource("TorusMesh_coil")
+
+[node name="CoilB" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.015, -0.4)
+cast_shadow = 0
+mesh = SubResource("TorusMesh_coil")
+
+[node name="CoilC" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.015, -0.5)
+cast_shadow = 0
+mesh = SubResource("TorusMesh_coil")
+
+[node name="Scope" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.068, -0.04)
+cast_shadow = 0
+mesh = SubResource("BoxMesh_scope")
+
+[node name="Lens" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.068, 0.04)
+cast_shadow = 0
+mesh = SubResource("BoxMesh_lens")
+
+[node name="Grip" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.94, 0.342, 0, -0.342, 0.94, 0, -0.09, 0.12)
+cast_shadow = 0
+mesh = SubResource("BoxMesh_grip")
+
+[node name="Magazine" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.085, -0.06)
+cast_shadow = 0
+mesh = SubResource("BoxMesh_mag")
+
+[node name="Muzzle" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.015, -0.62)
+
+[node name="Flash" type="Node3D" parent="Muzzle"]
+visible = false
+
+[node name="Light" type="OmniLight3D" parent="Muzzle/Flash"]
+light_color = Color(0.5, 0.8, 1, 1)
+light_energy = 2.5
+omni_range = 4.0
+
+[node name="Glow" type="MeshInstance3D" parent="Muzzle/Flash"]
+cast_shadow = 0
+mesh = SubResource("SphereMesh_flash")

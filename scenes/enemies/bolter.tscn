@@ -1,0 +1,118 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/ranged_robot.gd" id="1_robot"]
+[ext_resource type="Script" path="res://scripts/combat/health_component.gd" id="2_health"]
+[ext_resource type="PackedScene" path="res://scenes/pickups/scrap_pickup.tscn" id="3_scrap"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/bolt_projectile.tscn" id="4_bolt"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_robot"]
+radius = 0.4
+height = 1.95
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_plate"]
+albedo_color = Color(0.3, 0.36, 0.45, 1)
+metallic = 0.6
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eyes"]
+albedo_color = Color(0.4, 0.85, 1, 1)
+emission_enabled = true
+emission = Color(0.4, 0.85, 1, 1)
+emission_energy_multiplier = 1.5
+
+[sub_resource type="BoxMesh" id="BoxMesh_body"]
+material = SubResource("StandardMaterial3D_plate")
+size = Vector3(0.6, 0.9, 0.45)
+
+[sub_resource type="BoxMesh" id="BoxMesh_head"]
+material = SubResource("StandardMaterial3D_plate")
+size = Vector3(0.36, 0.36, 0.4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_eyes"]
+material = SubResource("StandardMaterial3D_eyes")
+size = Vector3(0.12, 0.12, 0.05)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_cannon"]
+material = SubResource("StandardMaterial3D_plate")
+top_radius = 0.09
+bottom_radius = 0.12
+height = 0.8
+
+[sub_resource type="BoxMesh" id="BoxMesh_arm"]
+material = SubResource("StandardMaterial3D_plate")
+size = Vector3(0.15, 0.7, 0.15)
+
+[sub_resource type="BoxMesh" id="BoxMesh_leg"]
+material = SubResource("StandardMaterial3D_plate")
+size = Vector3(0.18, 0.7, 0.18)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_net"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+
+[node name="Bolter" type="CharacterBody3D"]
+script = ExtResource("1_robot")
+attack_range = 18.0
+attack_reach = 0.0
+attack_damage = 15.0
+attack_windup = 0.7
+attack_cooldown = 2.2
+scrap_scene = ExtResource("3_scrap")
+scrap_value = 15
+health_multiplier = 0.8
+speed_multiplier = 0.8
+projectile_scene = ExtResource("4_bolt")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.975, 0)
+shape = SubResource("CapsuleShape3D_robot")
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("2_health")
+max_health = 50.0
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+path_desired_distance = 0.6
+target_desired_distance = 1.0
+radius = 0.4
+height = 1.95
+
+[node name="Meshes" type="Node3D" parent="."]
+
+[node name="Body" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.15, 0)
+mesh = SubResource("BoxMesh_body")
+
+[node name="Head" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
+mesh = SubResource("BoxMesh_head")
+
+[node name="Eyes" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.82, -0.21)
+mesh = SubResource("BoxMesh_eyes")
+
+[node name="Cannon" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0.45, 1.25, -0.3)
+mesh = SubResource("CylinderMesh_cannon")
+
+[node name="ArmLeft" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4, 1.1, 0)
+mesh = SubResource("BoxMesh_arm")
+
+[node name="LegLeft" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.17, 0.35, 0)
+mesh = SubResource("BoxMesh_leg")
+
+[node name="LegRight" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.17, 0.35, 0)
+mesh = SubResource("BoxMesh_leg")
+
+[node name="Muzzle" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 1.25, -0.75)
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_net")

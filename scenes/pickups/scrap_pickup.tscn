@@ -1,0 +1,66 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/pickups/scrap_pickup.gd" id="1_scrap"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_pickup"]
+radius = 0.9
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_scrap"]
+albedo_color = Color(0.85, 0.65, 0.2, 1)
+metallic = 0.8
+roughness = 0.35
+emission_enabled = true
+emission = Color(0.9, 0.6, 0.1, 1)
+emission_energy_multiplier = 0.4
+
+[sub_resource type="BoxMesh" id="BoxMesh_plate"]
+material = SubResource("StandardMaterial3D_scrap")
+size = Vector3(0.22, 0.04, 0.16)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_bolt"]
+material = SubResource("StandardMaterial3D_scrap")
+top_radius = 0.035
+bottom_radius = 0.035
+height = 0.14
+
+[sub_resource type="TorusMesh" id="TorusMesh_gear"]
+material = SubResource("StandardMaterial3D_scrap")
+inner_radius = 0.04
+outer_radius = 0.09
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_net"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 0
+properties/1/path = NodePath(".:amount")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+
+[node name="ScrapPickup" type="Area3D"]
+monitorable = false
+script = ExtResource("1_scrap")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("SphereShape3D_pickup")
+
+[node name="Visual" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0)
+
+[node name="Plate" type="MeshInstance3D" parent="Visual"]
+transform = Transform3D(0.94, 0, 0.342, 0, 1, 0, -0.342, 0, 0.94, 0, 0, 0)
+cast_shadow = 0
+mesh = SubResource("BoxMesh_plate")
+
+[node name="Bolt" type="MeshInstance3D" parent="Visual"]
+transform = Transform3D(1, 0, 0, 0, 0.707, -0.707, 0, 0.707, 0.707, 0.08, 0.06, 0.02)
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_bolt")
+
+[node name="Gear" type="MeshInstance3D" parent="Visual"]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, -0.07, 0.08, -0.03)
+cast_shadow = 0
+mesh = SubResource("TorusMesh_gear")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_net")
