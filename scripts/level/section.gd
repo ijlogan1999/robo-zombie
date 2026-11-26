@@ -134,7 +134,8 @@ func _pick_rooms() -> Array[PackedScene]:
 	for scene: PackedScene in optional:
 		if picked.size() >= room_count:
 			break
-		picked.append(scene)
+		if not picked.has(scene):
+			picked.append(scene)
 	_shuffle(picked)
 	return picked
 

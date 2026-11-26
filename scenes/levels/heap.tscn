@@ -146,6 +146,7 @@
 [ext_resource type="PackedScene" path="res://scenes/rooms/head_office/head_office.tscn" id="190_head_office"]
 [ext_resource type="Material" path="res://materials/exec_wall.tres" id="191_exec_wall"]
 [ext_resource type="Script" path="res://scripts/bosses/quota.gd" id="192_quota"]
+[ext_resource type="Script" path="res://scripts/game/egg_chain.gd" id="193_egg_chain"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_top_color = Color(0.42, 0.55, 0.72, 1)
@@ -298,7 +299,7 @@ script = ExtResource("2_nav")
 [node name="Section" type="Node3D" parent="NavigationRegion3D" groups=["section"]]
 script = ExtResource("3_section")
 start_room = ExtResource("4_landing")
-required_rooms = Array[PackedScene]([ExtResource("5_trade")])
+required_rooms = Array[PackedScene]([ExtResource("5_trade"), ExtResource("13_trailers")])
 optional_rooms = Array[PackedScene]([ExtResource("6_heap"), ExtResource("7_crusher"), ExtResource("8_conveyor"), ExtResource("13_trailers"), ExtResource("14_tires"), ExtResource("15_shed")])
 stairwell_room = ExtResource("16_stairs")
 crane_control_room = ExtResource("17_crane")
@@ -318,6 +319,7 @@ exits = Array[Dictionary]([{"name": "Servo Works", "arrival": &"servo_from_cruci
 section_door_scene = ExtResource("29_door")
 mound_material = ExtResource("28_slag")
 start_room = ExtResource("21_landing")
+required_rooms = Array[PackedScene]([ExtResource("22_kilns")])
 optional_rooms = Array[PackedScene]([ExtResource("22_kilns"), ExtResource("23_river"), ExtResource("24_furnace"), ExtResource("25_ingots"), ExtResource("26_racks"), ExtResource("27_pile")])
 is_start_section = false
 first_gate_cost = 750
@@ -521,6 +523,10 @@ wall_material = ExtResource("191_exec_wall")
 script = ExtResource("192_quota")
 wave_scenes = Array[PackedScene]([ExtResource("105_scrapper"), ExtResource("125_bolter"), ExtResource("164_packer"), ExtResource("165_security")])
 display_name = "QUOTA"
+
+[node name="EggChain" type="Node3D" parent="."]
+script = ExtResource("193_egg_chain")
+bug_scene = ExtResource("82_bug")
 
 [node name="PitDrop" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -21, 0)

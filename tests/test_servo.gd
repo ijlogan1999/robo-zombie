@@ -71,8 +71,8 @@ func _ready() -> void:
 	door.interact(player)
 	check(door.interact(player) and servo.room_at_position(player.global_position) == servo.rooms[0], "the Crucible's Servo Works door lands you at the Crucible Lift")
 
-	# Bugs come in swarms.
-	for i in 30:
+	# Bugs come in swarms. (Wait out a spawn-point update so only Servo's points are live.)
+	for i in 60:
 		await get_tree().physics_frame
 	rounds.spawn_table = []
 	rounds.round_number = 5

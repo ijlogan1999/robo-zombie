@@ -137,10 +137,10 @@ func _ready() -> void:
 	await level.get_node("AccountingNav").baked
 	player.global_position = section.bay_center(1) + Vector3(3, 0.3, 3)
 	await frames(3)
-	Egg.set_flag(&"staff_bot_awake")
+	Egg.set_flag(&"staff_bot_certified")
 	ledger = section.rooms[1].get_node("Ledger")
 	lift = section.rooms[7].get_node("HeadOfficeDoor")
-	check(ledger.get_prompt(player).contains("Staff Bot"), "with the Staff Bot awake, the Ledger offers to put it on the payroll")
+	check(ledger.get_prompt(player).contains("Staff Bot"), "with the certified Staff Bot, the Ledger offers to put it on the payroll")
 	check(office.calm and ledger.interact(player), "you enter it in the Ledger")
 	await frames(2)
 	check(not office.calm and Egg.has(&"staff_bot_cleared") and not lift.locked, "that sets the office off and clears the way to Head Office")

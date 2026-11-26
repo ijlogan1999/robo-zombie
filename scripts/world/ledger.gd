@@ -1,11 +1,11 @@
 class_name Ledger
 extends StaticBody3D
 ## QUOTA's Ledger: the book of every robot on staff. Taking it sets Accounting off. With
-## the Staff Bot awake and following the team, they enter it on the payroll first, which
+## the certified Staff Bot following the team, they enter it on the payroll first, which
 ## clears it to walk them into Head Office.
 
 @export var item_flag: StringName = &"ledger"
-@export var staff_bot_flag: StringName = &"staff_bot_awake"
+@export var staff_bot_flag: StringName = &"staff_bot_certified"
 @export var clearance_flag: StringName = &"staff_bot_cleared"
 
 @onready var _book: Node3D = get_node_or_null("Book")
