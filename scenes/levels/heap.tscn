@@ -101,6 +101,19 @@
 [ext_resource type="PackedScene" path="res://scenes/enemies/amalgam.tscn" id="123_amalgam"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/skitter.tscn" id="124_skitter"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/bolter.tscn" id="125_bolter"]
+[ext_resource type="Script" path="res://scripts/level/proving_section.gd" id="130_proving"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/proving/proving_entry.tscn" id="131_proving_entry"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/proving/proving_exit.tscn" id="132_proving_exit"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/proving/firing_range.tscn" id="133_firing_range"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/proving/minefield.tscn" id="134_minefield"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/proving/obstacle_course.tscn" id="135_obstacle_course"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/proving/barricade_line.tscn" id="136_barricade_line"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/proving/drill_yard.tscn" id="137_drill_yard"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/proving/bunker_row.tscn" id="138_bunker_row"]
+[ext_resource type="Material" path="res://materials/proving_ground.tres" id="140_pg_floor"]
+[ext_resource type="Material" path="res://materials/proving_wall.tres" id="141_pg_wall"]
+[ext_resource type="Material" path="res://materials/pad.tres" id="142_pad"]
+[ext_resource type="PackedScene" path="res://scenes/level/checkpoint_gate.tscn" id="143_checkpoint"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_top_color = Color(0.42, 0.55, 0.72, 1)
@@ -189,6 +202,13 @@ scene = ExtResource("123_amalgam")
 weight = 6.0
 weight_per_round = 0.4
 
+[sub_resource type="NavigationMesh" id="NavigationMesh_proving"]
+cell_size = 0.25
+cell_height = 0.25
+agent_height = 2.0
+agent_radius = 0.5
+agent_max_climb = 0.25
+
 [sub_resource type="Resource" id="SpawnEntry_bug"]
 script = ExtResource("36_entry")
 scene = ExtResource("82_bug")
@@ -197,7 +217,7 @@ weight_per_round = 0.4
 
 [node name="Heap" type="Node3D"]
 script = ExtResource("12_level")
-section_paths = Array[NodePath]([NodePath("NavigationRegion3D/Section"), NodePath("CrucibleNav/Section"), NodePath("ChassisNav/Section"), NodePath("ServoNav/Section"), NodePath("ColdNav/Section"), NodePath("LineNav/Section")])
+section_paths = Array[NodePath]([NodePath("NavigationRegion3D/Section"), NodePath("CrucibleNav/Section"), NodePath("ChassisNav/Section"), NodePath("ServoNav/Section"), NodePath("ColdNav/Section"), NodePath("LineNav/Section"), NodePath("ProvingNav/Section")])
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_main")
@@ -333,6 +353,24 @@ display_name = "THE LINE GIANT"
 requires_flag = &"staff_bot_on_line"
 drop_flag = &"staff_bot_awake"
 drop_text = "THE GIANT FALLS. THE STAFF BOT WAKES UP ON THE LINE"
+
+[node name="ProvingNav" type="NavigationRegion3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 400, 0, -400)
+navigation_mesh = SubResource("NavigationMesh_proving")
+script = ExtResource("2_nav")
+
+[node name="Section" type="Node3D" parent="ProvingNav" groups=["section"]]
+script = ExtResource("130_proving")
+gauntlet_scenes = Array[PackedScene]([ExtResource("105_scrapper"), ExtResource("105_scrapper"), ExtResource("124_skitter"), ExtResource("125_bolter"), ExtResource("35_slagger"), ExtResource("52_dripper"), ExtResource("82_bug"), ExtResource("103_thawed"), ExtResource("123_amalgam")])
+checkpoint_scene = ExtResource("143_checkpoint")
+pad_material = ExtResource("142_pad")
+floor_material = ExtResource("140_pg_floor")
+start_room = ExtResource("131_proving_entry")
+optional_rooms = Array[PackedScene]([ExtResource("133_firing_range"), ExtResource("134_minefield"), ExtResource("135_obstacle_course"), ExtResource("136_barricade_line"), ExtResource("137_drill_yard"), ExtResource("138_bunker_row")])
+end_room = ExtResource("132_proving_exit")
+gate_scene = ExtResource("9_gate")
+is_start_section = false
+wall_material = ExtResource("141_pg_wall")
 
 [node name="PitDrop" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -21, 0)

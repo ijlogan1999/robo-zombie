@@ -87,6 +87,8 @@ var _net_has_state := false
 
 var _pull := Vector3.ZERO ## Set by pull(); added to movement while _pull_left lasts.
 var _pull_left := 0.0
+var grappling := false ## The grapple is pulling this player (no gravity).
+var grapple: Grapple
 var _grip := 1.0
 var _grip_until := 0
 
@@ -149,7 +151,7 @@ func _physics_process(delta: float) -> void:
 	var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	var wish_dir := (global_transform.basis * Vector3(input_dir.x, 0.0, input_dir.y)).normalized()
 
-	if state != State.WALL_RUN and not is_on_floor():
+	if state != State.WALL_RUN and not is_on_floor() and not grappling:
 		velocity.y -= _gravity * gravity_scale * delta
 
 	match state:
@@ -337,6 +339,20 @@ func _update_camera(delta: float) -> void:
 ## Called by robots and hazards. Returns true if the hit took the player down.
 ## In co-op, damage is passed on to the game that owns this player.
 ## Drags the player along for a moment (a boss's magnet). Keep calling it to keep pulling.
+func has_grapple() -> bool:
+	return grapple != null
+
+
+## Personal unlock: only this player gets it.
+func give_grapple() -> void:
+	if grapple:
+		return
+	grapple = Grapple.new()
+	grapple.name = "Grapple"
+	grapple.player = self
+	add_child(grapple)
+
+
 ## Ice: for a moment the player grips the floor this well (1 = normal, lower slides).
 func slip(grip: float, seconds := 0.3) -> void:
 	_grip = grip
