@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 Net="*res://scripts/game/net.gd"
 Sfx="*res://scripts/game/sfx.gd"
+Egg="*res://scripts/game/egg.gd"
 
 [dotnet]
 

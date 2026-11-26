@@ -1,0 +1,136 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/slagger.gd" id="1_robot"]
+[ext_resource type="Script" path="res://scripts/combat/health_component.gd" id="2_health"]
+[ext_resource type="PackedScene" path="res://scenes/pickups/scrap_pickup.tscn" id="3_scrap"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_robot"]
+radius = 0.45
+height = 1.7
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_scrap"]
+albedo_color = Color(0.32, 0.2, 0.16, 1)
+metallic = 0.5
+roughness = 0.8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eyes"]
+albedo_color = Color(1, 0.2, 0.1, 1)
+emission_enabled = true
+emission = Color(1, 0.2, 0.1, 1)
+emission_energy_multiplier = 1.5
+
+[sub_resource type="BoxMesh" id="BoxMesh_body"]
+material = SubResource("StandardMaterial3D_scrap")
+size = Vector3(0.8, 0.8, 0.55)
+
+[sub_resource type="BoxMesh" id="BoxMesh_head"]
+material = SubResource("StandardMaterial3D_scrap")
+size = Vector3(0.5, 0.38, 0.45)
+
+[sub_resource type="BoxMesh" id="BoxMesh_eyes"]
+material = SubResource("StandardMaterial3D_eyes")
+size = Vector3(0.36, 0.08, 0.05)
+
+[sub_resource type="BoxMesh" id="BoxMesh_arm"]
+material = SubResource("StandardMaterial3D_scrap")
+size = Vector3(0.18, 0.75, 0.18)
+
+[sub_resource type="BoxMesh" id="BoxMesh_leg"]
+material = SubResource("StandardMaterial3D_scrap")
+size = Vector3(0.22, 0.55, 0.22)
+
+[sub_resource type="StandardMaterial3D" id="Mat_flame"]
+transparency = 1
+albedo_color = Color(1, 0.5, 0.1, 0.6)
+emission_enabled = true
+emission = Color(1, 0.45, 0.1, 1)
+emission_energy_multiplier = 3.0
+
+[sub_resource type="CylinderMesh" id="Mesh_flame"]
+material = SubResource("Mat_flame")
+top_radius = 1.2
+bottom_radius = 0.08
+height = 5.0
+
+[sub_resource type="CylinderMesh" id="Mesh_tank"]
+top_radius = 0.25
+bottom_radius = 0.25
+height = 0.8
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_net"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:spraying")
+properties/2/spawn = true
+properties/2/replication_mode = 2
+
+[node name="Slagger" type="CharacterBody3D"]
+script = ExtResource("1_robot")
+attack_range = 4.5
+attack_reach = 0.0
+attack_damage = 30.0
+attack_windup = 0.5
+attack_cooldown = 1.6
+scrap_scene = ExtResource("3_scrap")
+scrap_value = 20
+health_multiplier = 1.3
+speed_multiplier = 0.85
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+shape = SubResource("CapsuleShape3D_robot")
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("2_health")
+max_health = 60.0
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+path_desired_distance = 0.6
+target_desired_distance = 1.0
+radius = 0.45
+height = 1.7
+
+[node name="Meshes" type="Node3D" parent="."]
+
+[node name="Body" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0)
+mesh = SubResource("BoxMesh_body")
+
+[node name="Head" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55, -0.05)
+mesh = SubResource("BoxMesh_head")
+
+[node name="Eyes" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.58, -0.29)
+mesh = SubResource("BoxMesh_eyes")
+
+[node name="ArmLeft" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.52, 0.9, -0.05)
+mesh = SubResource("BoxMesh_arm")
+
+[node name="ArmRight" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.52, 0.9, -0.05)
+mesh = SubResource("BoxMesh_arm")
+
+[node name="LegLeft" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2, 0.28, 0)
+mesh = SubResource("BoxMesh_leg")
+
+[node name="LegRight" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0.28, 0)
+mesh = SubResource("BoxMesh_leg")
+
+[node name="Tank" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, 0.4)
+mesh = SubResource("Mesh_tank")
+
+[node name="Flame" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 1.0, -3.1)
+mesh = SubResource("Mesh_flame")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_net")

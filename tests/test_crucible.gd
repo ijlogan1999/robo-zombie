@@ -55,6 +55,14 @@ func _ready() -> void:
 	await level.get_node("CrucibleNav").baked
 	for i in 5:
 		await get_tree().physics_frame
+	var map := player.get_world_3d().navigation_map
+	var floor_point := Vector3.ZERO
+	for i in 300: # The map takes a few frames to pick up a fresh bake.
+		floor_point = NavigationServer3D.map_get_closest_point(map, Vector3(20, -197, 5))
+		if floor_point.y < -150.0:
+			break
+		await get_tree().physics_frame
+	check(absf(floor_point.y + 200.0) < 1.0, "the Crucible's navmesh sits on its floor, not the roof (y %.1f)" % floor_point.y)
 	var heap_spawns := heap.rooms[0].spawn_points().size()
 	check(get_tree().get_nodes_in_group(Room.SPAWN_GROUP).size() == heap_spawns, "at the start only the Heap's spawn yard spawns robots")
 

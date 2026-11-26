@@ -38,6 +38,7 @@ const ALL_SIDES: Array[Vector2i] = [Vector2i(0, 1), Vector2i(1, 0), Vector2i(0, 
 @export_group("Spawning")
 @export var spawn_reach := 1 ## Robots spawn in the players' rooms and this many rooms either side.
 @export var spawn_update_interval := 0.5
+@export var spawn_table: Array[SpawnEntry] = [] ## Robot types only this section spawns (its unique enemy).
 
 var rooms: Array[Room] = [] ## In path order; rooms[0] is the start room.
 var gates: Array[Gate] = [] ## gates[i] leads into rooms[i + 1].
@@ -47,6 +48,14 @@ var _rng := RandomNumberGenerator.new()
 var _room_at := {} # Vector2i cell -> Room
 var _cells: Array[Vector2i] = []
 var _spawn_update_left := 0.0
+
+
+## The section a node sits in, if any.
+static func containing(node: Node) -> Section:
+	var at := node.get_parent()
+	while at and not at is Section:
+		at = at.get_parent()
+	return at as Section
 
 
 func _ready() -> void:

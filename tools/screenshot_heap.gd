@@ -45,4 +45,26 @@ func _ready() -> void:
 		await RenderingServer.frame_post_draw
 		get_viewport().get_texture().get_image().save_png(out.path_join("heap_%s.png" % key))
 		print("saved ", key)
+	# The Kiln Mother mid-fight: the Ladle pouring, then the kiln awake.
+	var boss: KilnMother = level.get_node("KilnMother")
+	boss.start()
+	for i in 200:
+		await get_tree().physics_frame
+	await _shot(cam, Vector3(14, -193, 14), Vector3(0, -188, -4), out.path_join("boss_ladle.png"))
+	for valve in boss.valves:
+		valve.take_damage(1e6, valve.global_position)
+	boss._set_door(true)
+	await _shot(cam, Vector3(9, -195, 3), boss.kiln.global_position + Vector3.UP * 2, out.path_join("boss_kiln.png"))
+	boss.kiln_core.take_damage(1e7, Vector3.ZERO)
+	await _shot(cam, Vector3(9, -195, 3), boss.golem.global_position + Vector3.UP * 3, out.path_join("boss_golem.png"))
 	get_tree().quit()
+
+
+func _shot(cam: Camera3D, from: Vector3, at: Vector3, path: String) -> void:
+	cam.global_position = from
+	cam.look_at(at)
+	for i in 4:
+		await get_tree().process_frame
+	await RenderingServer.frame_post_draw
+	get_viewport().get_texture().get_image().save_png(path)
+	print("saved ", path)

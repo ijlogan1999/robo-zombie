@@ -16,13 +16,14 @@ func _ready() -> void:
 
 func bake_now() -> void:
 	var source := NavigationMeshSourceGeometryData3D.new()
+	var to_local := global_transform.affine_inverse() # The region's own transform is applied again at runtime.
 	for node in find_children("*", "CSGShape3D", true, false):
 		var csg := node as CSGShape3D
 		if not csg.is_root_shape():
 			continue # Child shapes are already merged into their root's mesh.
 		var meshes := csg.get_meshes()
 		if meshes.size() >= 2 and meshes[1] is Mesh:
-			source.add_faces((meshes[1] as Mesh).get_faces(), csg.global_transform)
+			source.add_faces((meshes[1] as Mesh).get_faces(), to_local * csg.global_transform)
 	NavigationServer3D.bake_from_source_geometry_data(navigation_mesh, source)
 	if navigation_mesh.get_polygon_count() == 0:
 		push_warning("Navmesh bake produced no walkable area (%d source vertices)" % source.get_vertices().size())

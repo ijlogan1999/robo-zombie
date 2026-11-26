@@ -29,7 +29,7 @@ func _physics_process(delta: float) -> void:
 
 
 func _on_body_entered(body: Node) -> void:
-	if body is Robot or body is Warden:
+	if body is Robot or body is Warden or body.is_in_group(&"boss_body"):
 		return
 	if harmless:
 		queue_free()

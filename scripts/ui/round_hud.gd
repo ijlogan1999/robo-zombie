@@ -20,6 +20,7 @@ func _ready() -> void:
 	_rounds.round_ended.connect(_on_round_ended)
 	_rounds.remaining_changed.connect(_on_remaining_changed)
 	_rounds.warden_summoned.connect(_on_warden_summoned)
+	_rounds.announced.connect(_show_banner)
 	for section: Section in get_tree().get_nodes_in_group("section"):
 		section.room_opened.connect(func(room: Room) -> void: _show_banner("%s OPENED" % room.display_name.to_upper()))
 	_round_label.text = ""
@@ -38,6 +39,14 @@ func _process(delta: float) -> void:
 		RoundManager.Phase.COUNTDOWN:
 			_remaining_label.text = "Round %d in %d" % [_rounds.round_number + 1, ceili(_rounds.countdown_left)]
 
+	# A boss fight takes the bar over from the Warden.
+	for boss: Boss in get_tree().get_nodes_in_group("boss"):
+		if boss.active:
+			_warden_panel.visible = true
+			_warden_bar.max_value = boss.bar_max
+			_warden_bar.value = boss.bar_value
+			_warden_name.text = boss.bar_title()
+			return
 	var warden := _rounds.warden
 	_warden_panel.visible = is_instance_valid(warden) and not warden.gone
 	if _warden_panel.visible:

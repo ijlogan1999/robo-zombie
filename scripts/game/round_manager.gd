@@ -18,6 +18,7 @@ signal round_ended(round_number: int)
 signal remaining_changed(remaining: int)
 signal countdown_started(seconds: float)
 signal warden_summoned(warden: Warden)
+signal announced(text: String) ## A banner for everyone: boss fights, Easter egg steps.
 
 @export var robot_scene: PackedScene ## Used when the spawn table is empty.
 @export var spawn_table: Array[SpawnEntry] = [] ## Robot types and when they start appearing.
@@ -56,11 +57,31 @@ var _to_spawn := 0
 var _alive := 0
 var _spawn_left := 0.0
 var _client_remaining := 0 ## What the host last said, on other players' games.
+var _holds := {} ## Things pausing the rounds (a boss fight, a gauntlet): no spawns, no Warden.
 
 
 func _ready() -> void:
 	add_to_group("round_manager")
 	_first_break_left = first_break_time
+
+
+## Pauses spawning and the Warden until every holder lets go. Host only.
+func hold(by: Object) -> void:
+	_holds[by.get_instance_id()] = true
+
+
+func release(by: Object) -> void:
+	_holds.erase(by.get_instance_id())
+
+
+func is_held() -> bool:
+	return not _holds.is_empty()
+
+
+## Shows a banner on every player's screen. Host only.
+func announce(text: String) -> void:
+	announced.emit(text)
+	_to_clients(&"_net_announce", [text])
 
 
 func remaining() -> int:
@@ -79,19 +100,21 @@ func robot_speed_for_round(number: int) -> float:
 	return minf(base_robot_speed + (number - 1) * speed_added_per_round, max_robot_speed)
 
 
-## A random robot type for this round, weighted by the spawn table.
-func pick_robot_scene(number: int) -> PackedScene:
+## A random robot type for this round, weighted by the spawn table plus any
+## section-only types (each section's unique enemy) passed in `extra`.
+func pick_robot_scene(number: int, extra: Array[SpawnEntry] = []) -> PackedScene:
+	var table: Array[SpawnEntry] = spawn_table + extra
 	var total := 0.0
-	for entry in spawn_table:
+	for entry in table:
 		total += entry.weight_for_round(number)
 	if total <= 0.0:
 		return robot_scene
 	var roll := randf() * total
-	for entry in spawn_table:
+	for entry in table:
 		roll -= entry.weight_for_round(number)
 		if roll <= 0.0:
 			return entry.scene
-	return spawn_table[-1].scene
+	return table[-1].scene
 
 
 ## True while a break is waiting for someone to press the button.
@@ -144,6 +167,8 @@ func _physics_process(delta: float) -> void:
 				if _first_break_left <= 0.0:
 					_start_next_round()
 				return
+			if is_held():
+				return
 			break_time += delta
 			if break_time >= warden_delay and warden == null:
 				_summon_warden()
@@ -152,7 +177,7 @@ func _physics_process(delta: float) -> void:
 			if countdown_left <= 0.0:
 				_start_next_round()
 		Phase.ROUND:
-			if _to_spawn > 0 and _alive < max_alive:
+			if _to_spawn > 0 and _alive < max_alive and not is_held():
 				_spawn_left -= delta
 				if _spawn_left <= 0.0:
 					_spawn_left = spawn_interval
@@ -192,7 +217,9 @@ func _spawn_robot() -> void:
 	if point == null:
 		push_warning("RoundManager: no spawn points in group '%s'" % spawn_group)
 		return
-	var robot: Robot = pick_robot_scene(round_number).instantiate()
+	var section := Section.containing(point)
+	var extra: Array[SpawnEntry] = section.spawn_table if section else ([] as Array[SpawnEntry])
+	var robot: Robot = pick_robot_scene(round_number, extra).instantiate()
 	robot.configure(robot_health_for_round(round_number), robot_speed_for_round(round_number))
 	robot.position = point.global_position # Set before adding so co-op copies spawn in the right place.
 	_spawn_parent().add_child(robot, true)
@@ -285,3 +312,8 @@ func _net_round_ended(number: int) -> void:
 func _net_run_over(number: int) -> void:
 	phase = Phase.OVER
 	run_over.emit(number)
+
+
+@rpc("authority", "reliable")
+func _net_announce(text: String) -> void:
+	announced.emit(text)

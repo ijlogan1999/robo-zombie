@@ -33,6 +33,11 @@
 [ext_resource type="PackedScene" path="res://scenes/world/section_door.tscn" id="29_door"]
 [ext_resource type="Script" path="res://scripts/world/arrival.gd" id="30_arrival"]
 [ext_resource type="Script" path="res://scripts/world/passage.gd" id="31_passage"]
+[ext_resource type="Script" path="res://scripts/bosses/kiln_mother.gd" id="32_kiln"]
+[ext_resource type="PackedScene" path="res://scenes/bosses/feeder_drone.tscn" id="33_feeder"]
+[ext_resource type="PackedScene" path="res://scenes/pickups/scrap_pickup.tscn" id="34_scrap"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/slagger.tscn" id="35_slagger"]
+[ext_resource type="Script" path="res://scripts/game/spawn_entry.gd" id="36_entry"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_top_color = Color(0.42, 0.55, 0.72, 1)
@@ -49,6 +54,7 @@ ambient_light_source = 3
 tonemap_mode = 2
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_crucible"]
+filter_baking_aabb = AABB(-70, -5, -70, 140, 20, 140)
 cell_size = 0.25
 cell_height = 0.25
 agent_height = 2.0
@@ -65,6 +71,12 @@ cell_height = 0.25
 agent_height = 2.0
 agent_radius = 0.5
 agent_max_climb = 0.25
+
+[sub_resource type="Resource" id="SpawnEntry_slagger"]
+script = ExtResource("36_entry")
+scene = ExtResource("35_slagger")
+weight = 6.0
+weight_per_round = 0.5
 
 [node name="Heap" type="Node3D"]
 script = ExtResource("12_level")
@@ -110,6 +122,7 @@ first_gate_cost = 750
 gate_scene = ExtResource("9_gate")
 wall_material = ExtResource("28_slag")
 floor_material = ExtResource("28_slag")
+spawn_table = Array[ExtResource("36_entry")]([SubResource("SpawnEntry_slagger")])
 
 [node name="PitDrop" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -21, 0)
@@ -141,6 +154,23 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40, 11, 27)
 script = ExtResource("30_arrival")
 arrival_id = &"heap_from_line"
 
+[node name="CrucibleGlow" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -182, 0)
+light_color = Color(1, 0.55, 0.25, 1)
+light_energy = 2.5
+omni_range = 75.0
+omni_attenuation = 0.6
+
+[node name="KilnMother" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -200, 0)
+script = ExtResource("32_kiln")
+feeder_scene = ExtResource("33_feeder")
+scrap_scene = ExtResource("34_scrap")
+display_name = "THE KILN MOTHER"
+requires_flag = &"grab_magnet"
+drop_flag = &"kiln_heart_left"
+drop_text = "THE KILN HEART GLOWS IN THE KILN. TOO HOT TO HOLD"
+
 [node name="Player" parent="." instance=ExtResource("1_player")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 52)
 
@@ -151,5 +181,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 52)
 [node name="Spawned" type="Node3D" parent="." groups=["spawn_root"]]
 
 [node name="NetSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("res://scenes/enemies/scrapper.tscn", "res://scenes/enemies/skitter.tscn", "res://scenes/enemies/bolter.tscn", "res://scenes/enemies/warden.tscn", "res://scenes/pickups/scrap_pickup.tscn")
+_spawnable_scenes = PackedStringArray("res://scenes/enemies/scrapper.tscn", "res://scenes/enemies/skitter.tscn", "res://scenes/enemies/bolter.tscn", "res://scenes/enemies/warden.tscn", "res://scenes/pickups/scrap_pickup.tscn", "res://scenes/bosses/feeder_drone.tscn", "res://scenes/enemies/slagger.tscn")
 spawn_path = NodePath("../Spawned")
