@@ -219,13 +219,24 @@ func _spawn_robot() -> void:
 		return
 	var section := Section.containing(point)
 	var extra: Array[SpawnEntry] = section.spawn_table if section else ([] as Array[SpawnEntry])
-	var robot: Robot = pick_robot_scene(round_number, extra).instantiate()
+	var scene := pick_robot_scene(round_number, extra)
+	var robot := _spawn_one(scene, point.global_position)
+	# Swarming types (Bugs) come in a cloud; each one still counts toward the round.
+	var swarm: int = robot.get("swarm_size") if robot.get("swarm_size") != null else 1
+	for i in mini(swarm - 1, _to_spawn):
+		var offset := Vector3(randf_range(-1.5, 1.5), 0.0, randf_range(-1.5, 1.5))
+		_spawn_one(scene, point.global_position + offset)
+
+
+func _spawn_one(scene: PackedScene, at: Vector3) -> Robot:
+	var robot: Robot = scene.instantiate()
 	robot.configure(robot_health_for_round(round_number), robot_speed_for_round(round_number))
-	robot.position = point.global_position # Set before adding so co-op copies spawn in the right place.
+	robot.position = at # Set before adding so co-op copies spawn in the right place.
 	_spawn_parent().add_child(robot, true)
 	robot.died.connect(_on_robot_died)
 	_to_spawn -= 1
 	_alive += 1
+	return robot
 
 
 ## A random spawn point that isn't too close to any player, if one exists.

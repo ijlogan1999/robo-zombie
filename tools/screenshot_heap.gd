@@ -45,6 +45,16 @@ func _ready() -> void:
 		await RenderingServer.frame_post_draw
 		get_viewport().get_texture().get_image().save_png(out.path_join("heap_%s.png" % key))
 		print("saved ", key)
+	for path in ["ServoNav/Section", "ChassisNav/Section"]:
+		for gate in level.get_node(path).gates:
+			gate.open()
+	await _shot(cam, Vector3(470, 45, 50), Vector3(400, 6, -48), out.path_join("servo_overview.png"))
+	await _shot(cam, Vector3(406, 1.7, 52), Vector3(400, 2, 0), out.path_join("servo_entry.png"))
+	var servo: TierSection = level.get_node("ServoNav/Section")
+	await _shot(cam, servo.slot_center(5) + Vector3(8, 3, 14), servo.slot_center(9) + Vector3.UP * 2, out.path_join("servo_ramp.png"))
+	var yard: Section = level.get_node("ChassisNav/Section")
+	await _shot(cam, yard.rooms[1].global_position + Vector3(12, 6, 14), yard.rooms[1].global_position, out.path_join("chassis_bay.png"))
+	await _shot(cam, Vector3(-340, 70, 60), Vector3(-400, 0, -60), out.path_join("chassis_overview.png"))
 	var king: ScrapKing = level.get_node("ScrapKing")
 	king.start()
 	for i in 200:

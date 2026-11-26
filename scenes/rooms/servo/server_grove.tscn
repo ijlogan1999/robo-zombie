@@ -1,0 +1,104 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/level/room.gd" id="1_room"]
+[ext_resource type="Material" path="res://materials/servo_board.tres" id="2_board"]
+[ext_resource type="Material" path="res://materials/servo_rack.tres" id="3_rack"]
+[ext_resource type="Material" path="res://materials/servo_trace.tres" id="4_trace"]
+[ext_resource type="Material" path="res://materials/acid.tres" id="5_acid"]
+[ext_resource type="Script" path="res://scripts/world/hazard_zone.gd" id="6_hazard"]
+[ext_resource type="Script" path="res://scripts/world/cable_whip.gd" id="7_whip"]
+[ext_resource type="Material" path="res://materials/servo_cable.tres" id="8_cable"]
+[ext_resource type="Script" path="res://scripts/world/arrival.gd" id="10_arrival"]
+[ext_resource type="Script" path="res://scripts/world/passage.gd" id="11_passage"]
+[ext_resource type="PackedScene" path="res://scenes/world/section_door.tscn" id="12_door"]
+[ext_resource type="Material" path="res://materials/hazard.tres" id="13_hazard"]
+
+[sub_resource type="CapsuleShape3D" id="Shape_13"]
+radius = 0.25
+height = 4.0
+
+[sub_resource type="CylinderMesh" id="Mesh_14"]
+material = ExtResource("8_cable")
+top_radius = 0.12
+bottom_radius = 0.2
+height = 4.0
+
+[node name="ServerGrove" type="Node3D"]
+script = ExtResource("1_room")
+display_name = "Server Grove"
+can_rotate = true
+
+[node name="Floor" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, -0.5, 0)
+use_collision = true
+size = Vector3(24, 1, 24)
+material = ExtResource("2_board")
+
+[node name="Glow" type="OmniLight3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 6, 0)
+light_color = Color(0.5, 1, 0.6, 1)
+light_energy = 1.6
+omni_range = 16.0
+
+[node name="Rack0" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -7, 2.5, -7)
+use_collision = true
+size = Vector3(2, 5, 1.2)
+material = ExtResource("3_rack")
+
+[node name="Rack1" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -7, 2.5, 7)
+use_collision = true
+size = Vector3(2, 5, 1.2)
+material = ExtResource("3_rack")
+
+[node name="Rack2" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 7, 2.5, -7)
+use_collision = true
+size = Vector3(2, 5, 1.2)
+material = ExtResource("3_rack")
+
+[node name="Rack3" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 7, 2.5, 7)
+use_collision = true
+size = Vector3(2, 5, 1.2)
+material = ExtResource("3_rack")
+
+[node name="Rack4" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 2.5, -8)
+use_collision = true
+size = Vector3(2, 5, 1.2)
+material = ExtResource("3_rack")
+
+[node name="WhipA" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 5.0, 4)
+script = ExtResource("7_whip")
+
+[node name="Shape" type="CollisionShape3D" parent="WhipA"]
+shape = SubResource("Shape_13")
+
+[node name="Mesh" type="MeshInstance3D" parent="WhipA"]
+mesh = SubResource("Mesh_14")
+
+[node name="WhipAAnchor" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 7.3, 4)
+use_collision = false
+size = Vector3(1.2, 0.6, 1.2)
+material = ExtResource("3_rack")
+
+[node name="BoxSpot" type="Marker3D" parent="." groups=["box_spot"]]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0, 8)
+
+[node name="Spawns" type="Node3D" parent="."]
+
+[node name="Spawn0" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -4, 0.2, 0)
+
+[node name="Spawn1" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 4, 0.2, 0)
+
+[node name="Spawn2" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.2, 8)
+
+[node name="Spawn3" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -9, 0.2, 0)
