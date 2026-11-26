@@ -448,7 +448,7 @@ func _set_hard(hard: bool) -> void:
 
 
 ## Weapons hit the golem's body directly.
-func _golem_take_damage(amount: float) -> bool:
+func _body_take_damage(amount: float) -> bool:
 	if stage != Stage.GOLEM or not golem_hard:
 		return false
 	_golem_hp -= amount

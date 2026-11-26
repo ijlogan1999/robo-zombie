@@ -85,6 +85,9 @@ var _grace_left := 0.0
 var _net_position := Vector3.ZERO ## Where this player's own game last said the body is.
 var _net_has_state := false
 
+var _pull := Vector3.ZERO ## Set by pull(); added to movement while _pull_left lasts.
+var _pull_left := 0.0
+
 @onready var health: HealthComponent = $HealthComponent
 @onready var weapon_holder: WeaponHolder = $Head/Camera3D/WeaponHolder
 @onready var _collision: CollisionShape3D = $CollisionShape3D
@@ -157,7 +160,11 @@ func _physics_process(delta: float) -> void:
 		State.WALL_RUN:
 			_wall_run_move(delta)
 
+	_pull_left -= delta
+	var pull_velocity := _pull if _pull_left > 0.0 else Vector3.ZERO
+	velocity += pull_velocity
 	move_and_slide()
+	velocity -= pull_velocity
 	if is_on_wall():
 		_wall_normal = get_wall_normal()
 
@@ -326,6 +333,20 @@ func _update_camera(delta: float) -> void:
 
 ## Called by robots and hazards. Returns true if the hit took the player down.
 ## In co-op, damage is passed on to the game that owns this player.
+## Drags the player along for a moment (a boss's magnet). Keep calling it to keep pulling.
+func pull(pull_velocity: Vector3) -> void:
+	if not is_multiplayer_authority():
+		_net_pull.rpc_id(get_multiplayer_authority(), pull_velocity)
+		return
+	_pull = pull_velocity
+	_pull_left = 0.2
+
+
+@rpc("any_peer", "unreliable")
+func _net_pull(pull_velocity: Vector3) -> void:
+	pull(pull_velocity)
+
+
 func take_damage(amount: float, _from_position: Vector3, _attacker: Node = null) -> bool:
 	if not is_multiplayer_authority():
 		_net_take_damage.rpc_id(get_multiplayer_authority(), amount)

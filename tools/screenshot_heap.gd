@@ -45,6 +45,15 @@ func _ready() -> void:
 		await RenderingServer.frame_post_draw
 		get_viewport().get_texture().get_image().save_png(out.path_join("heap_%s.png" % key))
 		print("saved ", key)
+	var king: ScrapKing = level.get_node("ScrapKing")
+	king.start()
+	for i in 200:
+		await get_tree().physics_frame
+	await _shot(cam, Vector3(0, 10, 30), king.body.global_position + Vector3.UP * 2, out.path_join("king_tank.png"))
+	king.body.take_damage(1e7, Vector3.ZERO)
+	for i in 200:
+		await get_tree().physics_frame
+	await _shot(cam, Vector3(0, 10, 30), king.body.global_position + Vector3.UP * 2, out.path_join("king_spider.png"))
 	# The Kiln Mother mid-fight: the Ladle pouring, then the kiln awake.
 	var boss: KilnMother = level.get_node("KilnMother")
 	boss.start()

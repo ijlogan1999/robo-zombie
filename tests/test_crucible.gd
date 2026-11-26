@@ -66,7 +66,8 @@ func _ready() -> void:
 	var heap_spawns := heap.rooms[0].spawn_points().size()
 	check(get_tree().get_nodes_in_group(Room.SPAWN_GROUP).size() == heap_spawns, "at the start only the Heap's spawn yard spawns robots")
 
-	# Fall into the pit.
+	# Fall into the pit (it opens once the Scrap King is beaten; see test_scrap_king).
+	level.get_node("PitDrop").enabled = true
 	player.global_position = Vector3(0, -19, 0)
 	for i in 6:
 		await get_tree().physics_frame
