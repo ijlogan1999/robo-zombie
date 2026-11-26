@@ -66,14 +66,6 @@ cost = 500
 locked = false
 locked_reason = ""
 
-[node name="LineDoor" parent="." instance=ExtResource("12_door")]
-transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.8, 16.6)
-destination_name = "The Line"
-arrival_id = &"line_from_cold"
-cost = 1750
-locked = true
-locked_reason = "Jammed shut"
-
 [node name="CrateA" type="CSGBox3D" parent="."]
 transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -13, 0.8, 6)
 use_collision = true

@@ -85,6 +85,22 @@
 [ext_resource type="PackedScene" path="res://scenes/enemies/thawed.tscn" id="103_thawed"]
 [ext_resource type="Script" path="res://scripts/bosses/backup_body.gd" id="104_backup"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/scrapper.tscn" id="105_scrapper"]
+[ext_resource type="Script" path="res://scripts/level/line_section.gd" id="110_line"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/line/line_intake.tscn" id="111_line_intake"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/line/assembly_floor.tscn" id="112_assembly_floor"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/line/weld_station.tscn" id="113_weld_station"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/line/paint_booth.tscn" id="114_paint_booth"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/line/press_line.tscn" id="115_press_line"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/line/parts_hopper.tscn" id="116_parts_hopper"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/line/test_bench.tscn" id="117_test_bench"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/line/belt_junction.tscn" id="118_belt_junction"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/line/crate_stack.tscn" id="119_crate_stack"]
+[ext_resource type="Material" path="res://materials/line_floor.tres" id="120_line_floor"]
+[ext_resource type="Material" path="res://materials/line_wall.tres" id="121_line_wall"]
+[ext_resource type="Script" path="res://scripts/bosses/line_giant.gd" id="122_giant"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/amalgam.tscn" id="123_amalgam"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/skitter.tscn" id="124_skitter"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/bolter.tscn" id="125_bolter"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_top_color = Color(0.42, 0.55, 0.72, 1)
@@ -159,6 +175,20 @@ scene = ExtResource("103_thawed")
 weight = 6.0
 weight_per_round = 0.4
 
+[sub_resource type="NavigationMesh" id="NavigationMesh_line"]
+filter_baking_aabb = AABB(-45, -5, -40, 90, 38, 75)
+cell_size = 0.25
+cell_height = 0.25
+agent_height = 2.0
+agent_radius = 0.5
+agent_max_climb = 0.25
+
+[sub_resource type="Resource" id="SpawnEntry_amalgam"]
+script = ExtResource("36_entry")
+scene = ExtResource("123_amalgam")
+weight = 6.0
+weight_per_round = 0.4
+
 [sub_resource type="Resource" id="SpawnEntry_bug"]
 script = ExtResource("36_entry")
 scene = ExtResource("82_bug")
@@ -167,7 +197,7 @@ weight_per_round = 0.4
 
 [node name="Heap" type="Node3D"]
 script = ExtResource("12_level")
-section_paths = Array[NodePath]([NodePath("NavigationRegion3D/Section"), NodePath("CrucibleNav/Section"), NodePath("ChassisNav/Section"), NodePath("ServoNav/Section"), NodePath("ColdNav/Section")])
+section_paths = Array[NodePath]([NodePath("NavigationRegion3D/Section"), NodePath("CrucibleNav/Section"), NodePath("ChassisNav/Section"), NodePath("ServoNav/Section"), NodePath("ColdNav/Section"), NodePath("LineNav/Section")])
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_main")
@@ -278,6 +308,32 @@ display_name = "QUOTA'S BACKUP BODY"
 drop_flag = &"admin_badge"
 drop_text = "THE BACKUP BODY SHATTERS. IT DROPPED AN ADMIN BADGE"
 
+[node name="LineNav" type="NavigationRegion3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -400)
+navigation_mesh = SubResource("NavigationMesh_line")
+script = ExtResource("2_nav")
+
+[node name="Section" type="Node3D" parent="LineNav" groups=["section"]]
+script = ExtResource("110_line")
+floor_material = ExtResource("120_line_floor")
+start_room = ExtResource("111_line_intake")
+optional_rooms = Array[PackedScene]([ExtResource("113_weld_station"), ExtResource("114_paint_booth"), ExtResource("115_press_line"), ExtResource("116_parts_hopper"), ExtResource("117_test_bench"), ExtResource("118_belt_junction"), ExtResource("119_crate_stack")])
+end_room = ExtResource("112_assembly_floor")
+gate_scene = ExtResource("9_gate")
+first_gate_cost = 1500
+gate_cost_step = 150
+is_start_section = false
+wall_material = ExtResource("121_line_wall")
+spawn_table = Array[ExtResource("36_entry")]([SubResource("SpawnEntry_amalgam")])
+
+[node name="LineGiant" type="Node3D" parent="LineNav"]
+script = ExtResource("122_giant")
+built_scenes = Array[PackedScene]([ExtResource("105_scrapper"), ExtResource("124_skitter"), ExtResource("125_bolter"), ExtResource("35_slagger"), ExtResource("52_dripper"), ExtResource("82_bug"), ExtResource("103_thawed"), ExtResource("123_amalgam"), ExtResource("123_amalgam")])
+display_name = "THE LINE GIANT"
+requires_flag = &"staff_bot_on_line"
+drop_flag = &"staff_bot_awake"
+drop_text = "THE GIANT FALLS. THE STAFF BOT WAKES UP ON THE LINE"
+
 [node name="PitDrop" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -21, 0)
 script = ExtResource("31_passage")
@@ -344,5 +400,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 52)
 [node name="Spawned" type="Node3D" parent="." groups=["spawn_root"]]
 
 [node name="NetSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("res://scenes/enemies/scrapper.tscn", "res://scenes/enemies/skitter.tscn", "res://scenes/enemies/bolter.tscn", "res://scenes/enemies/warden.tscn", "res://scenes/pickups/scrap_pickup.tscn", "res://scenes/bosses/feeder_drone.tscn", "res://scenes/enemies/slagger.tscn", "res://scenes/enemies/dripper.tscn", "res://scenes/enemies/bug.tscn", "res://scenes/enemies/thawed.tscn")
+_spawnable_scenes = PackedStringArray("res://scenes/enemies/scrapper.tscn", "res://scenes/enemies/skitter.tscn", "res://scenes/enemies/bolter.tscn", "res://scenes/enemies/warden.tscn", "res://scenes/pickups/scrap_pickup.tscn", "res://scenes/bosses/feeder_drone.tscn", "res://scenes/enemies/slagger.tscn", "res://scenes/enemies/dripper.tscn", "res://scenes/enemies/bug.tscn", "res://scenes/enemies/thawed.tscn", "res://scenes/enemies/amalgam.tscn")
 spawn_path = NodePath("../Spawned")

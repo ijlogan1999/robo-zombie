@@ -1,0 +1,106 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/level/room.gd" id="1_room"]
+[ext_resource type="Material" path="res://materials/line_floor.tres" id="2_floor"]
+[ext_resource type="Material" path="res://materials/line_wall.tres" id="3_wall"]
+[ext_resource type="Material" path="res://materials/belt.tres" id="4_belt"]
+[ext_resource type="Material" path="res://materials/line_yellow.tres" id="5_yellow"]
+[ext_resource type="Script" path="res://scripts/world/conveyor.gd" id="6_conveyor"]
+[ext_resource type="Material" path="res://materials/junk_prop.tres" id="7_prop"]
+[ext_resource type="Material" path="res://materials/hazard.tres" id="8_hazard"]
+[ext_resource type="Script" path="res://scripts/world/arrival.gd" id="10_arrival"]
+[ext_resource type="Script" path="res://scripts/world/passage.gd" id="11_passage"]
+[ext_resource type="PackedScene" path="res://scenes/world/section_door.tscn" id="12_door"]
+
+[sub_resource type="BoxShape3D" id="Shape_1"]
+size = Vector3(26, 1.0, 3.0)
+
+[node name="LineIntake" type="Node3D"]
+script = ExtResource("1_room")
+display_name = "Line Intake"
+can_rotate = false
+
+[node name="Lamp" type="OmniLight3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 6, 0)
+light_color = Color(1, 0.92, 0.8, 1)
+light_energy = 1.5
+omni_range = 22.0
+
+[node name="BeltBed" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.15, -4)
+use_collision = true
+size = Vector3(26, 0.3, 3.0)
+material = ExtResource("4_belt")
+
+[node name="BeltEdgeA" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.2, -5.6)
+use_collision = true
+size = Vector3(26, 0.4, 0.2)
+material = ExtResource("5_yellow")
+
+[node name="BeltEdgeB" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.2, -2.4)
+use_collision = true
+size = Vector3(26, 0.4, 0.2)
+material = ExtResource("5_yellow")
+
+[node name="Belt" type="Area3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.8, -4)
+script = ExtResource("6_conveyor")
+speed = 3.0
+direction = Vector3(1, 0, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="Belt"]
+shape = SubResource("Shape_1")
+
+[node name="ArriveFromServo" type="Marker3D" parent="."]
+transform = Transform3D(0.0000, 0, -1.0000, 0, 1, 0, 1.0000, 0, 0.0000, -12, 0.3, 4)
+script = ExtResource("10_arrival")
+arrival_id = &"line_from_servo"
+
+[node name="ArriveFromChassis" type="Marker3D" parent="."]
+transform = Transform3D(0.0000, 0, -1.0000, 0, 1, 0, 1.0000, 0, 0.0000, -12, 0.3, 9)
+script = ExtResource("10_arrival")
+arrival_id = &"line_from_chassis"
+
+[node name="ServoDoor" parent="." instance=ExtResource("12_door")]
+transform = Transform3D(0.0000, 0, 1.0000, 0, 1, 0, -1.0000, 0, 0.0000, -17, 0, 3)
+destination_name = "Servo Works"
+arrival_id = &"servo_from_line"
+cost = 500
+locked = false
+locked_reason = ""
+
+[node name="ChassisDoor" parent="." instance=ExtResource("12_door")]
+transform = Transform3D(0.0000, 0, 1.0000, 0, 1, 0, -1.0000, 0, 0.0000, -17, 0, 10)
+destination_name = "Chassis Yard"
+arrival_id = &"chassis_from_line"
+cost = 500
+locked = false
+locked_reason = ""
+
+[node name="CrateA" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 6, 0.9, 8)
+use_collision = true
+size = Vector3(1.8, 1.8, 1.8)
+material = ExtResource("7_prop")
+
+[node name="CrateB" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 8, 0.6, 10)
+use_collision = true
+size = Vector3(1.2, 1.2, 1.2)
+material = ExtResource("7_prop")
+
+[node name="Spawns" type="Node3D" parent="."]
+
+[node name="Spawn0" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 11, 0.2, -7)
+
+[node name="Spawn1" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 11, 0.2, 8)
+
+[node name="Spawn2" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 4, 0.2, -9)
+
+[node name="Spawn3" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 4, 0.2, 11)

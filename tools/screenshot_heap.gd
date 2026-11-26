@@ -76,6 +76,13 @@ func _ready() -> void:
 	await _shot(cam, Vector3(9, -195, 3), boss.kiln.global_position + Vector3.UP * 2, out.path_join("boss_kiln.png"))
 	boss.kiln_core.take_damage(1e7, Vector3.ZERO)
 	await _shot(cam, Vector3(9, -195, 3), boss.golem.global_position + Vector3.UP * 3, out.path_join("boss_golem.png"))
+	# Cold Storage from inside the hall, and the Line's atrium with the giant finished.
+	await _shot(cam, Vector3(-40, 8, 440), Vector3(0, 2, 400), out.path_join("cold_hall.png"))
+	await _shot(cam, Vector3(10, 4, 412), Vector3(0, 3, 400), out.path_join("cold_cryo.png"))
+	var giant: LineGiant = level.get_node("LineNav/LineGiant")
+	giant._set_built(7)
+	await _shot(cam, Vector3(30, 26, -430), Vector3(0, 12, -390), out.path_join("line_atrium.png"))
+	await _shot(cam, Vector3(-30, 25.7, -372), Vector3(0, 18, -417), out.path_join("line_top.png"))
 	get_tree().quit()
 
 

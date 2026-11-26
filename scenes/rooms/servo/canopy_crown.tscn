@@ -87,6 +87,17 @@ arrival_id = &"cold_from_servo"
 cost = 1500
 locked_reason = "Frozen shut"
 
+[node name="LineDoor" parent="." instance=ExtResource("12_door")]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 1, 0, -11.2)
+destination_name = "The Line"
+arrival_id = &"line_from_servo"
+cost = 1750
+
+[node name="ArriveFromLine" type="Marker3D" parent="."]
+transform = Transform3D(-1.0000, 0, -0.0000, 0, 1, 0, 0.0000, 0, -1.0000, 1, 0.3, -8.5)
+script = ExtResource("10_arrival")
+arrival_id = &"servo_from_line"
+
 [node name="ArriveFromCold" type="Marker3D" parent="."]
 transform = Transform3D(-1.0000, 0, -0.0000, 0, 1, 0, 0.0000, 0, -1.0000, -5, 0.3, -8.5)
 script = ExtResource("10_arrival")

@@ -1,0 +1,92 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/level/room.gd" id="1_room"]
+[ext_resource type="Material" path="res://materials/line_floor.tres" id="2_floor"]
+[ext_resource type="Material" path="res://materials/line_wall.tres" id="3_wall"]
+[ext_resource type="Material" path="res://materials/belt.tres" id="4_belt"]
+[ext_resource type="Material" path="res://materials/line_yellow.tres" id="5_yellow"]
+[ext_resource type="Script" path="res://scripts/world/conveyor.gd" id="6_conveyor"]
+[ext_resource type="Material" path="res://materials/junk_prop.tres" id="7_prop"]
+[ext_resource type="Material" path="res://materials/hazard.tres" id="8_hazard"]
+[ext_resource type="Script" path="res://scripts/world/arrival.gd" id="10_arrival"]
+[ext_resource type="Script" path="res://scripts/world/passage.gd" id="11_passage"]
+[ext_resource type="PackedScene" path="res://scenes/world/section_door.tscn" id="12_door"]
+
+[sub_resource type="BoxShape3D" id="Shape_2"]
+size = Vector3(3, 2, 1.5)
+
+[node name="AssemblyFloor" type="Node3D"]
+script = ExtResource("1_room")
+display_name = "Assembly Floor"
+can_rotate = false
+
+[node name="Lamp" type="OmniLight3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 6, 0)
+light_color = Color(1, 0.92, 0.8, 1)
+light_energy = 1.5
+omni_range = 22.0
+
+[node name="Glow" type="OmniLight3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -6, 5, 0)
+light_color = Color(1, 0.5, 0.3, 1)
+light_energy = 2.0
+omni_range = 18
+
+[node name="ProvingDoor" parent="." instance=ExtResource("12_door") groups=["line_blast_door"]]
+transform = Transform3D(0.0000, 0, 1.0000, 0, 1, 0, -1.0000, 0, 0.0000, -17, 0, 0)
+destination_name = "Proving Grounds"
+arrival_id = &"proving_from_line"
+cost = 1500
+locked = true
+locked_reason = "Behind the giant"
+
+[node name="ArriveFromProving" type="Marker3D" parent="."]
+transform = Transform3D(0.0000, 0, -1.0000, 0, 1, 0, 1.0000, 0, 0.0000, -12, 0.3, -4)
+script = ExtResource("10_arrival")
+arrival_id = &"line_from_proving"
+
+[node name="Chute" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -10, 2.5, 13.5)
+use_collision = true
+size = Vector3(4, 2.5, 1.5)
+material = ExtResource("5_yellow")
+
+[node name="ChuteBelt" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -10, 0.3, 8)
+use_collision = true
+size = Vector3(3, 0.6, 10)
+material = ExtResource("4_belt")
+
+[node name="ConveyorHome" type="Area3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -10, 1.2, 12.5)
+script = ExtResource("11_passage")
+arrival_id = &"heap_from_line"
+
+[node name="Shape" type="CollisionShape3D" parent="ConveyorHome"]
+shape = SubResource("Shape_2")
+
+[node name="ControlDesk" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 6, 0.6, 9)
+use_collision = true
+size = Vector3(5, 1.2, 1.5)
+material = ExtResource("3_wall")
+
+[node name="OverridePanel" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 6, 1.6, 9.6)
+use_collision = false
+size = Vector3(1.6, 1.0, 0.2)
+material = ExtResource("8_hazard")
+
+[node name="Spawns" type="Node3D" parent="."]
+
+[node name="Spawn0" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 11, 0.2, -7)
+
+[node name="Spawn1" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 11, 0.2, 8)
+
+[node name="Spawn2" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.2, -8)
+
+[node name="Spawn3" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.2, 8)

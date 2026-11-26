@@ -85,7 +85,6 @@ func _ready() -> void:
 	var back: SectionDoor = hall.rooms[0].get_node("ServoDoor")
 	player.add_scrap(back.cost)
 	check(back.interact(player) and back.interact(player) and servo.room_at_position(player.global_position) == servo.rooms[9], "the Loading Bay's door back takes you to the Canopy Crown")
-	check((hall.rooms[0].get_node("LineDoor") as SectionDoor).arrival_id == &"line_from_cold", "and there's a door on to the Line")
 
 	# Frozen stock on the shelves.
 	player.global_position = hall.bay_center(0) + Vector3(0, 0.3, 8)
