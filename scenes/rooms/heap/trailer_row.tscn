@@ -1,0 +1,80 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/level/room.gd" id="1_room"]
+[ext_resource type="Material" path="res://materials/junk_floor.tres" id="2_floor"]
+[ext_resource type="Material" path="res://materials/junk_prop.tres" id="3_prop"]
+[ext_resource type="Material" path="res://materials/junk_rust.tres" id="4_rust"]
+[ext_resource type="Material" path="res://materials/hazard.tres" id="5_hazard"]
+
+[node name="TrailerRow" type="Node3D"]
+script = ExtResource("1_room")
+display_name = "Trailer Row"
+can_rotate = true
+
+[node name="Floor" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, -0.5, 0)
+use_collision = true
+size = Vector3(32, 1, 32)
+material = ExtResource("2_floor")
+
+[node name="Trailer0" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -9, 1.5, -4)
+use_collision = true
+size = Vector3(6, 3, 10)
+material = ExtResource("4_rust")
+
+[node name="TrailerStep0" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -9, 0.25, 2)
+use_collision = true
+size = Vector3(2, 0.5, 1.5)
+material = ExtResource("3_prop")
+
+[node name="Trailer1" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 1.5, -4)
+use_collision = true
+size = Vector3(6, 3, 10)
+material = ExtResource("4_rust")
+
+[node name="TrailerStep1" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.25, 2)
+use_collision = true
+size = Vector3(2, 0.5, 1.5)
+material = ExtResource("3_prop")
+
+[node name="Trailer2" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 9, 1.5, -4)
+use_collision = true
+size = Vector3(6, 3, 10)
+material = ExtResource("4_rust")
+
+[node name="TrailerStep2" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 9, 0.25, 2)
+use_collision = true
+size = Vector3(2, 0.5, 1.5)
+material = ExtResource("3_prop")
+
+[node name="Dumpster" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -10, 0.8, 9)
+use_collision = true
+size = Vector3(4, 1.6, 2.2)
+material = ExtResource("5_hazard")
+
+[node name="PalletStack" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 9, 0.6, 8)
+use_collision = true
+size = Vector3(2.4, 1.2, 2.4)
+material = ExtResource("3_prop")
+
+[node name="Spawns" type="Node3D" parent="."]
+
+[node name="Spawn0" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -12, 0.2, -12)
+
+[node name="Spawn1" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 12, 0.2, -12)
+
+[node name="Spawn2" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -12, 0.2, 12)
+
+[node name="Spawn3" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 12, 0.2, 12)
