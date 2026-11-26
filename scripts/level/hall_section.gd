@@ -25,9 +25,20 @@ const SLOTS := [
 @export var ledge_depth := 0.9
 @export var shelf_spot_spacing := 6.0
 @export var rack_material: Material
+@export var roofed := true
+@export var far_room: PackedScene ## Fixed in the north-centre bay when set (the way on).
+@export var office_walls := false ## Plain office walls instead of shelving (no ledges).
+@export_group("Containers")
+@export var container_walls := false ## Stacked shipping containers instead of shelving.
+@export var shifting_walls := 0 ## Closed walls that get a container a crane lifts now and then.
+@export var shifter_script: Script
+@export var container_colors: Array[Color] = [Color(0.7, 0.2, 0.15), Color(0.15, 0.35, 0.6), Color(0.2, 0.5, 0.3), Color(0.8, 0.55, 0.15), Color(0.45, 0.45, 0.48)]
+
+const FAR_SLOT := 7
 
 var links: Array = []
 var shelf_spots: Array[Marker3D] = []
+var shifters: Array[Node3D] = []
 
 
 func _build() -> void:
@@ -35,7 +46,15 @@ func _build() -> void:
 	_set_links(SLOTS.size(), links)
 	var fill := _pick_fill()
 	for i in SLOTS.size():
-		var scene: PackedScene = start_room if i == 0 else (center_room if i == 1 else fill.pop_front())
+		var scene: PackedScene
+		if i == 0:
+			scene = start_room
+		elif i == 1:
+			scene = center_room
+		elif i == FAR_SLOT and far_room:
+			scene = far_room
+		else:
+			scene = fill.pop_front()
 		_place_bay(scene, i)
 	var half := bay_size * 1.5
 	var floor_box := CSGBox3D.new()
@@ -52,12 +71,13 @@ func _build() -> void:
 		wall.size = along * (half * 2.0 + 2.0) + side.abs() * wall_thickness + Vector3.UP * hall_height
 		wall.position = side * (half + wall_thickness / 2.0) + Vector3.UP * hall_height / 2.0
 		add_child(wall)
-	var roof := CSGBox3D.new()
-	roof.use_collision = true
-	roof.material = wall_material
-	roof.size = Vector3(half * 2.0 + 2.0, 0.6, half * 2.0 + 2.0)
-	roof.position.y = hall_height + 0.3
-	add_child(roof)
+	if roofed:
+		var roof := CSGBox3D.new()
+		roof.use_collision = true
+		roof.material = wall_material
+		roof.size = Vector3(half * 2.0 + 2.0, 0.6, half * 2.0 + 2.0)
+		roof.position.y = hall_height + 0.3
+		add_child(roof)
 	_build_racks()
 	gates.sort_custom(func(a: Gate, b: Gate) -> bool: return a.name.naturalnocasecmp_to(b.name) < 0)
 	rooms[0].is_open = true
@@ -121,7 +141,7 @@ func _pick_links() -> void:
 
 
 func _pick_fill() -> Array[PackedScene]:
-	var count := SLOTS.size() - 2
+	var count := SLOTS.size() - (3 if far_room else 2)
 	var picked: Array[PackedScene] = required_rooms.duplicate()
 	while picked.size() < count and not optional_rooms.is_empty():
 		var deck := optional_rooms.duplicate()
@@ -153,7 +173,15 @@ func _place_bay(scene: PackedScene, index: int) -> void:
 # --- Shelving -----------------------------------------------------------------------------
 
 ## A shelf row along every edge between two bays. Linked bays get a gap and a gate.
+## A few closed rows may get a crane-lifted container in the middle instead (a shortcut
+## that opens now and then).
 func _build_racks() -> void:
+	var closed: Array = []
+	for pair in _candidate_links():
+		if not linked(pair[0], pair[1]):
+			closed.append(pair)
+	_shuffle(closed)
+	var shifting := closed.slice(0, mini(shifting_walls, closed.size()))
 	for pair in _candidate_links():
 		var a: int = pair[0]
 		var b: int = pair[1]
@@ -169,11 +197,36 @@ func _build_racks() -> void:
 			for s: float in [-1.0, 1.0]:
 				_rack(mid + along * s * (gap + piece / 2.0), along, across, piece)
 			_add_gate(a, b, mid, 0.0 if across.x == 0.0 else PI / 2.0)
+		elif shifting.has(pair) and shifter_script:
+			var gap := door_width / 2.0 + 0.5
+			var piece := half - gap
+			for s: float in [-1.0, 1.0]:
+				_rack(mid + along * s * (gap + piece / 2.0), along, across, piece)
+			var shifter := AnimatableBody3D.new()
+			shifter.name = "Shifter%d" % shifters.size()
+			shifter.set_script(shifter_script)
+			shifter.set("size", along * gap * 2.0 + across.abs() * rack_thickness + Vector3.UP * rack_height)
+			shifter.set("color", container_colors[_rng.randi_range(0, container_colors.size() - 1)])
+			shifter.set("bays", [a, b])
+			shifter.position = mid
+			add_child(shifter)
+			shifters.append(shifter)
 		else:
 			_rack(mid, along, across, bay_size)
 
 
 func _rack(center: Vector3, along: Vector3, across: Vector3, length: float) -> void:
+	if container_walls:
+		_container_stack(center, along, across, length)
+		return
+	if office_walls:
+		var wall := CSGBox3D.new()
+		wall.use_collision = true
+		wall.material = rack_material if rack_material else wall_material
+		wall.size = along * length + across.abs() * rack_thickness + Vector3.UP * rack_height
+		wall.position = center + Vector3.UP * rack_height / 2.0
+		add_child(wall)
+		return
 	var body := CSGBox3D.new()
 	body.use_collision = true
 	body.material = rack_material if rack_material else wall_material
@@ -208,3 +261,29 @@ func _rack(center: Vector3, along: Vector3, across: Vector3, length: float) -> v
 			spot.rotation.y = atan2(-out.x, -out.z)
 			add_child(spot)
 			shelf_spots.append(spot)
+
+
+## Shipping containers stacked two or three high along the row, in random colours.
+func _container_stack(center: Vector3, along: Vector3, across: Vector3, length: float) -> void:
+	var body := CSGBox3D.new()
+	body.use_collision = true
+	body.material = rack_material if rack_material else wall_material
+	body.size = along * length + across.abs() * rack_thickness + Vector3.UP * rack_height
+	body.position = center + Vector3.UP * rack_height / 2.0
+	add_child(body)
+	var box_len := 6.0
+	var count := maxi(1, floori(length / box_len))
+	var level_h := rack_height / 2.0
+	for k in count:
+		for level in 2:
+			var crate := MeshInstance3D.new()
+			var mesh := BoxMesh.new()
+			mesh.size = along * (length / count - 0.15) + across.abs() * (rack_thickness + 0.1) + Vector3.UP * (level_h - 0.1)
+			crate.mesh = mesh
+			var mat := StandardMaterial3D.new()
+			mat.albedo_color = container_colors[_rng.randi_range(0, container_colors.size() - 1)]
+			mat.roughness = 0.8
+			crate.material_override = mat
+			var t := (k + 0.5) / count - 0.5
+			crate.position = center + along * t * length + Vector3.UP * (level_h * level + level_h / 2.0)
+			add_child(crate)

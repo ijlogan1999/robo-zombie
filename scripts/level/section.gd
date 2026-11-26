@@ -41,6 +41,13 @@ const ALL_SIDES: Array[Vector2i] = [Vector2i(0, 1), Vector2i(1, 0), Vector2i(0, 
 @export var spawn_update_interval := 0.5
 @export var spawn_table: Array[SpawnEntry] = [] ## Robot types only this section spawns (its unique enemy).
 
+## Off: no robots spawn here at all (Accounting while the office is calm).
+var spawns_enabled := true:
+	set(value):
+		spawns_enabled = value
+		if is_inside_tree() and not rooms.is_empty():
+			_update_active_spawns()
+
 var rooms: Array[Room] = [] ## In path order; rooms[0] is the start room.
 var gates: Array[Gate] = [] ## gates[i] leads into rooms[i + 1].
 var used_seed := 0
@@ -216,7 +223,7 @@ func _update_active_spawns() -> void:
 			if absi(room.index - player_room) <= spawn_reach:
 				near = true
 				break
-		room.set_spawns_active(room.is_open and near)
+		room.set_spawns_active(spawns_enabled and room.is_open and near)
 
 
 ## Rooms of this section that players are standing in. Robots only spawn near players, so a

@@ -114,6 +114,22 @@
 [ext_resource type="Material" path="res://materials/proving_wall.tres" id="141_pg_wall"]
 [ext_resource type="Material" path="res://materials/pad.tres" id="142_pad"]
 [ext_resource type="PackedScene" path="res://scenes/level/checkpoint_gate.tscn" id="143_checkpoint"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/shipping/shipping_gate.tscn" id="150_shipping_gate"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/shipping/tower_bay.tscn" id="151_tower_bay"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/shipping/accounting_gate.tscn" id="152_accounting_gate"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/shipping/landing_pad_a.tscn" id="153_landing_pad_a"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/shipping/landing_pad_b.tscn" id="154_landing_pad_b"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/shipping/crane_yard.tscn" id="155_crane_yard"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/shipping/stack_maze.tscn" id="156_stack_maze"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/shipping/customs.tscn" id="157_customs"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/shipping/fuel_depot.tscn" id="158_fuel_depot"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/shipping/loading_dock.tscn" id="159_loading_dock"]
+[ext_resource type="Material" path="res://materials/asphalt.tres" id="160_asphalt"]
+[ext_resource type="Material" path="res://materials/yard_wall.tres" id="161_yard_wall"]
+[ext_resource type="Script" path="res://scripts/world/shifting_container.gd" id="162_shifter"]
+[ext_resource type="Script" path="res://scripts/bosses/control_tower.gd" id="163_tower"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/packer.tscn" id="164_packer"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/security_bot.tscn" id="165_security"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_top_color = Color(0.42, 0.55, 0.72, 1)
@@ -209,6 +225,25 @@ agent_height = 2.0
 agent_radius = 0.5
 agent_max_climb = 0.25
 
+[sub_resource type="NavigationMesh" id="NavigationMesh_shipping"]
+cell_size = 0.25
+cell_height = 0.25
+agent_height = 2.0
+agent_radius = 0.5
+agent_max_climb = 0.25
+
+[sub_resource type="Resource" id="SpawnEntry_packer"]
+script = ExtResource("36_entry")
+scene = ExtResource("164_packer")
+weight = 5.0
+weight_per_round = 0.3
+
+[sub_resource type="Resource" id="SpawnEntry_security"]
+script = ExtResource("36_entry")
+scene = ExtResource("165_security")
+weight = 5.0
+weight_per_round = 0.3
+
 [sub_resource type="Resource" id="SpawnEntry_bug"]
 script = ExtResource("36_entry")
 scene = ExtResource("82_bug")
@@ -217,7 +252,7 @@ weight_per_round = 0.4
 
 [node name="Heap" type="Node3D"]
 script = ExtResource("12_level")
-section_paths = Array[NodePath]([NodePath("NavigationRegion3D/Section"), NodePath("CrucibleNav/Section"), NodePath("ChassisNav/Section"), NodePath("ServoNav/Section"), NodePath("ColdNav/Section"), NodePath("LineNav/Section"), NodePath("ProvingNav/Section")])
+section_paths = Array[NodePath]([NodePath("NavigationRegion3D/Section"), NodePath("CrucibleNav/Section"), NodePath("ChassisNav/Section"), NodePath("ServoNav/Section"), NodePath("ColdNav/Section"), NodePath("LineNav/Section"), NodePath("ProvingNav/Section"), NodePath("ShippingNav/Section")])
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_main")
@@ -372,6 +407,42 @@ gate_scene = ExtResource("9_gate")
 is_start_section = false
 wall_material = ExtResource("141_pg_wall")
 
+[node name="ShippingNav" type="NavigationRegion3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -900, 0, 0)
+navigation_mesh = SubResource("NavigationMesh_shipping")
+script = ExtResource("2_nav")
+
+[node name="Section" type="Node3D" parent="ShippingNav" groups=["section"]]
+script = ExtResource("90_hall")
+center_room = ExtResource("151_tower_bay")
+hall_height = 8.0
+rack_height = 5.2
+rack_thickness = 2.6
+rack_material = ExtResource("161_yard_wall")
+roofed = false
+far_room = ExtResource("152_accounting_gate")
+container_walls = true
+shifting_walls = 3
+extra_links = 1
+shifter_script = ExtResource("162_shifter")
+floor_material = ExtResource("160_asphalt")
+start_room = ExtResource("150_shipping_gate")
+optional_rooms = Array[PackedScene]([ExtResource("153_landing_pad_a"), ExtResource("154_landing_pad_b"), ExtResource("155_crane_yard"), ExtResource("156_stack_maze"), ExtResource("157_customs"), ExtResource("158_fuel_depot"), ExtResource("159_loading_dock")])
+gate_scene = ExtResource("9_gate")
+first_gate_cost = 1750
+gate_cost_step = 150
+is_start_section = false
+wall_material = ExtResource("161_yard_wall")
+spawn_table = Array[ExtResource("36_entry")]([SubResource("SpawnEntry_packer"), SubResource("SpawnEntry_security")])
+
+[node name="ControlTower" type="Node3D" parent="ShippingNav"]
+script = ExtResource("163_tower")
+pod_scene = ExtResource("165_security")
+display_name = "THE CONTROL TOWER"
+requires_flag = &"tower_base_crushed"
+drop_flag = &"landing_beacon"
+drop_text = "THE TOWER FALLS. ITS LANDING BEACON IS STILL BLINKING"
+
 [node name="PitDrop" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -21, 0)
 script = ExtResource("31_passage")
@@ -438,5 +509,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 52)
 [node name="Spawned" type="Node3D" parent="." groups=["spawn_root"]]
 
 [node name="NetSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("res://scenes/enemies/scrapper.tscn", "res://scenes/enemies/skitter.tscn", "res://scenes/enemies/bolter.tscn", "res://scenes/enemies/warden.tscn", "res://scenes/pickups/scrap_pickup.tscn", "res://scenes/bosses/feeder_drone.tscn", "res://scenes/enemies/slagger.tscn", "res://scenes/enemies/dripper.tscn", "res://scenes/enemies/bug.tscn", "res://scenes/enemies/thawed.tscn", "res://scenes/enemies/amalgam.tscn")
+_spawnable_scenes = PackedStringArray("res://scenes/enemies/scrapper.tscn", "res://scenes/enemies/skitter.tscn", "res://scenes/enemies/bolter.tscn", "res://scenes/enemies/warden.tscn", "res://scenes/pickups/scrap_pickup.tscn", "res://scenes/bosses/feeder_drone.tscn", "res://scenes/enemies/slagger.tscn", "res://scenes/enemies/dripper.tscn", "res://scenes/enemies/bug.tscn", "res://scenes/enemies/thawed.tscn", "res://scenes/enemies/amalgam.tscn", "res://scenes/enemies/packer.tscn", "res://scenes/enemies/security_bot.tscn")
 spawn_path = NodePath("../Spawned")

@@ -5,6 +5,8 @@ extends CharacterBody3D
 ## The swing has a wind-up (eyes flare) so players can read it and back off.
 ## Robots only think on the server; in co-op, clients will just see the results.
 
+signal struck(attacker: Node) ## Host only: something hit it.
+
 signal died(robot: Robot)
 
 @export var move_speed := 3.0
@@ -35,6 +37,11 @@ var _body_color: Color
 var _base_color: Color
 var _frozen_left := 0.0
 var _eye_material: StandardMaterial3D
+## Docile robots (Accounting's office staff) ignore players and wander between their
+## points until something sets them off.
+var docile := false
+var wander_points: Array[Node3D] = []
+var _wander_to: Node3D
 
 @onready var health: HealthComponent = $HealthComponent
 @onready var _agent: NavigationAgent3D = $NavigationAgent3D
@@ -66,6 +73,8 @@ func _ready() -> void:
 func take_damage(amount: float, hit_position: Vector3, attacker: Node = null) -> bool:
 	if health.dead:
 		return false
+	if multiplayer.is_server():
+		struck.emit(attacker)
 	_body_material.albedo_color = Color.WHITE
 	create_tween().tween_property(_body_material, "albedo_color", _body_color, 0.12)
 	if not multiplayer.is_server():
@@ -96,7 +105,7 @@ func _physics_process(delta: float) -> void:
 	_repath_left -= delta
 	if _repath_left <= 0.0:
 		_repath_left = repath_interval
-		target = _find_nearest_player()
+		target = _wander_target() if docile else _find_nearest_player()
 		if target:
 			_agent.target_position = target.global_position
 
@@ -110,6 +119,13 @@ func _physics_process(delta: float) -> void:
 		_set_horizontal_velocity(Vector3.ZERO)
 		if _windup_left < 0.0:
 			_finish_attack()
+	elif docile:
+		if target and not _agent.is_navigation_finished():
+			var stroll := _agent.get_next_path_position() - global_position
+			stroll.y = 0.0
+			_set_horizontal_velocity(stroll.normalized() * minf(move_speed, 1.6))
+		else:
+			_set_horizontal_velocity(Vector3.ZERO)
 	elif target and flat_to_target.length() <= attack_range and _cooldown_left <= 0.0 and _can_attack():
 		_start_attack()
 		_set_horizontal_velocity(Vector3.ZERO)
@@ -143,6 +159,53 @@ func _separation() -> Vector3:
 
 
 ## Coolant: stops the robot dead for a few seconds (host decides).
+## Office staff mode: on, it wears a tie and minds its own business; off, it pulls out a
+## weapon and goes for the players.
+func set_docile(on: bool) -> void:
+	docile = on
+	_wander_to = null
+	_repath_left = 0.0
+	if Net.is_session():
+		_net_dress.rpc(on)
+	else:
+		_net_dress(on)
+
+
+func _wander_target() -> Node3D:
+	if wander_points.is_empty():
+		return null
+	if not is_instance_valid(_wander_to) or global_position.distance_to(_wander_to.global_position) < 1.5:
+		_wander_to = wander_points.pick_random()
+	return _wander_to
+
+
+@rpc("authority", "call_local", "reliable")
+func _net_dress(on: bool) -> void:
+	if on and not _meshes.has_node("Tie"):
+		var tie := MeshInstance3D.new()
+		tie.name = "Tie"
+		var box := BoxMesh.new()
+		box.size = Vector3(0.14, 0.5, 0.06)
+		tie.mesh = box
+		var mat := StandardMaterial3D.new()
+		mat.albedo_color = Color(0.6, 0.08, 0.1)
+		tie.material_override = mat
+		tie.position = Vector3(0, 1.15, -0.42)
+		_meshes.add_child(tie)
+	if not on and _meshes.has_node("Tie") and not _meshes.has_node("Weapon"):
+		var weapon := MeshInstance3D.new()
+		weapon.name = "Weapon"
+		var bar := BoxMesh.new()
+		bar.size = Vector3(0.12, 0.12, 0.9)
+		weapon.mesh = bar
+		var steel := StandardMaterial3D.new()
+		steel.albedo_color = Color(0.25, 0.25, 0.28)
+		steel.metallic = 0.8
+		weapon.material_override = steel
+		weapon.position = Vector3(0.5, 1.0, -0.4)
+		_meshes.add_child(weapon)
+
+
 func freeze(seconds: float) -> void:
 	if health.dead:
 		return

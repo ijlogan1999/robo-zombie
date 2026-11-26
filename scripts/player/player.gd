@@ -90,6 +90,8 @@ var _pull_left := 0.0
 var grappling := false ## The grapple is pulling this player (no gravity).
 var grapple: Grapple
 var _grip := 1.0
+var _slow := 1.0
+var _slow_until := 0
 var _grip_until := 0
 
 @onready var health: HealthComponent = $HealthComponent
@@ -197,6 +199,7 @@ func _ground_move(delta: float, wish_dir: Vector3, input_dir: Vector2) -> void:
 		target_speed = crouch_speed
 	elif Input.is_action_pressed("sprint") and moving_forward and not weapon_holder.aiming:
 		target_speed = sprint_speed
+	target_speed *= speed_scale()
 	if weapon_holder.weapon:
 		target_speed *= lerpf(1.0, weapon_holder.weapon.ads_move_speed_multiplier, weapon_holder.aim_blend)
 
@@ -339,6 +342,24 @@ func _update_camera(delta: float) -> void:
 ## Called by robots and hazards. Returns true if the hit took the player down.
 ## In co-op, damage is passed on to the game that owns this player.
 ## Drags the player along for a moment (a boss's magnet). Keep calling it to keep pulling.
+## A taser or similar: slower for a few seconds. Passed to the player's own game.
+func slow(scale: float, seconds: float) -> void:
+	if not is_multiplayer_authority():
+		_net_slow.rpc_id(get_multiplayer_authority(), scale, seconds)
+		return
+	_slow = scale
+	_slow_until = Time.get_ticks_msec() + int(seconds * 1000.0)
+
+
+@rpc("any_peer", "reliable")
+func _net_slow(scale: float, seconds: float) -> void:
+	slow(scale, seconds)
+
+
+func speed_scale() -> float:
+	return _slow if Time.get_ticks_msec() < _slow_until else 1.0
+
+
 func has_grapple() -> bool:
 	return grapple != null
 

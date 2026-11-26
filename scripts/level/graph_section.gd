@@ -151,7 +151,7 @@ func _update_active_spawns() -> void:
 	var player_rooms := _player_room_indices()
 	var near := _rooms_within(player_rooms, spawn_reach)
 	for room in rooms:
-		room.set_spawns_active(room.is_open and near.has(room.index))
+		room.set_spawns_active(spawns_enabled and room.is_open and near.has(room.index))
 
 
 ## Rooms no more than `reach` open doorways from any of the start rooms.

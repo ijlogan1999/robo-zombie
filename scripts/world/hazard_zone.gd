@@ -12,7 +12,7 @@ var _left := 0.0
 
 func _physics_process(delta: float) -> void:
 	_left -= delta
-	if _left > 0.0:
+	if _left > 0.0 or not monitoring:
 		return
 	_left = tick
 	for body in get_overlapping_bodies():
