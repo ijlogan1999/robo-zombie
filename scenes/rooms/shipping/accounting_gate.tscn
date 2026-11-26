@@ -34,8 +34,6 @@ transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0, -1
 destination_name = "Accounting"
 arrival_id = &"accounting_from_shipping"
 cost = 1750
-locked = true
-locked_reason = "Sealed"
 
 [node name="ArriveFromAccounting" type="Marker3D" parent="."]
 transform = Transform3D(-1.0000, 0, -0.0000, 0, 1, 0, 0.0000, 0, -1.0000, 0, 0.3, -12)

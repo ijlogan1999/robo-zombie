@@ -84,7 +84,7 @@ func _build() -> void:
 	var names := PackedStringArray()
 	for room in rooms:
 		names.append(room.display_name)
-	print("Cold Storage layout (seed %d): %s" % [used_seed, ", ".join(names)])
+	print("%s layout (seed %d): %s" % [get_parent().name, used_seed, ", ".join(names)])
 
 
 func room_at_position(world_position: Vector3) -> Room:

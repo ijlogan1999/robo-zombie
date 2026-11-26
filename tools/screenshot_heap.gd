@@ -83,6 +83,10 @@ func _ready() -> void:
 	giant._set_built(7)
 	await _shot(cam, Vector3(30, 26, -430), Vector3(0, 12, -390), out.path_join("line_atrium.png"))
 	await _shot(cam, Vector3(-30, 25.7, -372), Vector3(0, 18, -417), out.path_join("line_top.png"))
+	await _shot(cam, Vector3(-850, 24, 50), Vector3(-900, 2, 0), out.path_join("shipping_yard.png"))
+	await _shot(cam, Vector3(910, 3.5, 42), Vector3(900, 1, 26), out.path_join("accounting_lobby.png"))
+	await _shot(cam, Vector3(910, 3.5, 10), Vector3(900, 1, 0), out.path_join("accounting_vault.png"))
+	await _shot(cam, Vector3(20, 9, 930), Vector3(0, 6, 900), out.path_join("head_office.png"))
 	get_tree().quit()
 
 

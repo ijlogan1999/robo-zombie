@@ -1,0 +1,115 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/level/room.gd" id="1_room"]
+[ext_resource type="Material" path="res://materials/exec_floor.tres" id="2_floor"]
+[ext_resource type="Material" path="res://materials/exec_wall.tres" id="3_wall"]
+[ext_resource type="Script" path="res://scripts/world/arrival.gd" id="10_arrival"]
+[ext_resource type="PackedScene" path="res://scenes/world/section_door.tscn" id="12_door"]
+
+[node name="HeadOffice" type="Node3D"]
+script = ExtResource("1_room")
+display_name = "Head Office"
+can_rotate = false
+
+[node name="Floor" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+use_collision = true
+size = Vector3(72, 1, 72)
+material = ExtResource("2_floor")
+
+[node name="Ceiling" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 20.4, 0)
+use_collision = true
+size = Vector3(74, 0.8, 74)
+material = ExtResource("3_wall")
+
+[node name="Pillar0" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -24, 10, -24)
+use_collision = true
+size = Vector3(2.5, 20, 2.5)
+material = ExtResource("3_wall")
+
+[node name="Pillar1" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 24, 10, -24)
+use_collision = true
+size = Vector3(2.5, 20, 2.5)
+material = ExtResource("3_wall")
+
+[node name="Pillar2" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -24, 10, 24)
+use_collision = true
+size = Vector3(2.5, 20, 2.5)
+material = ExtResource("3_wall")
+
+[node name="Pillar3" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 24, 10, 24)
+use_collision = true
+size = Vector3(2.5, 20, 2.5)
+material = ExtResource("3_wall")
+
+[node name="Lamp0" type="OmniLight3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 17, 0)
+light_color = Color(1, 0.85, 0.8, 1)
+light_energy = 2.5
+omni_range = 32.0
+
+[node name="Lamp1" type="OmniLight3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -20, 17, -20)
+light_color = Color(1, 0.85, 0.8, 1)
+light_energy = 2.5
+omni_range = 32.0
+
+[node name="Lamp2" type="OmniLight3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 20, 17, -20)
+light_color = Color(1, 0.85, 0.8, 1)
+light_energy = 2.5
+omni_range = 32.0
+
+[node name="Lamp3" type="OmniLight3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -20, 17, 20)
+light_color = Color(1, 0.85, 0.8, 1)
+light_energy = 2.5
+omni_range = 32.0
+
+[node name="Lamp4" type="OmniLight3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 20, 17, 20)
+light_color = Color(1, 0.85, 0.8, 1)
+light_energy = 2.5
+omni_range = 32.0
+
+[node name="ArriveFromAccounting" type="Marker3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.3, 30)
+script = ExtResource("10_arrival")
+arrival_id = &"head_office_from_accounting"
+
+[node name="AccountingDoor" parent="." groups=["head_office_exit"] instance=ExtResource("12_door")]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -6, 0, 35.4)
+destination_name = "Accounting"
+arrival_id = &"accounting_from_head_office"
+cost = 0
+
+[node name="Spawns" type="Node3D" parent="."]
+
+[node name="Spawn0" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 28.0, 0.2, 0.0)
+
+[node name="Spawn1" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 19.8, 0.2, 19.8)
+
+[node name="Spawn2" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0.0, 0.2, 28.0)
+
+[node name="Spawn3" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -19.8, 0.2, 19.8)
+
+[node name="Spawn4" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -28.0, 0.2, 0.0)
+
+[node name="Spawn5" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -19.8, 0.2, -19.8)
+
+[node name="Spawn6" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -0.0, 0.2, -28.0)
+
+[node name="Spawn7" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 19.8, 0.2, -19.8)

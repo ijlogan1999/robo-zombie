@@ -12,7 +12,6 @@ signal installed
 @export var missing_text := "Needs a %s"
 @export var done_text := "" ## Shown once installed ("" = no prompt).
 
-@onready var _lit: Node3D = get_node_or_null("Lit")
 
 
 func _ready() -> void:
@@ -51,8 +50,9 @@ func _install() -> void:
 
 
 func _update() -> void:
-	if _lit:
-		_lit.visible = is_installed()
+	var lit := get_node_or_null("Lit") as Node3D
+	if lit:
+		lit.visible = is_installed()
 
 
 @rpc("any_peer", "reliable")

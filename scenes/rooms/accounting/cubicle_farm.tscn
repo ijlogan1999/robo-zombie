@@ -1,0 +1,294 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/level/room.gd" id="1_room"]
+[ext_resource type="Material" path="res://materials/office_wall.tres" id="2_wall"]
+[ext_resource type="Material" path="res://materials/desk.tres" id="3_desk"]
+[ext_resource type="Material" path="res://materials/partition.tres" id="4_part"]
+[ext_resource type="Material" path="res://materials/glass.tres" id="5_glass"]
+[ext_resource type="Material" path="res://materials/junk_prop.tres" id="6_prop"]
+[ext_resource type="Script" path="res://scripts/world/ledger.gd" id="7_ledger"]
+[ext_resource type="Script" path="res://scripts/world/arrival.gd" id="10_arrival"]
+[ext_resource type="PackedScene" path="res://scenes/world/section_door.tscn" id="12_door"]
+
+
+[node name="CubicleFarm" type="Node3D"]
+script = ExtResource("1_room")
+display_name = "Cubicle Farm"
+can_rotate = true
+
+[node name="Lamp" type="OmniLight3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 4.6, 0)
+light_color = Color(1, 0.97, 0.88, 1)
+light_energy = 2.4
+omni_range = 26.0
+
+[node name="Lamp2" type="OmniLight3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 4.6, -8)
+light_color = Color(1, 0.97, 0.88, 1)
+light_energy = 1.4
+omni_range = 26.0
+
+[node name="Lamp3" type="OmniLight3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 4.6, 8)
+light_color = Color(1, 0.97, 0.88, 1)
+light_energy = 1.4
+omni_range = 26.0
+
+[node name="Part00" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -8, 0.75, -8.5)
+use_collision = true
+size = Vector3(5, 1.5, 0.15)
+material = ExtResource("4_part")
+
+[node name="Side00" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -10.5, 0.75, -7)
+use_collision = true
+size = Vector3(0.15, 1.5, 3)
+material = ExtResource("4_part")
+
+[node name="Desk00" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -8, 0.4, -7.6)
+use_collision = true
+size = Vector3(2.0, 0.8, 1.0)
+material = ExtResource("3_desk")
+
+[node name="Desk00Screen" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -8, 1.05, -7.6)
+use_collision = false
+size = Vector3(0.8, 0.5, 0.08)
+material = ExtResource("6_prop")
+
+[node name="Part01" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -8, 0.75, -0.5)
+use_collision = true
+size = Vector3(5, 1.5, 0.15)
+material = ExtResource("4_part")
+
+[node name="Side01" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -10.5, 0.75, 1)
+use_collision = true
+size = Vector3(0.15, 1.5, 3)
+material = ExtResource("4_part")
+
+[node name="Desk01" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -8, 0.4, 0.4)
+use_collision = true
+size = Vector3(2.0, 0.8, 1.0)
+material = ExtResource("3_desk")
+
+[node name="Desk01Screen" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -8, 1.05, 0.4)
+use_collision = false
+size = Vector3(0.8, 0.5, 0.08)
+material = ExtResource("6_prop")
+
+[node name="Part02" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -8, 0.75, 7.5)
+use_collision = true
+size = Vector3(5, 1.5, 0.15)
+material = ExtResource("4_part")
+
+[node name="Side02" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -10.5, 0.75, 9)
+use_collision = true
+size = Vector3(0.15, 1.5, 3)
+material = ExtResource("4_part")
+
+[node name="Desk02" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -8, 0.4, 8.4)
+use_collision = true
+size = Vector3(2.0, 0.8, 1.0)
+material = ExtResource("3_desk")
+
+[node name="Desk02Screen" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -8, 1.05, 8.4)
+use_collision = false
+size = Vector3(0.8, 0.5, 0.08)
+material = ExtResource("6_prop")
+
+[node name="Part10" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.75, -8.5)
+use_collision = true
+size = Vector3(5, 1.5, 0.15)
+material = ExtResource("4_part")
+
+[node name="Side10" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -2.5, 0.75, -7)
+use_collision = true
+size = Vector3(0.15, 1.5, 3)
+material = ExtResource("4_part")
+
+[node name="Desk10" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.4, -7.6)
+use_collision = true
+size = Vector3(2.0, 0.8, 1.0)
+material = ExtResource("3_desk")
+
+[node name="Desk10Screen" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 1.05, -7.6)
+use_collision = false
+size = Vector3(0.8, 0.5, 0.08)
+material = ExtResource("6_prop")
+
+[node name="Part11" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.75, -0.5)
+use_collision = true
+size = Vector3(5, 1.5, 0.15)
+material = ExtResource("4_part")
+
+[node name="Side11" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -2.5, 0.75, 1)
+use_collision = true
+size = Vector3(0.15, 1.5, 3)
+material = ExtResource("4_part")
+
+[node name="Desk11" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.4, 0.4)
+use_collision = true
+size = Vector3(2.0, 0.8, 1.0)
+material = ExtResource("3_desk")
+
+[node name="Desk11Screen" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 1.05, 0.4)
+use_collision = false
+size = Vector3(0.8, 0.5, 0.08)
+material = ExtResource("6_prop")
+
+[node name="Part12" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.75, 7.5)
+use_collision = true
+size = Vector3(5, 1.5, 0.15)
+material = ExtResource("4_part")
+
+[node name="Side12" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -2.5, 0.75, 9)
+use_collision = true
+size = Vector3(0.15, 1.5, 3)
+material = ExtResource("4_part")
+
+[node name="Desk12" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.4, 8.4)
+use_collision = true
+size = Vector3(2.0, 0.8, 1.0)
+material = ExtResource("3_desk")
+
+[node name="Desk12Screen" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 1.05, 8.4)
+use_collision = false
+size = Vector3(0.8, 0.5, 0.08)
+material = ExtResource("6_prop")
+
+[node name="Part20" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 8, 0.75, -8.5)
+use_collision = true
+size = Vector3(5, 1.5, 0.15)
+material = ExtResource("4_part")
+
+[node name="Side20" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 5.5, 0.75, -7)
+use_collision = true
+size = Vector3(0.15, 1.5, 3)
+material = ExtResource("4_part")
+
+[node name="Desk20" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 8, 0.4, -7.6)
+use_collision = true
+size = Vector3(2.0, 0.8, 1.0)
+material = ExtResource("3_desk")
+
+[node name="Desk20Screen" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 8, 1.05, -7.6)
+use_collision = false
+size = Vector3(0.8, 0.5, 0.08)
+material = ExtResource("6_prop")
+
+[node name="Part21" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 8, 0.75, -0.5)
+use_collision = true
+size = Vector3(5, 1.5, 0.15)
+material = ExtResource("4_part")
+
+[node name="Side21" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 5.5, 0.75, 1)
+use_collision = true
+size = Vector3(0.15, 1.5, 3)
+material = ExtResource("4_part")
+
+[node name="Desk21" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 8, 0.4, 0.4)
+use_collision = true
+size = Vector3(2.0, 0.8, 1.0)
+material = ExtResource("3_desk")
+
+[node name="Desk21Screen" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 8, 1.05, 0.4)
+use_collision = false
+size = Vector3(0.8, 0.5, 0.08)
+material = ExtResource("6_prop")
+
+[node name="Part22" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 8, 0.75, 7.5)
+use_collision = true
+size = Vector3(5, 1.5, 0.15)
+material = ExtResource("4_part")
+
+[node name="Side22" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 5.5, 0.75, 9)
+use_collision = true
+size = Vector3(0.15, 1.5, 3)
+material = ExtResource("4_part")
+
+[node name="Desk22" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 8, 0.4, 8.4)
+use_collision = true
+size = Vector3(2.0, 0.8, 1.0)
+material = ExtResource("3_desk")
+
+[node name="Desk22Screen" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 8, 1.05, 8.4)
+use_collision = false
+size = Vector3(0.8, 0.5, 0.08)
+material = ExtResource("6_prop")
+
+[node name="Spawns" type="Node3D" parent="."]
+
+[node name="Spawn0" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -11, 0.2, -11)
+
+[node name="Spawn1" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 11, 0.2, -11)
+
+[node name="Spawn2" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -11, 0.2, 11)
+
+[node name="Spawn3" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 11, 0.2, 11)
+
+[node name="Desks" type="Node3D" parent="."]
+
+[node name="Desk0" type="Marker3D" parent="Desks"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -7.5, 0, -5.8)
+
+[node name="Desk1" type="Marker3D" parent="Desks"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -7.5, 0, 2.2)
+
+[node name="Desk2" type="Marker3D" parent="Desks"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -7.5, 0, 10.2)
+
+[node name="Desk3" type="Marker3D" parent="Desks"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0.5, 0, -5.8)
+
+[node name="Desk4" type="Marker3D" parent="Desks"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0.5, 0, 2.2)
+
+[node name="Desk5" type="Marker3D" parent="Desks"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0.5, 0, 10.2)
+
+[node name="Desk6" type="Marker3D" parent="Desks"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 8.5, 0, -5.8)
+
+[node name="Desk7" type="Marker3D" parent="Desks"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 8.5, 0, 2.2)
+
+[node name="Desk8" type="Marker3D" parent="Desks"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 8.5, 0, 10.2)

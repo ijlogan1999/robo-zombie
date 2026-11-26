@@ -43,6 +43,13 @@ func open() -> void:
 	_open_here()
 
 
+## Locks it again (Head Office shuts its doors behind the players).
+func lock(reason: String) -> void:
+	locked = true
+	locked_reason = reason
+	_update_sign()
+
+
 func unlock() -> void:
 	locked = false
 	_update_sign()

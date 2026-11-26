@@ -130,6 +130,22 @@
 [ext_resource type="Script" path="res://scripts/bosses/control_tower.gd" id="163_tower"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/packer.tscn" id="164_packer"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/security_bot.tscn" id="165_security"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/accounting/lobby.tscn" id="170_lobby"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/accounting/records_vault.tscn" id="171_records_vault"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/accounting/executive_lift.tscn" id="172_executive_lift"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/accounting/cubicle_farm.tscn" id="173_cubicle_farm"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/accounting/conference_room.tscn" id="174_conference_room"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/accounting/break_room.tscn" id="175_break_room"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/accounting/copy_room.tscn" id="176_copy_room"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/accounting/payroll.tscn" id="177_payroll"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/accounting/audit_office.tscn" id="178_audit_office"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/accounting/server_closet.tscn" id="179_server_closet"]
+[ext_resource type="Material" path="res://materials/office_carpet.tres" id="180_carpet"]
+[ext_resource type="Material" path="res://materials/office_wall.tres" id="181_owall"]
+[ext_resource type="Script" path="res://scripts/level/accounting_office.gd" id="182_office"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/head_office/head_office.tscn" id="190_head_office"]
+[ext_resource type="Material" path="res://materials/exec_wall.tres" id="191_exec_wall"]
+[ext_resource type="Script" path="res://scripts/bosses/quota.gd" id="192_quota"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_top_color = Color(0.42, 0.55, 0.72, 1)
@@ -225,6 +241,20 @@ agent_height = 2.0
 agent_radius = 0.5
 agent_max_climb = 0.25
 
+[sub_resource type="NavigationMesh" id="NavigationMesh_accounting"]
+cell_size = 0.25
+cell_height = 0.25
+agent_height = 2.0
+agent_radius = 0.5
+agent_max_climb = 0.25
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_head_office"]
+cell_size = 0.25
+cell_height = 0.25
+agent_height = 2.0
+agent_radius = 0.5
+agent_max_climb = 0.25
+
 [sub_resource type="NavigationMesh" id="NavigationMesh_shipping"]
 cell_size = 0.25
 cell_height = 0.25
@@ -252,7 +282,7 @@ weight_per_round = 0.4
 
 [node name="Heap" type="Node3D"]
 script = ExtResource("12_level")
-section_paths = Array[NodePath]([NodePath("NavigationRegion3D/Section"), NodePath("CrucibleNav/Section"), NodePath("ChassisNav/Section"), NodePath("ServoNav/Section"), NodePath("ColdNav/Section"), NodePath("LineNav/Section"), NodePath("ProvingNav/Section"), NodePath("ShippingNav/Section")])
+section_paths = Array[NodePath]([NodePath("NavigationRegion3D/Section"), NodePath("CrucibleNav/Section"), NodePath("ChassisNav/Section"), NodePath("ServoNav/Section"), NodePath("ColdNav/Section"), NodePath("LineNav/Section"), NodePath("ProvingNav/Section"), NodePath("ShippingNav/Section"), NodePath("AccountingNav/Section"), NodePath("HeadOfficeNav/Section")])
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_main")
@@ -442,6 +472,55 @@ display_name = "THE CONTROL TOWER"
 requires_flag = &"tower_base_crushed"
 drop_flag = &"landing_beacon"
 drop_text = "THE TOWER FALLS. ITS LANDING BEACON IS STILL BLINKING"
+
+[node name="AccountingNav" type="NavigationRegion3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 900, 0, 0)
+navigation_mesh = SubResource("NavigationMesh_accounting")
+script = ExtResource("2_nav")
+
+[node name="Section" type="Node3D" parent="AccountingNav" groups=["section"]]
+script = ExtResource("90_hall")
+center_room = ExtResource("171_records_vault")
+bay_size = 30.0
+hall_height = 5.0
+rack_height = 5.0
+rack_thickness = 0.6
+rack_material = ExtResource("181_owall")
+far_room = ExtResource("172_executive_lift")
+office_walls = true
+extra_links = 2
+floor_material = ExtResource("180_carpet")
+start_room = ExtResource("170_lobby")
+optional_rooms = Array[PackedScene]([ExtResource("173_cubicle_farm"), ExtResource("174_conference_room"), ExtResource("175_break_room"), ExtResource("176_copy_room"), ExtResource("177_payroll"), ExtResource("178_audit_office"), ExtResource("179_server_closet")])
+gate_scene = ExtResource("9_gate")
+first_gate_cost = 2000
+gate_cost_step = 150
+is_start_section = false
+wall_material = ExtResource("181_owall")
+
+[node name="Office" type="Node3D" parent="AccountingNav"]
+script = ExtResource("182_office")
+staff_scenes = Array[PackedScene]([ExtResource("105_scrapper"), ExtResource("125_bolter"), ExtResource("164_packer"), ExtResource("165_security")])
+
+[node name="HeadOfficeNav" type="NavigationRegion3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 900)
+navigation_mesh = SubResource("NavigationMesh_head_office")
+script = ExtResource("2_nav")
+
+[node name="Section" type="Node3D" parent="HeadOfficeNav" groups=["section"]]
+script = ExtResource("40_section")
+start_room = ExtResource("190_head_office")
+room_count = 0
+cell_size = 72.0
+wall_height = 20.0
+gate_scene = ExtResource("9_gate")
+is_start_section = false
+wall_material = ExtResource("191_exec_wall")
+
+[node name="Quota" type="Node3D" parent="HeadOfficeNav"]
+script = ExtResource("192_quota")
+wave_scenes = Array[PackedScene]([ExtResource("105_scrapper"), ExtResource("125_bolter"), ExtResource("164_packer"), ExtResource("165_security")])
+display_name = "QUOTA"
 
 [node name="PitDrop" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -21, 0)

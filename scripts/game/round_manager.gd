@@ -48,6 +48,7 @@ signal announced(text: String) ## A banner for everyone: boss fights, Easter egg
 
 var round_number := 0
 var phase := Phase.BREAK
+var ending := "" ## Set when the run ends in a win: the ending players see.
 var countdown_left := 0.0
 var break_time := 0.0 ## How long the current break has lasted.
 var warden: Warden
@@ -153,6 +154,16 @@ func check_team() -> void:
 	phase = Phase.OVER
 	run_over.emit(round_number)
 	_to_clients(&"_net_run_over", [round_number])
+
+
+## Ends the run in a win (QUOTA is beaten). `text` is the ending players see.
+func win(text: String) -> void:
+	if phase == Phase.OVER:
+		return
+	ending = text
+	phase = Phase.OVER
+	run_over.emit(round_number)
+	_to_clients(&"_net_run_won", [round_number, text])
 
 
 func _physics_process(delta: float) -> void:
@@ -330,6 +341,13 @@ func _net_round_ended(number: int) -> void:
 
 @rpc("authority", "reliable")
 func _net_run_over(number: int) -> void:
+	phase = Phase.OVER
+	run_over.emit(number)
+
+
+@rpc("authority", "reliable")
+func _net_run_won(number: int, text: String) -> void:
+	ending = text
 	phase = Phase.OVER
 	run_over.emit(number)
 

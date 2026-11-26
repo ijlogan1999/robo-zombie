@@ -8,6 +8,8 @@ extends Area3D
 
 
 func _physics_process(_delta: float) -> void:
+	if not monitoring:
+		return
 	var push := global_basis * direction.normalized() * speed
 	push.y = 0.0
 	for body in get_overlapping_bodies():
