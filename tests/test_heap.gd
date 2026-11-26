@@ -63,8 +63,11 @@ func _ready() -> void:
 	await get_tree().physics_frame
 	var from := section.slot_center(0) + Vector3.UP * 0.2
 	var to := section.slot_center(10) + Vector3.UP * 0.2
-	for i in 10:
+	# The navigation map picks up the new navmesh on a later physics frame.
+	for i in 120:
 		await get_tree().physics_frame
+		if NavigationServer3D.map_get_closest_point(map, from).distance_to(from) < 2.0:
+			break
 	var path := NavigationServer3D.map_get_path(map, from, to, true)
 	var reaches := path.size() > 1 and path[path.size() - 1].distance_to(to) < 3.0
 	var climbs := false
@@ -90,18 +93,18 @@ func _ready() -> void:
 	# Open one whole side of the ground floor; the far gate into the stairwell on the
 	# other side stays shut until that room is open too.
 	for gate in section.gates:
-		var pair: Array = section._gate_rooms[gate]
+		var pair: Array = section.gate_rooms(gate)
 		if pair[0] in [0, 1, 2, 3] and pair[1] in [1, 2, 3, 4]:
 			gate.open()
 	await get_tree().process_frame
 	var east_into_stairs: Gate
 	for gate in section.gates:
-		var pair: Array = section._gate_rooms[gate]
+		var pair: Array = section.gate_rooms(gate)
 		if (pair[0] == 5 and pair[1] == 4) or (pair[0] == 4 and pair[1] == 5):
 			east_into_stairs = gate
 	check(section.rooms[4].is_open and not east_into_stairs.is_open, "west side open to the stairwell; east stairwell gate still shut")
 	for gate in section.gates:
-		var pair: Array = section._gate_rooms[gate]
+		var pair: Array = section.gate_rooms(gate)
 		if pair[1] in [7, 6, 5]:
 			gate.open()
 	await get_tree().process_frame

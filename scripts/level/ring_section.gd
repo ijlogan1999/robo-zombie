@@ -1,5 +1,5 @@
 class_name RingSection
-extends Section
+extends GraphSection
 ## The Heap's layout: a two-floor ring of rooms around a central pit.
 ##
 ## Ground floor: the spawn yard, then three rooms each way round the ring to a shared
@@ -53,8 +53,6 @@ const LINKS := [
 @export var railing_height := 1.1 ## Upper floor edge over the pit. An invisible wall stops falls.
 @export var pit_radius := 18.0
 @export var balcony_height := 4.0 ## The boss fight balcony circling the pit.
-@export var floor_material: Material
-@export var arc_segments_per_45 := 4 ## Straight wall pieces used to draw 45 degrees of curve.
 
 @export_group("Stairwell")
 @export var ramp_length := 20.0
@@ -62,10 +60,6 @@ const LINKS := [
 @export var ramp_radius := 40.0 ## Distance of the ramp from the ring's centre.
 
 var slot_keys: Array[String] = [] ## slot_keys[i] names the slot rooms[i] sits in.
-var depth: Array[int] = [] ## Doors from the spawn yard to each room.
-
-var _neighbours: Array = [] # index -> Array[int]
-var _gate_rooms := {} # Gate -> [room index, room index]
 
 
 func _build() -> void:
@@ -132,27 +126,11 @@ func _slot_outer(index: int) -> float:
 # --- Layout -------------------------------------------------------------------------------
 
 func _compute_depths() -> void:
-	_neighbours.clear()
-	for i in SLOTS.size():
-		_neighbours.append([])
+	var pairs := []
 	for link in LINKS:
-		_neighbours[link[0]].append(link[1])
-		_neighbours[link[1]].append(link[0])
-	depth.clear()
-	depth.resize(SLOTS.size())
-	depth.fill(-1)
-	depth[0] = 0
-	var queue: Array[int] = [0]
-	while not queue.is_empty():
-		var at: int = queue.pop_front()
-		for next: int in _neighbours[at]:
-			if depth[next] < 0:
-				depth[next] = depth[at] + 1
-				queue.append(next)
+		pairs.append([link[0], link[1]])
+	_set_links(SLOTS.size(), pairs)
 
-
-## Rooms for the shuffled slots: the required ones, then optional ones. If there are more
-## slots than rooms, the optional rooms are dealt again.
 func _pick_ring_rooms() -> Array[PackedScene]:
 	var count := 0
 	for slot in SLOTS:
@@ -204,28 +182,6 @@ func _build_floors() -> void:
 			_add_sector(a0, a1, inner_radius, _slot_outer(i), -slab_thickness, slab_thickness)
 		if slot.floor == UPPER:
 			_add_sector(a0, a1, inner_radius, _slot_outer(i), upper_floor_height - slab_thickness, slab_thickness)
-
-
-## A flat slab shaped like a slice of a ring. Returns it so holes can be cut into it.
-func _add_sector(a0: float, a1: float, r0: float, r1: float, bottom: float, thickness: float) -> CSGPolygon3D:
-	var points := PackedVector2Array()
-	var steps := maxi(2, ceili(absf(a1 - a0) / 45.0 * arc_segments_per_45))
-	for s in steps + 1:
-		var a := deg_to_rad(lerpf(a0, a1, float(s) / steps))
-		points.append(Vector2(cos(a), sin(a)) * r0)
-	for s in range(steps, -1, -1):
-		var a := deg_to_rad(lerpf(a0, a1, float(s) / steps))
-		points.append(Vector2(cos(a), sin(a)) * r1)
-	var poly := CSGPolygon3D.new()
-	poly.polygon = points
-	poly.depth = thickness
-	poly.use_collision = true
-	poly.material = floor_material
-	# The polygon is drawn in X/Z: turning it about X makes its depth point straight up.
-	poly.rotation.x = PI / 2.0
-	poly.position.y = bottom
-	add_child(poly)
-	return poly
 
 
 func _build_walls() -> void:
@@ -298,72 +254,10 @@ func _build_radial(a: int, b: int, angle: float, floor_level: int) -> void:
 	_add_radial_box(angle, door_r + door_width / 2.0, r_end, base, height)
 	_add_radial_box(angle, door_r - door_width / 2.0, door_r + door_width / 2.0, base + door_height, height - door_height)
 
-	var deeper := b if depth[b] > depth[a] else a
-	var shallower := a if deeper == b else b
-	var gate := gate_scene.instantiate() as Gate
-	gate.name = "Gate%d" % gates.size()
-	gate.cost = first_gate_cost + gate_cost_step * maxi(depth[deeper] - 1, 0)
-	gate.room_name = rooms[deeper].display_name
 	var rad := deg_to_rad(angle)
-	gate.position = Vector3(cos(rad) * door_r, base, sin(rad) * door_r)
-	gate.rotation.y = -rad
-	add_child(gate)
-	gate.opened.connect(_on_gate_opened.bind(gate))
-	gates.append(gate)
-	_gate_rooms[gate] = [shallower, deeper]
+	_add_gate(a, b, Vector3(cos(rad) * door_r, base, sin(rad) * door_r), -rad)
 
 
-## A straight wall along a line out from the ring's centre.
-func _add_radial_box(angle: float, r0: float, r1: float, bottom: float, height: float) -> void:
-	if r1 - r0 <= 0.01 or height <= 0.01:
-		return
-	var rad := deg_to_rad(angle)
-	var box := CSGBox3D.new()
-	box.use_collision = true
-	box.material = wall_material
-	box.size = Vector3(r1 - r0, height, wall_thickness)
-	var mid := (r0 + r1) / 2.0
-	box.position = Vector3(cos(rad) * mid, bottom + height / 2.0, sin(rad) * mid)
-	box.rotation.y = -rad
-	add_child(box)
-
-
-## A curved wall drawn as straight pieces. Invisible walls only block (no mesh, no navmesh).
-func _add_arc_wall(a0: float, a1: float, radius: float, bottom: float, height: float, visible_wall: bool) -> void:
-	if height <= 0.01:
-		return
-	var steps := maxi(1, ceili(absf(a1 - a0) / 45.0 * arc_segments_per_45))
-	for s in steps:
-		var p0 := deg_to_rad(lerpf(a0, a1, float(s) / steps))
-		var p1 := deg_to_rad(lerpf(a0, a1, float(s + 1) / steps))
-		var start := Vector2(cos(p0), sin(p0)) * radius
-		var end := Vector2(cos(p1), sin(p1)) * radius
-		var mid := (start + end) / 2.0
-		var length := start.distance_to(end) + wall_thickness
-		var yaw := -atan2(end.y - start.y, end.x - start.x)
-		var center := Vector3(mid.x, bottom + height / 2.0, mid.y)
-		var size := Vector3(length, height, wall_thickness)
-		if visible_wall:
-			var box := CSGBox3D.new()
-			box.use_collision = true
-			box.material = wall_material
-			box.size = size
-			box.position = center
-			box.rotation.y = yaw
-			add_child(box)
-		else:
-			var body := StaticBody3D.new()
-			var shape := CollisionShape3D.new()
-			var box_shape := BoxShape3D.new()
-			box_shape.size = size
-			shape.shape = box_shape
-			body.add_child(shape)
-			body.position = center
-			body.rotation.y = yaw
-			add_child(body)
-
-
-## A straight ramp up to the upper floor, with a hole cut in the slab above it.
 func _build_stairwell() -> void:
 	var index := slot_keys.find("stairwell")
 	var slot: Dictionary = SLOTS[index]
@@ -403,49 +297,3 @@ func _build_pit() -> void:
 
 
 # --- Opening rooms and spawns -------------------------------------------------------------
-
-func _on_gate_opened(gate: Gate) -> void:
-	var pair: Array = _gate_rooms[gate]
-	_open_room(rooms[pair[0]])
-	_open_room(rooms[pair[1]])
-	# A gate between two rooms that are both open now has no point: clear it for free.
-	if multiplayer.multiplayer_peer == null or multiplayer.is_server():
-		for other: Gate in gates:
-			if other.is_open:
-				continue
-			var p: Array = _gate_rooms[other]
-			if rooms[p[0]].is_open and rooms[p[1]].is_open:
-				other.open()
-
-
-func _update_active_spawns() -> void:
-	if _neighbours.is_empty():
-		return
-	var player_rooms: Array[int] = []
-	for player: Node3D in get_tree().get_nodes_in_group("players"):
-		var room := room_at_position(player.global_position)
-		if room:
-			player_rooms.append(room.index)
-	if player_rooms.is_empty():
-		player_rooms.append(0)
-	var near := _rooms_within(player_rooms, spawn_reach)
-	for room in rooms:
-		room.set_spawns_active(room.is_open and near.has(room.index))
-
-
-## Rooms no more than `reach` open doorways from any of the start rooms.
-func _rooms_within(start: Array[int], reach: int) -> Dictionary:
-	var found := {}
-	var frontier: Array[int] = []
-	for i in start:
-		found[i] = true
-		frontier.append(i)
-	for step in reach:
-		var next: Array[int] = []
-		for at in frontier:
-			for n: int in _neighbours[at]:
-				if not found.has(n):
-					found[n] = true
-					next.append(n)
-		frontier = next
-	return found

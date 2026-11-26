@@ -24,6 +24,8 @@ const ALL_SIDES: Array[Vector2i] = [Vector2i(0, 1), Vector2i(1, 0), Vector2i(0, 
 @export var first_gate_cost := 100
 @export var gate_cost_step := 50 ## Each gate deeper in costs this much more.
 @export var layout_seed := 0 ## 0 = new layout every run. Set a number to replay one layout.
+## The section players start in. With no players in any section, its start room still spawns.
+@export var is_start_section := true
 
 @export_group("Shape")
 @export var cell_size := 32.0 ## Every room is this wide and deep.
@@ -192,13 +194,7 @@ func _open_room(room: Room) -> void:
 
 
 func _update_active_spawns() -> void:
-	var player_rooms: Array[int] = []
-	for player: Node3D in get_tree().get_nodes_in_group("players"):
-		var room := room_at_position(player.global_position)
-		if room:
-			player_rooms.append(room.index)
-	if player_rooms.is_empty():
-		player_rooms.append(0)
+	var player_rooms := _player_room_indices()
 	for room in rooms:
 		var near := false
 		for player_room in player_rooms:
@@ -206,3 +202,21 @@ func _update_active_spawns() -> void:
 				near = true
 				break
 		room.set_spawns_active(room.is_open and near)
+
+
+## Rooms of this section that players are standing in. Robots only spawn near players, so a
+## section nobody is in spawns nothing, unless nobody is in any section and it's the start.
+func _player_room_indices() -> Array[int]:
+	var found: Array[int] = []
+	var anyone_placed := false
+	for player: Node3D in get_tree().get_nodes_in_group("players"):
+		var room := room_at_position(player.global_position)
+		if room:
+			found.append(room.index)
+			continue
+		for section: Section in get_tree().get_nodes_in_group("section"):
+			if section != self and section.room_at_position(player.global_position):
+				anyone_placed = true
+	if found.is_empty() and is_start_section and not anyone_placed:
+		found.append(0)
+	return found

@@ -28,7 +28,13 @@ func _ready() -> void:
 		"spawn": [section.slot_center(0) + Vector3(0, 1.7, 8), section.slot_center(0) + Vector3(0, 1.5, -10)],
 		"stairs": [section.slot_center(4) + Vector3(12, 1.7, 8), section.ring_point(270, 40, 4)],
 		"upper": [section.slot_center(9) + Vector3(0, 1.7, 0), Vector3(0, 4, 0)],
+		"crucible_top": [Vector3(0, -173, 30), Vector3(0, -200, 0)],
+		"crucible_floor": [Vector3(0, -198.3, 0), Vector3(40, -199, 20)],
+		"crucible_edge": [Vector3(-55, -190, 0), Vector3(0, -200, 0)],
 	}
+	var dome: DomeSection = level.get_node("CrucibleNav/Section")
+	for gate in dome.gates:
+		gate.open()
 	for i in 30:
 		await get_tree().process_frame
 	for key in views:

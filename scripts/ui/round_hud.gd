@@ -20,8 +20,7 @@ func _ready() -> void:
 	_rounds.round_ended.connect(_on_round_ended)
 	_rounds.remaining_changed.connect(_on_remaining_changed)
 	_rounds.warden_summoned.connect(_on_warden_summoned)
-	var section := get_tree().get_first_node_in_group("section") as Section
-	if section:
+	for section: Section in get_tree().get_nodes_in_group("section"):
 		section.room_opened.connect(func(room: Room) -> void: _show_banner("%s OPENED" % room.display_name.to_upper()))
 	_round_label.text = ""
 	_remaining_label.text = ""
