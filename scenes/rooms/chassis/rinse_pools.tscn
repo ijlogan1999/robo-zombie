@@ -1,0 +1,105 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/level/room.gd" id="1_room"]
+[ext_resource type="Material" path="res://materials/plant_floor.tres" id="2_floor"]
+[ext_resource type="Material" path="res://materials/plant_wall.tres" id="3_wall"]
+[ext_resource type="Material" path="res://materials/coating.tres" id="4_coat"]
+[ext_resource type="Material" path="res://materials/molten.tres" id="5_fire"]
+[ext_resource type="Script" path="res://scripts/world/dip_tank.gd" id="6_tank"]
+[ext_resource type="Script" path="res://scripts/world/floating_part.gd" id="7_float"]
+[ext_resource type="Material" path="res://materials/chassis_part.tres" id="8_part"]
+[ext_resource type="Material" path="res://materials/oil.tres" id="9_oil"]
+[ext_resource type="Script" path="res://scripts/world/arrival.gd" id="10_arrival"]
+[ext_resource type="Script" path="res://scripts/world/passage.gd" id="11_passage"]
+[ext_resource type="PackedScene" path="res://scenes/world/section_door.tscn" id="12_door"]
+[ext_resource type="Material" path="res://materials/hazard.tres" id="13_hazard"]
+
+[sub_resource type="BoxShape3D" id="Shape_5"]
+size = Vector3(7.8, 0.9, 7.8)
+
+[sub_resource type="BoxMesh" id="Mesh_6"]
+size = Vector3(8, 0.05, 8)
+
+[sub_resource type="BoxShape3D" id="Shape_7"]
+size = Vector3(7.8, 0.9, 7.8)
+
+[sub_resource type="BoxMesh" id="Mesh_8"]
+size = Vector3(8, 0.05, 8)
+
+[node name="RinsePools" type="Node3D"]
+script = ExtResource("1_room")
+display_name = "Rinse Pools"
+can_rotate = true
+
+[node name="Floor" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, -1.5, 0)
+use_collision = true
+size = Vector3(32, 3, 32)
+material = ExtResource("2_floor")
+
+[node name="RinseAHole" type="CSGBox3D" parent="Floor"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -7, 1.5, -7)
+operation = 2
+size = Vector3(8, 1.4, 8)
+
+[node name="RinseA" type="Area3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -7, -0.35, -7)
+script = ExtResource("6_tank")
+burns = false
+calm_material = ExtResource("4_coat")
+burn_material = ExtResource("5_fire")
+
+[node name="Shape" type="CollisionShape3D" parent="RinseA"]
+shape = SubResource("Shape_5")
+
+[node name="Surface" type="MeshInstance3D" parent="RinseA"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.15, 0)
+mesh = SubResource("Mesh_6")
+
+[node name="RinseBHole" type="CSGBox3D" parent="Floor"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 7, 1.5, 7)
+operation = 2
+size = Vector3(8, 1.4, 8)
+
+[node name="RinseB" type="Area3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 7, -0.35, 7)
+script = ExtResource("6_tank")
+burns = false
+calm_material = ExtResource("4_coat")
+burn_material = ExtResource("5_fire")
+
+[node name="Shape" type="CollisionShape3D" parent="RinseB"]
+shape = SubResource("Shape_7")
+
+[node name="Surface" type="MeshInstance3D" parent="RinseB"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.15, 0)
+mesh = SubResource("Mesh_8")
+
+[node name="Lamp" type="OmniLight3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 7, 0)
+light_color = Color(0.6, 0.9, 1, 1)
+light_energy = 2.0
+omni_range = 14.0
+
+[node name="PipeRun" type="CSGBox3D" parent="."]
+transform = Transform3D(0.7074, 0, 0.7068, 0, 1, 0, -0.7068, 0, 0.7074, 0, 3.5, 0)
+use_collision = true
+size = Vector3(24, 0.5, 0.5)
+material = ExtResource("3_wall")
+
+[node name="BoxSpot" type="Marker3D" parent="." groups=["box_spot"]]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 8, 0, -8)
+
+[node name="Spawns" type="Node3D" parent="."]
+
+[node name="Spawn0" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -12, 0.2, 10)
+
+[node name="Spawn1" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 12, 0.2, -10)
+
+[node name="Spawn2" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 10, 0.2, 10)
+
+[node name="Spawn3" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -10, 0.2, -12)

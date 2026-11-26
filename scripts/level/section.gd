@@ -19,6 +19,7 @@ const ALL_SIDES: Array[Vector2i] = [Vector2i(0, 1), Vector2i(1, 0), Vector2i(0, 
 @export var start_room: PackedScene
 @export var required_rooms: Array[PackedScene] = [] ## Always in the run (like the shop).
 @export var optional_rooms: Array[PackedScene] = [] ## Drawn at random to fill the rest.
+@export var end_room: PackedScene ## Always last when set (holds the way on and the way back).
 @export var room_count := 4 ## Rooms after the start room.
 @export var gate_scene: PackedScene
 @export var first_gate_cost := 100
@@ -75,7 +76,10 @@ func _physics_process(delta: float) -> void:
 
 
 func room_at_position(world_position: Vector3) -> Room:
-	var cell := Vector2i(roundi(world_position.x / cell_size), roundi(-world_position.z / cell_size))
+	var local := to_local(world_position)
+	if absf(local.y) > wall_height * 2.0:
+		return null # Another section stacked above or below.
+	var cell := Vector2i(roundi(local.x / cell_size), roundi(-local.z / cell_size))
 	return _room_at.get(cell)
 
 
@@ -86,6 +90,8 @@ func cell_to_world(cell: Vector2i) -> Vector3:
 func _build() -> void:
 	var scenes: Array[PackedScene] = [start_room]
 	scenes.append_array(_pick_rooms())
+	if end_room:
+		scenes.append(end_room)
 	var cell := Vector2i.ZERO
 	for i in scenes.size():
 		if i > 0:

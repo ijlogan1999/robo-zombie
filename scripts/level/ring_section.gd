@@ -196,10 +196,10 @@ func _build_walls() -> void:
 		if slot.floor != GROUND:
 			var base := upper_floor_height
 			_add_arc_wall(a0, a1, _slot_outer(i), base, upper_wall_height, true)
-			_add_arc_wall(a0, a1, inner_radius, base, railing_height, true)
-			# Upstairs looks out over the balcony through glass, except at the crane control,
-			# where players can hop the railing and drop onto the balcony (the Scrap King fight).
+			# Upstairs looks out over the balcony through a railing and glass, except at the
+			# crane control, which is open: players drop onto the balcony (the Scrap King fight).
 			if slot.key != "crane_control":
+				_add_arc_wall(a0, a1, inner_radius, base, railing_height, true)
 				_add_arc_wall(a0, a1, inner_radius, base + railing_height, upper_wall_height - railing_height, false)
 
 	# Radial walls sit on each slot's edges. Every edge is shared by two slots on a floor.

@@ -1,0 +1,64 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/level/room.gd" id="1_room"]
+[ext_resource type="Material" path="res://materials/plant_floor.tres" id="2_floor"]
+[ext_resource type="Material" path="res://materials/plant_wall.tres" id="3_wall"]
+[ext_resource type="Material" path="res://materials/coating.tres" id="4_coat"]
+[ext_resource type="Material" path="res://materials/molten.tres" id="5_fire"]
+[ext_resource type="Script" path="res://scripts/world/dip_tank.gd" id="6_tank"]
+[ext_resource type="Script" path="res://scripts/world/floating_part.gd" id="7_float"]
+[ext_resource type="Material" path="res://materials/chassis_part.tres" id="8_part"]
+[ext_resource type="Material" path="res://materials/oil.tres" id="9_oil"]
+[ext_resource type="Script" path="res://scripts/world/arrival.gd" id="10_arrival"]
+[ext_resource type="Script" path="res://scripts/world/passage.gd" id="11_passage"]
+[ext_resource type="PackedScene" path="res://scenes/world/section_door.tscn" id="12_door"]
+[ext_resource type="Material" path="res://materials/hazard.tres" id="13_hazard"]
+
+
+[node name="IntakeDock" type="Node3D"]
+script = ExtResource("1_room")
+display_name = "Intake Dock"
+can_rotate = false
+
+[node name="Floor" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, -1.5, 0)
+use_collision = true
+size = Vector3(32, 3, 32)
+material = ExtResource("2_floor")
+
+[node name="Crates" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -10, 1, -9)
+use_collision = true
+size = Vector3(3, 2, 3)
+material = ExtResource("8_part")
+
+[node name="Crates2" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 10, 0.75, 8)
+use_collision = true
+size = Vector3(4, 1.5, 2)
+material = ExtResource("8_part")
+
+[node name="Lamp" type="OmniLight3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 7, 0)
+light_color = Color(0.6, 0.9, 1, 1)
+light_energy = 2.0
+omni_range = 14.0
+
+[node name="ArriveFromCrucible" type="Marker3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.3, 10)
+script = ExtResource("10_arrival")
+arrival_id = &"chassis_from_crucible"
+
+[node name="HoistFrame" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 5, 4)
+use_collision = true
+size = Vector3(10, 0.6, 0.6)
+material = ExtResource("3_wall")
+
+[node name="Spawns" type="Node3D" parent="."]
+
+[node name="Spawn0" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -12, 0.2, -10)
+
+[node name="Spawn1" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 12, 0.2, -10)
