@@ -111,5 +111,21 @@ func _ready() -> void:
 	await get_tree().physics_frame
 	check(section.room_at_position(player.global_position) == section.rooms[10], "a player in crane control is found in crane control")
 
+	# Mystery crate
+	var box: MysteryBox = level.get_node("MysteryBox")
+	check(box.spots().size() >= 6 and box.global_position.distance_to(box.spots()[box.spot_index].global_position) < 0.01, "mystery crate sits on one of %d box spots" % box.spots().size())
+	player.add_scrap(950 * 10)
+	var guns_before := player.weapon_holder.slots.size()
+	var start_spot := box.spot_index
+	var rolls := box.rolls_left
+	for i in rolls:
+		box.interact(player)
+	check(box.rolls_left == 0 and player.weapon_holder.slots.size() >= guns_before, "rolling hands out guns (%d rolls)" % rolls)
+	var scrap_before := player.scrap
+	box.interact(player)
+	check(player.scrap == scrap_before and box.recalled, "QUOTA recalls the crate: that roll is refunded")
+	await get_tree().create_timer(2.3).timeout
+	check(box.spot_index != start_spot and not box.recalled and box.rolls_left >= 4, "the crate turns up at another spot")
+
 	print("\n%d/%d checks passed" % [checks - fails, checks])
 	get_tree().quit(1 if fails else 0)

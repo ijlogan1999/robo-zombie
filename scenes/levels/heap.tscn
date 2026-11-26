@@ -19,6 +19,7 @@
 [ext_resource type="PackedScene" path="res://scenes/rooms/heap/stairwell.tscn" id="16_stairs"]
 [ext_resource type="PackedScene" path="res://scenes/rooms/heap/crane_control.tscn" id="17_crane"]
 [ext_resource type="Material" path="res://materials/junk_floor.tres" id="18_floor"]
+[ext_resource type="PackedScene" path="res://scenes/shops/mystery_box.tscn" id="19_box"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_top_color = Color(0.42, 0.55, 0.72, 1)
@@ -68,6 +69,8 @@ wall_material = ExtResource("10_wall")
 
 [node name="Player" parent="." instance=ExtResource("1_player")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 52)
+
+[node name="MysteryBox" parent="." instance=ExtResource("19_box")]
 
 [node name="RoundManager" parent="." instance=ExtResource("11_rounds")]
 

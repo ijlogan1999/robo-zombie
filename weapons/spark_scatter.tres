@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="WeaponData" format=3]
+
+[ext_resource type="Script" path="res://scripts/weapons/weapon_data.gd" id="1_data"]
+[ext_resource type="PackedScene" path="res://scenes/weapons/pipe_shotgun_view.tscn" id="2_view"]
+
+[resource]
+script = ExtResource("1_data")
+display_name = "Spark Scatter"
+fire_sound = &"shotgun_shot"
+view_scene = ExtResource("2_view")
+damage = 9.0
+pellets = 14
+max_range = 20.0
+rounds_per_minute = 150.0
+automatic = true
+magazine_size = 10
+max_reserve = 60
+reload_time = 2.2
+hip_spread_degrees = 9.0
+ads_spread_degrees = 7.0
+recoil_pitch_degrees = 2.5
+spread_per_shot_degrees = 0.0
