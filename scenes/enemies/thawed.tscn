@@ -1,0 +1,114 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/thawed.gd" id="1_robot"]
+[ext_resource type="Script" path="res://scripts/combat/health_component.gd" id="2_health"]
+[ext_resource type="PackedScene" path="res://scenes/pickups/scrap_pickup.tscn" id="3_scrap"]
+
+[sub_resource type="CapsuleShape3D" id="Shape_body"]
+radius = 0.4
+height = 1.8
+
+[sub_resource type="StandardMaterial3D" id="Mat_shell"]
+albedo_color = Color(0.55, 0.62, 0.68, 1)
+metallic = 0.6
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="Mat_eyes"]
+albedo_color = Color(0.5, 0.85, 1, 1)
+emission_enabled = true
+emission = Color(0.4, 0.8, 1, 1)
+emission_energy_multiplier = 1.5
+
+[sub_resource type="StandardMaterial3D" id="Mat_ice"]
+transparency = 1
+albedo_color = Color(0.7, 0.9, 1, 0.45)
+metallic = 0.2
+roughness = 0.05
+
+[sub_resource type="BoxMesh" id="Mesh_body"]
+material = SubResource("Mat_shell")
+size = Vector3(0.7, 0.9, 0.45)
+
+[sub_resource type="BoxMesh" id="Mesh_head"]
+material = SubResource("Mat_shell")
+size = Vector3(0.45, 0.4, 0.4)
+
+[sub_resource type="BoxMesh" id="Mesh_limb"]
+material = SubResource("Mat_shell")
+size = Vector3(0.2, 0.75, 0.2)
+
+[sub_resource type="BoxMesh" id="Mesh_eyes"]
+material = SubResource("Mat_eyes")
+size = Vector3(0.32, 0.07, 0.04)
+
+[sub_resource type="BoxMesh" id="Mesh_ice"]
+material = SubResource("Mat_ice")
+size = Vector3(1.1, 2.0, 1.0)
+
+[sub_resource type="SceneReplicationConfig" id="Repl"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+
+[node name="Thawed" type="CharacterBody3D"]
+script = ExtResource("1_robot")
+attack_damage = 22.0
+attack_windup = 0.55
+scrap_scene = ExtResource("3_scrap")
+scrap_value = 14
+health_multiplier = 1.2
+speed_multiplier = 0.9
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("Shape_body")
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("2_health")
+max_health = 60.0
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+path_desired_distance = 0.6
+target_desired_distance = 1.0
+radius = 0.4
+height = 1.8
+
+[node name="Meshes" type="Node3D" parent="."]
+
+[node name="Body" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.15, 0)
+mesh = SubResource("Mesh_body")
+
+[node name="Head" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
+mesh = SubResource("Mesh_head")
+
+[node name="ArmLeft" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.47, 1.1, 0)
+mesh = SubResource("Mesh_limb")
+
+[node name="ArmRight" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.47, 1.1, 0)
+mesh = SubResource("Mesh_limb")
+
+[node name="LegLeft" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18, 0.37, 0)
+mesh = SubResource("Mesh_limb")
+
+[node name="LegRight" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.18, 0.37, 0)
+mesh = SubResource("Mesh_limb")
+
+[node name="Eyes" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.83, -0.21)
+mesh = SubResource("Mesh_eyes")
+
+[node name="Ice" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+mesh = SubResource("Mesh_ice")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("Repl")

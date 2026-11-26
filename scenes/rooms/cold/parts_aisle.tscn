@@ -1,0 +1,132 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/level/room.gd" id="1_room"]
+[ext_resource type="Material" path="res://materials/cold_floor.tres" id="2_floor"]
+[ext_resource type="Material" path="res://materials/cold_rack.tres" id="3_rack"]
+[ext_resource type="Material" path="res://materials/cold_wall.tres" id="4_wall"]
+[ext_resource type="Material" path="res://materials/ice.tres" id="5_ice"]
+[ext_resource type="Script" path="res://scripts/world/ice_patch.gd" id="6_ice"]
+[ext_resource type="Script" path="res://scripts/world/coolant_leak.gd" id="7_leak"]
+[ext_resource type="Material" path="res://materials/coolant.tres" id="8_coolant"]
+[ext_resource type="Script" path="res://scripts/world/arrival.gd" id="10_arrival"]
+[ext_resource type="PackedScene" path="res://scenes/world/section_door.tscn" id="12_door"]
+[ext_resource type="Material" path="res://materials/hazard.tres" id="13_hazard"]
+[ext_resource type="Script" path="res://scripts/world/egg_socket.gd" id="14_socket"]
+[ext_resource type="Material" path="res://materials/junk_prop.tres" id="15_prop"]
+
+[sub_resource type="BoxShape3D" id="Shape_6"]
+size = Vector3(6, 1.0, 20)
+
+[node name="PartsAisle" type="Node3D"]
+script = ExtResource("1_room")
+display_name = "Parts Aisle"
+can_rotate = true
+
+[node name="Lamp" type="OmniLight3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 9, 0)
+light_color = Color(0.75, 0.9, 1, 1)
+light_energy = 1.5
+omni_range = 24.0
+
+[node name="Crate00" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -8, 0.7, -8)
+use_collision = true
+size = Vector3(2.2, 1.4, 2.2)
+material = ExtResource("15_prop")
+
+[node name="Top00" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -7.7, 1.4, -8)
+use_collision = true
+size = Vector3(1.4, 2.8, 1.4)
+material = ExtResource("15_prop")
+
+[node name="Crate01" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -8, 0.7, 8)
+use_collision = true
+size = Vector3(2.2, 1.4, 2.2)
+material = ExtResource("15_prop")
+
+[node name="Top01" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -7.7, 1.4, 8)
+use_collision = true
+size = Vector3(1.4, 2.8, 1.4)
+material = ExtResource("15_prop")
+
+[node name="Crate10" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.7, -8)
+use_collision = true
+size = Vector3(2.2, 1.4, 2.2)
+material = ExtResource("15_prop")
+
+[node name="Top10" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0.3, 1.4, -8)
+use_collision = true
+size = Vector3(1.4, 2.8, 1.4)
+material = ExtResource("15_prop")
+
+[node name="Crate11" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.7, 8)
+use_collision = true
+size = Vector3(2.2, 1.4, 2.2)
+material = ExtResource("15_prop")
+
+[node name="Top11" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0.3, 1.4, 8)
+use_collision = true
+size = Vector3(1.4, 2.8, 1.4)
+material = ExtResource("15_prop")
+
+[node name="Crate20" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 8, 0.7, -8)
+use_collision = true
+size = Vector3(2.2, 1.4, 2.2)
+material = ExtResource("15_prop")
+
+[node name="Top20" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 8.3, 1.4, -8)
+use_collision = true
+size = Vector3(1.4, 2.8, 1.4)
+material = ExtResource("15_prop")
+
+[node name="Crate21" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 8, 0.7, 8)
+use_collision = true
+size = Vector3(2.2, 1.4, 2.2)
+material = ExtResource("15_prop")
+
+[node name="Top21" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 8.3, 1.4, 8)
+use_collision = true
+size = Vector3(1.4, 2.8, 1.4)
+material = ExtResource("15_prop")
+
+[node name="FrostSheet" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.02, 0)
+use_collision = false
+size = Vector3(6, 0.04, 20)
+material = ExtResource("5_ice")
+
+[node name="Frost" type="Area3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.5, 0)
+script = ExtResource("6_ice")
+grip = 0.12
+
+[node name="Shape" type="CollisionShape3D" parent="Frost"]
+shape = SubResource("Shape_6")
+
+[node name="BoxSpot" type="Marker3D" parent="." groups=["box_spot"]]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0, 10)
+
+[node name="Spawns" type="Node3D" parent="."]
+
+[node name="Spawn0" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -11, 0.2, -11)
+
+[node name="Spawn1" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 11, 0.2, -11)
+
+[node name="Spawn2" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -11, 0.2, 11)
+
+[node name="Spawn3" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 11, 0.2, 11)

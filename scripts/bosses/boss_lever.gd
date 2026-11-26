@@ -6,9 +6,11 @@ var prompt := "[E] Start the fight"
 
 
 func get_prompt(_player: Player) -> String:
-	if boss == null or not boss.can_start():
+	if boss == null:
 		return ""
-	return prompt
+	if boss.has_method("lever_prompt"):
+		return boss.lever_prompt(prompt)
+	return prompt if boss.can_start() else ""
 
 
 func interact(_player: Player) -> bool:

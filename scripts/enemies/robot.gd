@@ -32,6 +32,8 @@ var _cooldown_left := 0.0
 var _windup_left := -1.0
 var _body_material: StandardMaterial3D
 var _body_color: Color
+var _base_color: Color
+var _frozen_left := 0.0
 var _eye_material: StandardMaterial3D
 
 @onready var health: HealthComponent = $HealthComponent
@@ -51,6 +53,7 @@ func _ready() -> void:
 	# Each robot gets its own materials so hit flashes and eye flares don't affect others.
 	_body_material = ($Meshes/Body as MeshInstance3D).get_active_material(0).duplicate()
 	_body_color = _body_material.albedo_color
+	_base_color = _body_color
 	_eye_material = ($Meshes/Eyes as MeshInstance3D).get_active_material(0).duplicate()
 	for mesh: MeshInstance3D in _meshes.get_children():
 		mesh.material_override = _eye_material if mesh.name == "Eyes" else _body_material
@@ -81,6 +84,14 @@ func _physics_process(delta: float) -> void:
 		return
 	if not is_on_floor():
 		velocity.y -= _gravity * delta
+	if _frozen_left > 0.0:
+		_frozen_left -= delta
+		_set_horizontal_velocity(Vector3.ZERO)
+		_windup_left = -1.0
+		move_and_slide()
+		if _frozen_left <= 0.0:
+			_frost(false)
+		return
 	_cooldown_left -= delta
 	_repath_left -= delta
 	if _repath_left <= 0.0:
@@ -129,6 +140,32 @@ func _separation() -> Vector3:
 		if distance < separation_radius and distance > 0.01:
 			push += away / distance * (1.0 - distance / separation_radius)
 	return push
+
+
+## Coolant: stops the robot dead for a few seconds (host decides).
+func freeze(seconds: float) -> void:
+	if health.dead:
+		return
+	if _frozen_left <= 0.0:
+		_frost(true)
+	_frozen_left = maxf(_frozen_left, seconds)
+
+
+func is_frozen() -> bool:
+	return _frozen_left > 0.0
+
+
+func _frost(on: bool) -> void:
+	if Net.is_session():
+		_net_frost.rpc(on)
+	else:
+		_net_frost(on)
+
+
+@rpc("authority", "call_local", "reliable")
+func _net_frost(on: bool) -> void:
+	_body_color = Color(0.6, 0.85, 1.0) if on else _base_color
+	_body_material.albedo_color = _body_color
 
 
 ## Robot types override these to change how they fight (see RangedRobot).

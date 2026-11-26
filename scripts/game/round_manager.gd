@@ -239,6 +239,15 @@ func _spawn_one(scene: PackedScene, at: Vector3) -> Robot:
 	return robot
 
 
+## A boss's add: a robot that doesn't count toward the round (host only).
+func spawn_add(scene: PackedScene, at: Vector3) -> Robot:
+	var robot: Robot = scene.instantiate()
+	robot.configure(robot_health_for_round(round_number), robot_speed_for_round(round_number))
+	robot.position = at
+	_spawn_parent().add_child(robot, true)
+	return robot
+
+
 ## A random spawn point that isn't too close to any player, if one exists.
 func _pick_spawn_point() -> Node3D:
 	var points := get_tree().get_nodes_in_group(spawn_group)

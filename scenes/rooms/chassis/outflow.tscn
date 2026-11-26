@@ -59,8 +59,12 @@ transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 7, 0, -1
 destination_name = "Cold Storage"
 arrival_id = &"cold_from_chassis"
 cost = 1500
-locked = true
 locked_reason = "Frozen shut"
+
+[node name="ArriveFromCold" type="Marker3D" parent="."]
+transform = Transform3D(-1.0000, 0, -0.0000, 0, 1, 0, 0.0000, 0, -1.0000, 7, 0.3, -12)
+script = ExtResource("10_arrival")
+arrival_id = &"chassis_from_cold"
 
 [node name="ConveyorSign" type="CSGBox3D" parent="."]
 transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -8, 4.8, -13.9)

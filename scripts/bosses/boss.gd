@@ -156,6 +156,89 @@ func _unpack(state: Array) -> void:
 	phase_name = state[2]
 
 
+# --- Shared helpers (bosses are greybox, built in code) ---------------------------------
+
+func _nearest_player(from: Vector3) -> Player:
+	var best: Player = null
+	var best_d := INF
+	for player: Player in get_tree().get_nodes_in_group("players"):
+		if not player.is_targetable():
+			continue
+		var d := from.distance_squared_to(player.global_position)
+		if d < best_d:
+			best = player
+			best_d = d
+	return best
+
+
+func _rounds_announce(text: String) -> void:
+	var rounds := _rounds()
+	if rounds:
+		rounds.announce(text)
+
+
+func _part(parent: Node3D, size: Vector3, color: Color, hp: float, glow := false) -> BossPart:
+	var part := BossPart.new()
+	part.max_health = hp
+	parent.add_child(part)
+	var shape := CollisionShape3D.new()
+	shape.name = "Shape"
+	var box := BoxShape3D.new()
+	box.size = size
+	shape.shape = box
+	part.add_child(shape)
+	var mesh := _box(part, size, color, glow)
+	mesh.name = "Mesh"
+	return part
+
+
+func _box(parent: Node, size: Vector3, color: Color, glow := false) -> MeshInstance3D:
+	var mesh := MeshInstance3D.new()
+	var box := BoxMesh.new()
+	box.size = size
+	mesh.mesh = box
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = color
+	if glow:
+		mat.emission_enabled = true
+		mat.emission = Color(color.r, color.g, color.b)
+		mat.emission_energy_multiplier = 2.5
+	mesh.material_override = mat
+	parent.add_child(mesh)
+	return mesh
+
+
+func _sphere(parent: Node, radius: float, color: Color) -> MeshInstance3D:
+	var mesh := MeshInstance3D.new()
+	var sphere := SphereMesh.new()
+	sphere.radius = radius
+	sphere.height = radius * 2.0
+	mesh.mesh = sphere
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = color
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mesh.material_override = mat
+	parent.add_child(mesh)
+	return mesh
+
+
+func _stomp(at: Vector3, reach: float, damage: float) -> void:
+	Sfx.broadcast_at(&"robot_swing", at + Vector3.UP, 4.0)
+	for player: Player in get_tree().get_nodes_in_group("players"):
+		if player.is_targetable() and player.global_position.distance_to(at) <= reach:
+			player.take_damage(damage, at, self)
+	_shockwave(at, reach)
+	if Net.is_session():
+		_net_shockwave.rpc(at, reach)
+
+
+func _shockwave(at: Vector3, reach: float) -> void:
+	var ring := _box(self, Vector3(reach * 2.0, 0.1, reach * 2.0), Color(1, 0.6, 0.2, 0.4), true)
+	(ring.material_override as StandardMaterial3D).transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	ring.global_position = Vector3(at.x, global_position.y + 0.1, at.z)
+	get_tree().create_timer(0.3, false).timeout.connect(ring.queue_free)
+
+
 # --- Network ------------------------------------------------------------------------------
 
 @rpc("any_peer", "reliable")
@@ -182,3 +265,8 @@ func _net_finished(dropped: bool, rematch: int) -> void:
 @rpc("authority", "unreliable_ordered")
 func _net_state(state: Array) -> void:
 	_unpack(state)
+
+
+@rpc("authority", "unreliable")
+func _net_shockwave(at: Vector3, reach: float) -> void:
+	_shockwave(at, reach)

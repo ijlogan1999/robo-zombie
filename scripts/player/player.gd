@@ -87,6 +87,8 @@ var _net_has_state := false
 
 var _pull := Vector3.ZERO ## Set by pull(); added to movement while _pull_left lasts.
 var _pull_left := 0.0
+var _grip := 1.0
+var _grip_until := 0
 
 @onready var health: HealthComponent = $HealthComponent
 @onready var weapon_holder: WeaponHolder = $Head/Camera3D/WeaponHolder
@@ -197,6 +199,7 @@ func _ground_move(delta: float, wish_dir: Vector3, input_dir: Vector2) -> void:
 		target_speed *= lerpf(1.0, weapon_holder.weapon.ads_move_speed_multiplier, weapon_holder.aim_blend)
 
 	var rate := ground_acceleration if wish_dir != Vector3.ZERO else ground_deceleration
+	rate *= traction()
 	_set_horizontal_velocity(_horizontal_velocity().move_toward(wish_dir * target_speed, rate * delta))
 
 
@@ -220,7 +223,7 @@ func _slide_move(delta: float) -> void:
 		var floor_normal := get_floor_normal()
 		var downhill := Vector3(floor_normal.x, 0.0, floor_normal.z)
 		horizontal += downhill * slide_slope_acceleration * delta
-	var speed := maxf(horizontal.length() - slide_friction * delta, 0.0)
+	var speed := maxf(horizontal.length() - slide_friction * traction() * delta, 0.0)
 	_set_horizontal_velocity(horizontal.normalized() * speed)
 
 
@@ -334,6 +337,16 @@ func _update_camera(delta: float) -> void:
 ## Called by robots and hazards. Returns true if the hit took the player down.
 ## In co-op, damage is passed on to the game that owns this player.
 ## Drags the player along for a moment (a boss's magnet). Keep calling it to keep pulling.
+## Ice: for a moment the player grips the floor this well (1 = normal, lower slides).
+func slip(grip: float, seconds := 0.3) -> void:
+	_grip = grip
+	_grip_until = Time.get_ticks_msec() + int(seconds * 1000.0)
+
+
+func traction() -> float:
+	return _grip if Time.get_ticks_msec() < _grip_until else 1.0
+
+
 func pull(pull_velocity: Vector3) -> void:
 	if not is_multiplayer_authority():
 		_net_pull.rpc_id(get_multiplayer_authority(), pull_velocity)

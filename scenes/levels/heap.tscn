@@ -69,6 +69,22 @@
 [ext_resource type="Material" path="res://materials/servo_rack.tres" id="80_rack"]
 [ext_resource type="Material" path="res://materials/servo_board.tres" id="81_board"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/bug.tscn" id="82_bug"]
+[ext_resource type="Script" path="res://scripts/level/hall_section.gd" id="90_hall"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/cold/loading_bay.tscn" id="91_loading"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/cold/cryo_chamber.tscn" id="92_cryo"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/cold/parts_aisle.tscn" id="93_parts"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/cold/robot_lockers.tscn" id="94_lockers"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/cold/flash_freezer.tscn" id="95_freezer"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/cold/coolant_plant.tscn" id="96_coolant"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/cold/sorting_floor.tscn" id="97_sorting"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/cold/defrost_bay.tscn" id="98_defrost"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/cold/foreman_booth.tscn" id="99_booth"]
+[ext_resource type="Material" path="res://materials/cold_floor.tres" id="100_cold_floor"]
+[ext_resource type="Material" path="res://materials/cold_wall.tres" id="101_cold_wall"]
+[ext_resource type="Material" path="res://materials/cold_rack.tres" id="102_cold_rack"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/thawed.tscn" id="103_thawed"]
+[ext_resource type="Script" path="res://scripts/bosses/backup_body.gd" id="104_backup"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/scrapper.tscn" id="105_scrapper"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_top_color = Color(0.42, 0.55, 0.72, 1)
@@ -129,6 +145,20 @@ agent_height = 2.0
 agent_radius = 0.5
 agent_max_climb = 0.25
 
+[sub_resource type="NavigationMesh" id="NavigationMesh_cold"]
+filter_baking_aabb = AABB(-60, -5, -60, 120, 13, 120)
+cell_size = 0.25
+cell_height = 0.25
+agent_height = 2.0
+agent_radius = 0.5
+agent_max_climb = 0.25
+
+[sub_resource type="Resource" id="SpawnEntry_thawed"]
+script = ExtResource("36_entry")
+scene = ExtResource("103_thawed")
+weight = 6.0
+weight_per_round = 0.4
+
 [sub_resource type="Resource" id="SpawnEntry_bug"]
 script = ExtResource("36_entry")
 scene = ExtResource("82_bug")
@@ -137,7 +167,7 @@ weight_per_round = 0.4
 
 [node name="Heap" type="Node3D"]
 script = ExtResource("12_level")
-section_paths = Array[NodePath]([NodePath("NavigationRegion3D/Section"), NodePath("CrucibleNav/Section"), NodePath("ChassisNav/Section"), NodePath("ServoNav/Section")])
+section_paths = Array[NodePath]([NodePath("NavigationRegion3D/Section"), NodePath("CrucibleNav/Section"), NodePath("ChassisNav/Section"), NodePath("ServoNav/Section"), NodePath("ColdNav/Section")])
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_main")
@@ -221,6 +251,33 @@ is_start_section = false
 wall_material = ExtResource("80_rack")
 spawn_table = Array[ExtResource("36_entry")]([SubResource("SpawnEntry_bug")])
 
+[node name="ColdNav" type="NavigationRegion3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 400)
+navigation_mesh = SubResource("NavigationMesh_cold")
+script = ExtResource("2_nav")
+
+[node name="Section" type="Node3D" parent="ColdNav" groups=["section"]]
+script = ExtResource("90_hall")
+center_room = ExtResource("92_cryo")
+rack_material = ExtResource("102_cold_rack")
+floor_material = ExtResource("100_cold_floor")
+start_room = ExtResource("91_loading")
+optional_rooms = Array[PackedScene]([ExtResource("93_parts"), ExtResource("94_lockers"), ExtResource("95_freezer"), ExtResource("96_coolant"), ExtResource("97_sorting"), ExtResource("98_defrost"), ExtResource("99_booth")])
+gate_scene = ExtResource("9_gate")
+first_gate_cost = 1250
+gate_cost_step = 125
+is_start_section = false
+wall_height = 10.0
+wall_material = ExtResource("101_cold_wall")
+spawn_table = Array[ExtResource("36_entry")]([SubResource("SpawnEntry_thawed")])
+
+[node name="BackupBody" type="Node3D" parent="ColdNav"]
+script = ExtResource("104_backup")
+wave_scenes = Array[PackedScene]([ExtResource("103_thawed"), ExtResource("105_scrapper")])
+display_name = "QUOTA'S BACKUP BODY"
+drop_flag = &"admin_badge"
+drop_text = "THE BACKUP BODY SHATTERS. IT DROPPED AN ADMIN BADGE"
+
 [node name="PitDrop" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -21, 0)
 script = ExtResource("31_passage")
@@ -287,5 +344,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 52)
 [node name="Spawned" type="Node3D" parent="." groups=["spawn_root"]]
 
 [node name="NetSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("res://scenes/enemies/scrapper.tscn", "res://scenes/enemies/skitter.tscn", "res://scenes/enemies/bolter.tscn", "res://scenes/enemies/warden.tscn", "res://scenes/pickups/scrap_pickup.tscn", "res://scenes/bosses/feeder_drone.tscn", "res://scenes/enemies/slagger.tscn", "res://scenes/enemies/dripper.tscn", "res://scenes/enemies/bug.tscn")
+_spawnable_scenes = PackedStringArray("res://scenes/enemies/scrapper.tscn", "res://scenes/enemies/skitter.tscn", "res://scenes/enemies/bolter.tscn", "res://scenes/enemies/warden.tscn", "res://scenes/pickups/scrap_pickup.tscn", "res://scenes/bosses/feeder_drone.tscn", "res://scenes/enemies/slagger.tscn", "res://scenes/enemies/dripper.tscn", "res://scenes/enemies/bug.tscn", "res://scenes/enemies/thawed.tscn")
 spawn_path = NodePath("../Spawned")

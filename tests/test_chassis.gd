@@ -137,7 +137,7 @@ func _ready() -> void:
 		await get_tree().physics_frame
 	check(heap.room_at_position(player.global_position) != null, "the Outflow conveyor drops you back into the Heap")
 	var cold_door: SectionDoor = yard.rooms[-1].get_node("ColdStorageDoor")
-	check(cold_door.locked, "the way on to Cold Storage is there (frozen shut for now)")
+	check(not cold_door.locked and cold_door.arrival_id == &"cold_from_chassis", "the way on to Cold Storage is there")
 
 	print("\n%d/%d checks passed" % [checks - fails, checks])
 	get_tree().quit(1 if fails else 0)

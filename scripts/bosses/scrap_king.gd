@@ -300,19 +300,6 @@ func _face(at: Vector3) -> void:
 	body.rotation.y = atan2(-flat.x, -flat.z)
 
 
-func _nearest_player(from: Vector3) -> Player:
-	var best: Player = null
-	var best_d := INF
-	for player: Player in get_tree().get_nodes_in_group("players"):
-		if not player.is_targetable():
-			continue
-		var d := from.distance_squared_to(player.global_position)
-		if d < best_d:
-			best = player
-			best_d = d
-	return best
-
-
 func _shoot(target: Node3D, damage: float, size: float) -> void:
 	var from := body.global_position + Vector3.UP * 2.5 - body.global_transform.basis.z * 3.0
 	var aim := (target.global_position + Vector3.UP - from).normalized() * shell_speed
@@ -559,17 +546,3 @@ func _build_panel() -> void:
 	lever.position = Vector3(0.4, 1.3, 0)
 
 
-func _box(parent: Node, size: Vector3, color: Color, glow := false) -> MeshInstance3D:
-	var mesh := MeshInstance3D.new()
-	var box := BoxMesh.new()
-	box.size = size
-	mesh.mesh = box
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = color
-	if glow:
-		mat.emission_enabled = true
-		mat.emission = color
-		mat.emission_energy_multiplier = 2.0
-	mesh.material_override = mat
-	parent.add_child(mesh)
-	return mesh
