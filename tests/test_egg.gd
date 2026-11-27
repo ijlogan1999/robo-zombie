@@ -70,6 +70,14 @@ func _ready() -> void:
 	await get_tree().create_timer(0.3).timeout
 	check(hud_step.text.begins_with("EGG NEXT: Heap"), "and it's on screen: %s" % hud_step.text)
 
+	# F2 gives scrap (testing aid).
+	var scrap_before := player.scrap
+	var f2 := InputEventKey.new()
+	f2.pressed = true
+	f2.physical_keycode = KEY_F2
+	player.get_node("HUD")._unhandled_input(f2)
+	check(player.scrap == scrap_before + 5000, "F2 gives you 5000 scrap for testing")
+
 	# 1. Fuses and the radio.
 	check(not use("Radio"), "the radio is dead without its fuses")
 	for i in 3:

@@ -161,7 +161,7 @@ func _on_hit_confirmed(killed: bool) -> void:
 	_hit_marker.modulate = LOW_AMMO_COLOR if killed else Color.WHITE
 
 
-# --- Easter egg tracker (testing aid; F1 hides it) ---------------------------------------
+# --- Testing aids: Easter egg tracker (F1 hides it) and free scrap (F2) ---------------------------------------
 
 func _build_egg_tracker() -> void:
 	_egg_step = Label.new()
@@ -185,6 +185,15 @@ func _update_egg_tracker(delta: float) -> void:
 	_egg_step.text = "EGG NEXT: " + chain.next_step() if chain else ""
 
 
+## Testing keys: F1 hides the egg tracker, F2 gives this player 5000 scrap.
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_F1:
-		_egg_step.visible = not _egg_step.visible
+	if not (event is InputEventKey and event.pressed and not event.echo):
+		return
+	match event.physical_keycode:
+		KEY_F1:
+			_egg_step.visible = not _egg_step.visible
+		KEY_F2:
+			if _player.is_multiplayer_authority():
+				_player.add_scrap(5000)
+				_status.text = "+5000 scrap (testing)"
+				_status_left = STATUS_TIME
