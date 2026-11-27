@@ -122,6 +122,7 @@ func _sees(player: Player) -> bool:
 	if from.distance_to(to) > reach:
 		return false
 	var query := PhysicsRayQueryParameters3D.create(from, to)
+	query.collision_mask = Layers.SHOTS
 	query.exclude = [get_rid(), player.get_rid()]
 	return get_world_3d().direct_space_state.intersect_ray(query).is_empty()
 

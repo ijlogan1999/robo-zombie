@@ -39,6 +39,10 @@ func _ready() -> void:
 	# (Landing on the balcony also wakes him; that's checked next.)
 	check(Vector2(player.global_position.x, player.global_position.z).length() > 17.0, "an invisible fence over the railing keeps players out of the pit")
 	check(king.active, "landing on the balcony wakes him")
+	var ray := PhysicsRayQueryParameters3D.create(Vector3(0, 8, 24), Vector3(0, 8, 12))
+	ray.collision_mask = Layers.SHOTS
+	var shot := player.get_world_3d().direct_space_state.intersect_ray(ray)
+	check(shot.is_empty() or shot.collider.name != "PitBarrier", "shots pass through the invisible fence")
 	player.velocity = Vector3.ZERO
 
 	# Restart cleanly for the panel test.
@@ -90,6 +94,14 @@ func _ready() -> void:
 	await get_tree().process_frame
 	check(pit_drop.enabled and king.pit_open and king.get_node_or_null("PitBarrier") == null, "the pit opens: the way down to the Crucible")
 	check(not rounds.is_held(), "rounds carry on")
+	# Hop the low lip off the balcony and fall into the Crucible.
+	player.global_position = Vector3(0, 4.3, 19.5)
+	player.velocity = Vector3(0, player.jump_velocity, -6)
+	for i in 40:
+		player.velocity.z = -6
+		await get_tree().physics_frame
+	await get_tree().create_timer(2.5).timeout
+	check(player.global_position.y < -100.0, "hop off the balcony into the pit and you drop into the Crucible (y %.0f)" % player.global_position.y)
 
 	print("\n%d/%d checks passed" % [checks - fails, checks])
 	get_tree().quit(1 if fails else 0)

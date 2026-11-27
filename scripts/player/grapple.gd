@@ -58,6 +58,7 @@ func aimed_anchor() -> Node3D:
 		if dot <= best_dot:
 			continue
 		var query := PhysicsRayQueryParameters3D.create(from, anchor.global_position)
+		query.collision_mask = Layers.SHOTS
 		query.exclude = [player.get_rid()]
 		var hit := get_world_3d().direct_space_state.intersect_ray(query)
 		if not hit.is_empty() and (hit.position as Vector3).distance_to(anchor.global_position) > 1.0:

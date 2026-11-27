@@ -120,6 +120,7 @@ func _add_arc_wall(a0: float, a1: float, radius: float, bottom: float, height: f
 			add_child(box)
 		else:
 			var body := StaticBody3D.new()
+			body.collision_layer = Layers.BLOCKER
 			var shape := CollisionShape3D.new()
 			var box_shape := BoxShape3D.new()
 			box_shape.size = size

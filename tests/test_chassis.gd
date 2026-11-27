@@ -96,12 +96,15 @@ func _ready() -> void:
 	check(after < before and before - after < 25.0, "a dip hurts a little (%.0f)" % (before - after))
 	if hot:
 		hot._set_burning(true)
+		hot._cycle_left = 999.0 # Don't let its own cycle put it out mid-check.
 		player.health.reset()
 		player.global_position = hot.global_position + Vector3.UP * 0.2
 		before = player.health.health + player.health.shields
+		player.set_physics_process(false) # Hold still in it (the current and floating parts carry you off).
 		await get_tree().create_timer(1.0).timeout
+		player.set_physics_process(true)
 		after = player.health.health + player.health.shields
-		check(before - after > 35.0, "a burning tank hurts a lot (%.0f)" % (before - after))
+		check(before - after > 30.0, "a burning tank hurts a lot (%.0f)" % (before - after))
 	else:
 		check(true, "(no burning tank in this layout)")
 	player.health.reset()

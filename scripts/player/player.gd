@@ -106,6 +106,7 @@ var _grip_until := 0
 
 
 func _ready() -> void:
+	collision_mask |= Layers.BLOCKER # Invisible walls stop bodies, not shots.
 	# Each player needs its own capsule so crouching doesn't resize everyone's.
 	_capsule = (_collision.shape as CapsuleShape3D).duplicate()
 	_collision.shape = _capsule

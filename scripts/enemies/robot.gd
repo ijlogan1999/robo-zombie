@@ -57,6 +57,7 @@ func configure(max_health: float, speed: float) -> void:
 
 
 func _ready() -> void:
+	collision_mask |= Layers.BLOCKER # Invisible walls stop bodies, not shots.
 	# Each robot gets its own materials so hit flashes and eye flares don't affect others.
 	_body_material = ($Meshes/Body as MeshInstance3D).get_active_material(0).duplicate()
 	_body_color = _body_material.albedo_color

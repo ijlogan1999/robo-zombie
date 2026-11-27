@@ -279,6 +279,7 @@ func _fire_ray(spread_degrees: float) -> void:
 
 	var from := _camera.global_position
 	var query := PhysicsRayQueryParameters3D.create(from, from + direction * weapon.max_range)
+	query.collision_mask = Layers.SHOTS
 	query.exclude = [_player.get_rid()]
 	var hit := get_world_3d().direct_space_state.intersect_ray(query)
 	if hit.is_empty():

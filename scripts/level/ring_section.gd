@@ -53,6 +53,7 @@ const LINKS := [
 @export var railing_height := 1.1 ## Upper floor edge over the pit. An invisible wall stops falls.
 @export var pit_radius := 18.0
 @export var balcony_height := 4.0 ## The boss fight balcony circling the pit.
+@export var pit_lip_height := 0.5 ## Low enough to hop over into the pit once it opens.
 
 @export_group("Stairwell")
 @export var ramp_length := 20.0
@@ -294,7 +295,7 @@ func _build_stairwell() -> void:
 ## The balcony circling the pit, and the pit itself. Unreachable until the boss fight is built.
 func _build_pit() -> void:
 	_add_sector(0.0, 360.0, pit_radius, inner_radius - wall_thickness / 2.0, balcony_height - slab_thickness, slab_thickness)
-	_add_arc_wall(0.0, 360.0, pit_radius, balcony_height, railing_height, true)
+	_add_arc_wall(0.0, 360.0, pit_radius, balcony_height, pit_lip_height, true)
 	var pit_floor := _add_sector(0.0, 360.0, 0.0, pit_radius, -24.0, 1.0)
 	pit_floor.name = "PitFloor"
 

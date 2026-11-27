@@ -138,6 +138,7 @@ func _spawn_puddle(at: Vector3) -> void:
 
 func _can_see(player: Node3D) -> bool:
 	var query := PhysicsRayQueryParameters3D.create(global_position + Vector3.UP * 1.5, player.global_position + Vector3.UP)
+	query.collision_mask = Layers.SHOTS
 	query.exclude = [get_rid()]
 	var hit := get_world_3d().direct_space_state.intersect_ray(query)
 	return hit.is_empty() or hit.collider == player

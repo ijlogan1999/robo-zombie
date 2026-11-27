@@ -500,6 +500,7 @@ func _build_barrier() -> void:
 	# An invisible fence over the railing so nobody falls into the pit before he's beaten.
 	_barrier = StaticBody3D.new()
 	_barrier.name = "PitBarrier"
+	_barrier.collision_layer = Layers.BLOCKER
 	add_child(_barrier)
 	var pieces := 24
 	for i in pieces:
