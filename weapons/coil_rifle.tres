@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="WeaponData" format=3]
+
+[ext_resource type="Script" path="res://scripts/weapons/weapon_data.gd" id="1_data"]
+[ext_resource type="PackedScene" path="res://scenes/weapons/bolt_driver_view.tscn" id="2_view"]
+
+[resource]
+script = ExtResource("1_data")
+display_name = "Coil Rifle"
+fire_sound = &"bolt_shot"
+view_scene = ExtResource("2_view")
+damage = 120.0
+max_range = 250.0
+rounds_per_minute = 60.0
+automatic = false
+magazine_size = 5
+max_reserve = 35
+reload_time = 2.6
+hip_spread_degrees = 5.0
+ads_spread_degrees = 0.0
+ads_fov = 30.0
+recoil_pitch_degrees = 3.5

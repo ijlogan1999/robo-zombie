@@ -1,0 +1,68 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/level/room.gd" id="1_room"]
+[ext_resource type="Material" path="res://materials/proving_wall.tres" id="3_wall"]
+[ext_resource type="Material" path="res://materials/sandbag.tres" id="4_sand"]
+[ext_resource type="Material" path="res://materials/concrete.tres" id="5_concrete"]
+[ext_resource type="Script" path="res://scripts/world/sentry_turret.gd" id="6_turret"]
+[ext_resource type="Script" path="res://scripts/world/land_mine.gd" id="7_mine"]
+[ext_resource type="Material" path="res://materials/hazard.tres" id="8_hazard"]
+[ext_resource type="Script" path="res://scripts/world/grapple_anchor.gd" id="9_anchor"]
+[ext_resource type="Script" path="res://scripts/world/arrival.gd" id="10_arrival"]
+[ext_resource type="Script" path="res://scripts/world/grapple_pickup.gd" id="11_pickup"]
+[ext_resource type="PackedScene" path="res://scenes/world/section_door.tscn" id="12_door"]
+[ext_resource type="Material" path="res://materials/junk_prop.tres" id="13_prop"]
+
+
+[node name="ProvingEntry" type="Node3D"]
+script = ExtResource("1_room")
+display_name = "Proving Entry"
+can_rotate = false
+
+[node name="Lamp" type="OmniLight3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 9, 0)
+light_energy = 1.0
+omni_range = 26.0
+
+[node name="ArriveFromLine" type="Marker3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.3, 12)
+script = ExtResource("10_arrival")
+arrival_id = &"proving_from_line"
+
+[node name="LineDoor" parent="." instance=ExtResource("12_door")]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 8, 0, 17.2)
+destination_name = "The Line"
+arrival_id = &"line_from_proving"
+cost = 500
+
+[node name="Sign" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -8, 3.5, 17.3)
+use_collision = false
+size = Vector3(8, 1.5, 0.2)
+material = ExtResource("8_hazard")
+
+[node name="BagsA" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -8, 0.5, 4)
+use_collision = true
+size = Vector3(6, 1.0, 1.0)
+material = ExtResource("4_sand")
+
+[node name="BagsB" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 8, 0.5, 2)
+use_collision = true
+size = Vector3(6, 1.0, 1.0)
+material = ExtResource("4_sand")
+
+[node name="Spawns" type="Node3D" parent="."]
+
+[node name="Spawn0" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -12, 0.2, -4)
+
+[node name="Spawn1" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 12, 0.2, -4)
+
+[node name="Spawn2" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -12, 0.2, 8)
+
+[node name="Spawn3" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 12, 0.2, 8)

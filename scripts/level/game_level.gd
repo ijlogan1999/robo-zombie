@@ -7,14 +7,17 @@ extends Node3D
 
 const PLAYER_SCENE := preload("res://scenes/player/player.tscn")
 
-@export var section_path := NodePath("NavigationRegion3D/Section")
+@export var section_paths: Array[NodePath] = [NodePath("NavigationRegion3D/Section")]
 
 
 func _enter_tree() -> void:
 	add_to_group("game_level")
 	if Net.is_session():
 		# Before the section's _ready, so it builds the host's layout.
-		(get_node(section_path) as Section).layout_seed = Net.layout_seed
+		for i in section_paths.size():
+			var section := get_node_or_null(section_paths[i]) as Section
+			if section:
+				section.layout_seed = Net.layout_seed + i * 101
 
 
 func _ready() -> void:

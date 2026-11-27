@@ -22,7 +22,7 @@ const STEAM_APP_ID := 480
 
 const DEFAULT_PORT := 24680
 const MAX_PLAYERS := 4
-const GAME_SCENE := "res://scenes/levels/junkyard.tscn"
+const GAME_SCENE := "res://scenes/levels/heap.tscn"
 const MENU_SCENE := "res://scenes/ui/main_menu.tscn"
 
 var peers: Array[int] = [] ## Everyone in the session, host (1) first.

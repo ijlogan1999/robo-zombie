@@ -22,6 +22,7 @@ func has_line_of_sight() -> bool:
 	if not is_instance_valid(target):
 		return false
 	var query := PhysicsRayQueryParameters3D.create(_muzzle.global_position, _aim_point())
+	query.collision_mask = Layers.SHOTS
 	query.exclude = [get_rid()]
 	var hit := get_world_3d().direct_space_state.intersect_ray(query)
 	return hit.is_empty() or hit.collider == target

@@ -1,0 +1,109 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/level/room.gd" id="1_room"]
+[ext_resource type="Material" path="res://materials/proving_wall.tres" id="3_wall"]
+[ext_resource type="Material" path="res://materials/sandbag.tres" id="4_sand"]
+[ext_resource type="Material" path="res://materials/concrete.tres" id="5_concrete"]
+[ext_resource type="Script" path="res://scripts/world/sentry_turret.gd" id="6_turret"]
+[ext_resource type="Script" path="res://scripts/world/land_mine.gd" id="7_mine"]
+[ext_resource type="Material" path="res://materials/hazard.tres" id="8_hazard"]
+[ext_resource type="Script" path="res://scripts/world/grapple_anchor.gd" id="9_anchor"]
+[ext_resource type="Script" path="res://scripts/world/arrival.gd" id="10_arrival"]
+[ext_resource type="Script" path="res://scripts/world/grapple_pickup.gd" id="11_pickup"]
+[ext_resource type="PackedScene" path="res://scenes/world/section_door.tscn" id="12_door"]
+[ext_resource type="Material" path="res://materials/junk_prop.tres" id="13_prop"]
+
+[sub_resource type="CylinderShape3D" id="Shape_32"]
+height = 1.0
+radius = 0.8
+
+[sub_resource type="CylinderMesh" id="Mesh_33"]
+top_radius = 0.35
+bottom_radius = 0.4
+height = 0.12
+
+[sub_resource type="SphereMesh" id="Mesh_34"]
+radius = 0.08
+height = 0.16
+
+[node name="ObstacleCourse" type="Node3D"]
+script = ExtResource("1_room")
+display_name = "Obstacle Course"
+can_rotate = false
+
+[node name="Lamp" type="OmniLight3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 9, 0)
+light_energy = 1.0
+omni_range = 26.0
+
+[node name="Wall0" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -8, 0.5, 10)
+use_collision = true
+size = Vector3(6, 1.0, 0.6)
+material = ExtResource("5_concrete")
+
+[node name="Wall1" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 6, 1.2, 10)
+use_collision = true
+size = Vector3(6, 2.4, 0.6)
+material = ExtResource("5_concrete")
+
+[node name="Wall2" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -4, 0.5, 4)
+use_collision = true
+size = Vector3(8, 1.0, 0.6)
+material = ExtResource("5_concrete")
+
+[node name="Wall3" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 8, 1.2, 2)
+use_collision = true
+size = Vector3(5, 2.4, 0.6)
+material = ExtResource("5_concrete")
+
+[node name="Wall4" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -9, 1.2, -3)
+use_collision = true
+size = Vector3(5, 2.4, 0.6)
+material = ExtResource("5_concrete")
+
+[node name="Wall5" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 4, 0.5, -4)
+use_collision = true
+size = Vector3(7, 1.0, 0.6)
+material = ExtResource("5_concrete")
+
+[node name="TireRow" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.3, -1)
+use_collision = true
+size = Vector3(6, 0.6, 1.2)
+material = ExtResource("13_prop")
+
+[node name="Mine0" type="Area3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -1, 0, 7)
+script = ExtResource("7_mine")
+
+[node name="Shape" type="CollisionShape3D" parent="Mine0"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.5, 0)
+shape = SubResource("Shape_32")
+
+[node name="Body" type="MeshInstance3D" parent="Mine0"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.06, 0)
+mesh = SubResource("Mesh_33")
+
+[node name="Light" type="MeshInstance3D" parent="Mine0"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.14, 0)
+mesh = SubResource("Mesh_34")
+
+[node name="Spawns" type="Node3D" parent="."]
+
+[node name="Spawn0" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -11, 0.2, 14)
+
+[node name="Spawn1" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 11, 0.2, 14)
+
+[node name="Spawn2" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -12, 0.2, 0)
+
+[node name="Spawn3" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 12, 0.2, 0)

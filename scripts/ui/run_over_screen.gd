@@ -28,7 +28,17 @@ func _ready() -> void:
 
 func _on_run_over(round_number: int) -> void:
 	await get_tree().create_timer(SHOW_DELAY).timeout
-	_summary.text = "You made it to round %d" % round_number if round_number > 0 else "You didn't survive round 1"
+	if _rounds.ending != "":
+		var title := _panel.get_node("Title") as Label
+		title.text = "CLOCKED OUT"
+		title.add_theme_color_override("font_color", Color(0.4, 1.0, 0.55))
+		_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		_summary.add_theme_font_size_override("font_size", 20)
+		_summary.offset_top = -66.0
+		_summary.offset_bottom = -6.0
+		_summary.text = "Round %d. %s" % [round_number, _rounds.ending]
+	else:
+		_summary.text = "You made it to round %d" % round_number if round_number > 0 else "You didn't survive round 1"
 	if Net.is_session() and not multiplayer.is_server():
 		_restart.text = "Waiting for the host..."
 		_restart.disabled = true

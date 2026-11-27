@@ -1,0 +1,85 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/level/room.gd" id="1_room"]
+[ext_resource type="Material" path="res://materials/office_wall.tres" id="2_wall"]
+[ext_resource type="Material" path="res://materials/desk.tres" id="3_desk"]
+[ext_resource type="Material" path="res://materials/partition.tres" id="4_part"]
+[ext_resource type="Material" path="res://materials/glass.tres" id="5_glass"]
+[ext_resource type="Material" path="res://materials/junk_prop.tres" id="6_prop"]
+[ext_resource type="Script" path="res://scripts/world/ledger.gd" id="7_ledger"]
+[ext_resource type="Script" path="res://scripts/world/arrival.gd" id="10_arrival"]
+[ext_resource type="PackedScene" path="res://scenes/world/section_door.tscn" id="12_door"]
+
+
+[node name="ExecutiveLift" type="Node3D"]
+script = ExtResource("1_room")
+display_name = "Executive Lift"
+can_rotate = false
+
+[node name="Lamp" type="OmniLight3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 4.6, 0)
+light_color = Color(1, 0.97, 0.88, 1)
+light_energy = 2.4
+omni_range = 26.0
+
+[node name="LiftShaft" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 2.5, -12.5)
+use_collision = true
+size = Vector3(8, 5, 4)
+material = ExtResource("2_wall")
+
+[node name="LiftDoors" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 1.6, -10.45)
+use_collision = false
+size = Vector3(3.6, 3.2, 0.1)
+material = ExtResource("6_prop")
+
+[node name="HeadOfficeDoor" parent="." groups=["head_office_door"] instance=ExtResource("12_door")]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 8, 0, -14.4)
+destination_name = "Head Office"
+arrival_id = &"head_office_from_accounting"
+cost = 0
+locked = true
+locked_reason = "Staff only"
+
+[node name="ArriveFromHeadOffice" type="Marker3D" parent="."]
+transform = Transform3D(-1.0000, 0, -0.0000, 0, 1, 0, 0.0000, 0, -1.0000, 0, 0.3, -7)
+script = ExtResource("10_arrival")
+arrival_id = &"accounting_from_head_office"
+
+[node name="Guard" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -8, 0.55, -6)
+use_collision = true
+size = Vector3(3, 1.1, 1.2)
+material = ExtResource("3_desk")
+
+[node name="Spawns" type="Node3D" parent="."]
+
+[node name="Spawn0" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -11, 0.2, 11)
+
+[node name="Spawn1" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 11, 0.2, 11)
+
+[node name="Spawn2" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -12, 0.2, 0)
+
+[node name="Spawn3" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 12, 0.2, 0)
+
+[node name="Desks" type="Node3D" parent="."]
+
+[node name="Desk0" type="Marker3D" parent="Desks"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -8, 0, -3)
+
+[node name="Desk1" type="Marker3D" parent="Desks"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -4, 0, 4)
+
+[node name="Desk2" type="Marker3D" parent="Desks"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 4, 0, 4)
+
+[node name="Desk3" type="Marker3D" parent="Desks"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 8, 0, 0)
+
+[node name="Desk4" type="Marker3D" parent="Desks"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0, 8)

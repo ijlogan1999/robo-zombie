@@ -1,0 +1,83 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/level/room.gd" id="1_room"]
+[ext_resource type="Material" path="res://materials/slag.tres" id="2_slag"]
+[ext_resource type="Material" path="res://materials/junk_prop.tres" id="3_prop"]
+[ext_resource type="Material" path="res://materials/junk_rust.tres" id="4_rust"]
+[ext_resource type="Material" path="res://materials/molten.tres" id="5_molten"]
+[ext_resource type="Script" path="res://scripts/world/hazard_zone.gd" id="6_hazard"]
+
+[sub_resource type="BoxShape3D" id="Shape_SlagRiver"]
+size = Vector3(26, 1.5, 3.5)
+
+[node name="SlagRiver" type="Node3D"]
+script = ExtResource("1_room")
+display_name = "Slag River"
+can_rotate = false
+
+[node name="Floor" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, -0.5, 0)
+use_collision = true
+size = Vector3(32, 1, 20)
+material = ExtResource("2_slag")
+
+[node name="SlagRiverGlow" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.03, 0)
+use_collision = false
+size = Vector3(26, 0.06, 3.5)
+material = ExtResource("5_molten")
+
+[node name="SlagRiver" type="Area3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.75, 0)
+script = ExtResource("6_hazard")
+damage_per_second = 30
+
+[node name="Shape" type="CollisionShape3D" parent="SlagRiver"]
+shape = SubResource("Shape_SlagRiver")
+
+[node name="BridgeA" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -6, 0.3, 0)
+use_collision = true
+size = Vector3(2.5, 0.6, 5)
+material = ExtResource("3_prop")
+
+[node name="BridgeB" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 7, 0.3, 0)
+use_collision = true
+size = Vector3(2.5, 0.6, 5)
+material = ExtResource("3_prop")
+
+[node name="RiverLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 2, 0)
+light_color = Color(1, 0.5, 0.2, 1)
+light_energy = 4
+omni_range = 14
+
+[node name="SlagLumpA" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -11, 0.8, -5)
+use_collision = true
+size = Vector3(3, 1.6, 2.5)
+material = ExtResource("2_slag")
+
+[node name="SlagLumpB" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 11, 1, 5)
+use_collision = true
+size = Vector3(2.5, 2, 3)
+material = ExtResource("2_slag")
+
+[node name="BoxSpot" type="Marker3D" parent="." groups=["box_spot"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6)
+
+[node name="Spawns" type="Node3D" parent="."]
+
+[node name="Spawn0" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -10, 0.2, -6)
+
+[node name="Spawn1" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 10, 0.2, -6)
+
+[node name="Spawn2" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -10, 0.2, 6)
+
+[node name="Spawn3" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 10, 0.2, 6)

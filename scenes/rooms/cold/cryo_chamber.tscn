@@ -1,0 +1,149 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/level/room.gd" id="1_room"]
+[ext_resource type="Material" path="res://materials/cold_floor.tres" id="2_floor"]
+[ext_resource type="Material" path="res://materials/cold_rack.tres" id="3_rack"]
+[ext_resource type="Material" path="res://materials/cold_wall.tres" id="4_wall"]
+[ext_resource type="Material" path="res://materials/ice.tres" id="5_ice"]
+[ext_resource type="Script" path="res://scripts/world/ice_patch.gd" id="6_ice"]
+[ext_resource type="Script" path="res://scripts/world/coolant_leak.gd" id="7_leak"]
+[ext_resource type="Material" path="res://materials/coolant.tres" id="8_coolant"]
+[ext_resource type="Script" path="res://scripts/world/arrival.gd" id="10_arrival"]
+[ext_resource type="PackedScene" path="res://scenes/world/section_door.tscn" id="12_door"]
+[ext_resource type="Material" path="res://materials/hazard.tres" id="13_hazard"]
+[ext_resource type="Script" path="res://scripts/world/egg_socket.gd" id="14_socket"]
+[ext_resource type="Material" path="res://materials/junk_prop.tres" id="15_prop"]
+
+[sub_resource type="BoxShape3D" id="Shape_2"]
+size = Vector3(14, 1.0, 3)
+
+[sub_resource type="BoxShape3D" id="Shape_3"]
+size = Vector3(14, 1.0, 3)
+
+[sub_resource type="BoxShape3D" id="Shape_4"]
+size = Vector3(1.4, 1.6, 0.8)
+
+[sub_resource type="BoxShape3D" id="Shape_5"]
+size = Vector3(1.4, 1.6, 0.8)
+
+[node name="CryoChamber" type="Node3D"]
+script = ExtResource("1_room")
+display_name = "Cryo Chamber"
+can_rotate = false
+
+[node name="Lamp" type="OmniLight3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 9, 0)
+light_color = Color(0.75, 0.9, 1, 1)
+light_energy = 1.5
+omni_range = 24.0
+
+[node name="CryoGlow" type="OmniLight3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 3, 0)
+light_color = Color(0.5, 0.85, 1, 1)
+light_energy = 2.2
+omni_range = 14
+
+[node name="RingNSheet" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.02, -9)
+use_collision = false
+size = Vector3(14, 0.04, 3)
+material = ExtResource("5_ice")
+
+[node name="RingN" type="Area3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.5, -9)
+script = ExtResource("6_ice")
+grip = 0.2
+
+[node name="Shape" type="CollisionShape3D" parent="RingN"]
+shape = SubResource("Shape_2")
+
+[node name="RingSSheet" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.02, 9)
+use_collision = false
+size = Vector3(14, 0.04, 3)
+material = ExtResource("5_ice")
+
+[node name="RingS" type="Area3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.5, 9)
+script = ExtResource("6_ice")
+grip = 0.2
+
+[node name="Shape" type="CollisionShape3D" parent="RingS"]
+shape = SubResource("Shape_3")
+
+[node name="CoilSocket" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -6, 0, 9.5)
+script = ExtResource("14_socket")
+needs_flag = &"thaw_coil"
+sets_flag = &"coil_installed"
+item_name = "thaw coil"
+done_text = "Thaw coil installed"
+
+[node name="Shape" type="CollisionShape3D" parent="CoilSocket"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.8, 0)
+shape = SubResource("Shape_4")
+
+[node name="Frame" type="CSGBox3D" parent="CoilSocket"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.8, 0)
+use_collision = false
+size = Vector3(1.4, 1.6, 0.8)
+material = ExtResource("3_rack")
+
+[node name="Lit" type="CSGBox3D" parent="CoilSocket"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 1.2, -0.42)
+use_collision = false
+size = Vector3(0.8, 0.5, 0.06)
+material = ExtResource("8_coolant")
+
+[node name="BoardSocket" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 6, 0, 9.5)
+script = ExtResource("14_socket")
+needs_flag = &"thaw_board"
+sets_flag = &"board_installed"
+item_name = "coil board"
+done_text = "Coil board installed"
+
+[node name="Shape" type="CollisionShape3D" parent="BoardSocket"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.8, 0)
+shape = SubResource("Shape_5")
+
+[node name="Frame" type="CSGBox3D" parent="BoardSocket"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.8, 0)
+use_collision = false
+size = Vector3(1.4, 1.6, 0.8)
+material = ExtResource("3_rack")
+
+[node name="Lit" type="CSGBox3D" parent="BoardSocket"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 1.2, -0.42)
+use_collision = false
+size = Vector3(0.8, 0.5, 0.06)
+material = ExtResource("8_coolant")
+
+[node name="StaffRack" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 1.6, -13.5)
+use_collision = true
+size = Vector3(4, 3.2, 1.2)
+material = ExtResource("3_rack")
+
+[node name="StaffRackBar" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 3.3, -13)
+use_collision = false
+size = Vector3(4.4, 0.2, 0.3)
+material = ExtResource("8_coolant")
+
+[node name="StaffRackSpot" type="Marker3D" parent="." groups=["staff_rack"]]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0, -11.5)
+
+[node name="Spawns" type="Node3D" parent="."]
+
+[node name="Spawn0" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -11, 0.2, -11)
+
+[node name="Spawn1" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 11, 0.2, -11)
+
+[node name="Spawn2" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -11, 0.2, 11)
+
+[node name="Spawn3" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 11, 0.2, 11)

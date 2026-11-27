@@ -1,0 +1,174 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/level/room.gd" id="1_room"]
+[ext_resource type="Material" path="res://materials/proving_wall.tres" id="3_wall"]
+[ext_resource type="Material" path="res://materials/sandbag.tres" id="4_sand"]
+[ext_resource type="Material" path="res://materials/concrete.tres" id="5_concrete"]
+[ext_resource type="Script" path="res://scripts/world/sentry_turret.gd" id="6_turret"]
+[ext_resource type="Script" path="res://scripts/world/land_mine.gd" id="7_mine"]
+[ext_resource type="Material" path="res://materials/hazard.tres" id="8_hazard"]
+[ext_resource type="Script" path="res://scripts/world/grapple_anchor.gd" id="9_anchor"]
+[ext_resource type="Script" path="res://scripts/world/arrival.gd" id="10_arrival"]
+[ext_resource type="Script" path="res://scripts/world/grapple_pickup.gd" id="11_pickup"]
+[ext_resource type="PackedScene" path="res://scenes/world/section_door.tscn" id="12_door"]
+[ext_resource type="Material" path="res://materials/junk_prop.tres" id="13_prop"]
+
+[sub_resource type="BoxShape3D" id="Shape_50"]
+size = Vector3(1.2, 1.2, 1.2)
+
+[sub_resource type="BoxMesh" id="Mesh_51"]
+size = Vector3(1.0, 0.8, 1.4)
+
+[sub_resource type="BoxMesh" id="Mesh_52"]
+size = Vector3(0.2, 0.2, 1.0)
+
+[sub_resource type="CylinderShape3D" id="Shape_53"]
+height = 1.0
+radius = 0.8
+
+[sub_resource type="CylinderMesh" id="Mesh_54"]
+top_radius = 0.35
+bottom_radius = 0.4
+height = 0.12
+
+[sub_resource type="SphereMesh" id="Mesh_55"]
+radius = 0.08
+height = 0.16
+
+[sub_resource type="CylinderShape3D" id="Shape_56"]
+height = 1.0
+radius = 0.8
+
+[sub_resource type="CylinderMesh" id="Mesh_57"]
+top_radius = 0.35
+bottom_radius = 0.4
+height = 0.12
+
+[sub_resource type="SphereMesh" id="Mesh_58"]
+radius = 0.08
+height = 0.16
+
+[sub_resource type="CylinderShape3D" id="Shape_59"]
+height = 1.0
+radius = 0.8
+
+[sub_resource type="CylinderMesh" id="Mesh_60"]
+top_radius = 0.35
+bottom_radius = 0.4
+height = 0.12
+
+[sub_resource type="SphereMesh" id="Mesh_61"]
+radius = 0.08
+height = 0.16
+
+[node name="BunkerRow" type="Node3D"]
+script = ExtResource("1_room")
+display_name = "Bunker Row"
+can_rotate = false
+
+[node name="Lamp" type="OmniLight3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 9, 0)
+light_energy = 1.0
+omni_range = 26.0
+
+[node name="BunkerA" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -9, 1.5, 6)
+use_collision = true
+size = Vector3(7, 3, 5)
+material = ExtResource("5_concrete")
+
+[node name="BunkerB" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 9, 1.5, 0)
+use_collision = true
+size = Vector3(7, 3, 5)
+material = ExtResource("5_concrete")
+
+[node name="TurretTower" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -9, 2.25, 6)
+use_collision = true
+size = Vector3(2, 4.5, 2)
+material = ExtResource("5_concrete")
+
+[node name="Turret" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -9, 4.5, 6)
+script = ExtResource("6_turret")
+
+[node name="Shape" type="CollisionShape3D" parent="Turret"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.6, 0)
+shape = SubResource("Shape_50")
+
+[node name="Head" type="Node3D" parent="Turret"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.7, 0)
+
+[node name="Mesh" type="MeshInstance3D" parent="Turret/Head"]
+mesh = SubResource("Mesh_51")
+
+[node name="Barrel" type="MeshInstance3D" parent="Turret/Head"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0, -1.0)
+mesh = SubResource("Mesh_52")
+
+[node name="TurretAnchor" type="Marker3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -9, 7.1, 6)
+script = ExtResource("9_anchor")
+
+[node name="Mine0" type="Area3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 2, 0, 8)
+script = ExtResource("7_mine")
+
+[node name="Shape" type="CollisionShape3D" parent="Mine0"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.5, 0)
+shape = SubResource("Shape_53")
+
+[node name="Body" type="MeshInstance3D" parent="Mine0"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.06, 0)
+mesh = SubResource("Mesh_54")
+
+[node name="Light" type="MeshInstance3D" parent="Mine0"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.14, 0)
+mesh = SubResource("Mesh_55")
+
+[node name="Mine1" type="Area3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -3, 0, -1)
+script = ExtResource("7_mine")
+
+[node name="Shape" type="CollisionShape3D" parent="Mine1"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.5, 0)
+shape = SubResource("Shape_56")
+
+[node name="Body" type="MeshInstance3D" parent="Mine1"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.06, 0)
+mesh = SubResource("Mesh_57")
+
+[node name="Light" type="MeshInstance3D" parent="Mine1"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.14, 0)
+mesh = SubResource("Mesh_58")
+
+[node name="Mine2" type="Area3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 6, 0, -6)
+script = ExtResource("7_mine")
+
+[node name="Shape" type="CollisionShape3D" parent="Mine2"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.5, 0)
+shape = SubResource("Shape_59")
+
+[node name="Body" type="MeshInstance3D" parent="Mine2"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.06, 0)
+mesh = SubResource("Mesh_60")
+
+[node name="Light" type="MeshInstance3D" parent="Mine2"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.14, 0)
+mesh = SubResource("Mesh_61")
+
+[node name="Spawns" type="Node3D" parent="."]
+
+[node name="Spawn0" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -11, 0.2, 14)
+
+[node name="Spawn1" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 11, 0.2, 14)
+
+[node name="Spawn2" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -12, 0.2, 0)
+
+[node name="Spawn3" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 12, 0.2, 0)

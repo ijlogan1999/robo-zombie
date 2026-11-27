@@ -1,0 +1,598 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="1_player"]
+[ext_resource type="Script" path="res://scripts/game/runtime_nav_bake.gd" id="2_nav"]
+[ext_resource type="Script" path="res://scripts/level/ring_section.gd" id="3_section"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/junkyard/landing_pad.tscn" id="4_landing"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/junkyard/trade_post.tscn" id="5_trade"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/junkyard/scrap_heap.tscn" id="6_heap"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/junkyard/crusher_pit.tscn" id="7_crusher"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/junkyard/conveyor_yard.tscn" id="8_conveyor"]
+[ext_resource type="PackedScene" path="res://scenes/level/gate.tscn" id="9_gate"]
+[ext_resource type="Material" path="res://materials/junk_wall.tres" id="10_wall"]
+[ext_resource type="PackedScene" path="res://scenes/game/round_manager.tscn" id="11_rounds"]
+[ext_resource type="Script" path="res://scripts/level/game_level.gd" id="12_level"]
+
+[ext_resource type="PackedScene" path="res://scenes/rooms/heap/trailer_row.tscn" id="13_trailers"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/heap/tire_stacks.tscn" id="14_tires"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/heap/parts_shed.tscn" id="15_shed"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/heap/stairwell.tscn" id="16_stairs"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/heap/crane_control.tscn" id="17_crane"]
+[ext_resource type="Material" path="res://materials/junk_floor.tres" id="18_floor"]
+[ext_resource type="PackedScene" path="res://scenes/shops/mystery_box.tscn" id="19_box"]
+
+[ext_resource type="Script" path="res://scripts/level/dome_section.gd" id="20_dome"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/crucible/landing_heap.tscn" id="21_landing"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/crucible/kiln_row.tscn" id="22_kilns"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/crucible/slag_river.tscn" id="23_river"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/crucible/furnace_mouth.tscn" id="24_furnace"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/crucible/ingot_stacks.tscn" id="25_ingots"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/crucible/cooling_racks.tscn" id="26_racks"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/crucible/burning_pile.tscn" id="27_pile"]
+[ext_resource type="Material" path="res://materials/slag.tres" id="28_slag"]
+[ext_resource type="PackedScene" path="res://scenes/world/section_door.tscn" id="29_door"]
+[ext_resource type="Script" path="res://scripts/world/arrival.gd" id="30_arrival"]
+[ext_resource type="Script" path="res://scripts/world/passage.gd" id="31_passage"]
+[ext_resource type="Script" path="res://scripts/bosses/kiln_mother.gd" id="32_kiln"]
+[ext_resource type="PackedScene" path="res://scenes/bosses/feeder_drone.tscn" id="33_feeder"]
+[ext_resource type="PackedScene" path="res://scenes/pickups/scrap_pickup.tscn" id="34_scrap"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/slagger.tscn" id="35_slagger"]
+[ext_resource type="Script" path="res://scripts/game/spawn_entry.gd" id="36_entry"]
+[ext_resource type="Script" path="res://scripts/bosses/scrap_king.gd" id="37_king"]
+[ext_resource type="Script" path="res://scripts/level/section.gd" id="40_section"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/chassis/intake_dock.tscn" id="41_intake"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/chassis/primer_tank.tscn" id="42_primer"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/chassis/rinse_pools.tscn" id="43_rinse"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/chassis/coat_vat.tscn" id="44_coat"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/chassis/deep_tank.tscn" id="45_deep"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/chassis/drying_racks.tscn" id="46_racks"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/chassis/hot_press.tscn" id="47_press"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/chassis/tong_rack.tscn" id="48_tongs"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/chassis/flood_channel.tscn" id="49_channel"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/chassis/outflow.tscn" id="50_outflow"]
+[ext_resource type="Material" path="res://materials/plant_wall.tres" id="51_plant_wall"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/dripper.tscn" id="52_dripper"]
+[ext_resource type="Script" path="res://scripts/level/tier_section.gd" id="60_tier"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/servo/crucible_lift.tscn" id="61_crucible_lift"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/servo/root_tangle.tscn" id="62_root_tangle"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/servo/acid_swamp.tscn" id="63_acid_swamp"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/servo/mist_hollow.tscn" id="64_mist_hollow"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/servo/fan_clearing.tscn" id="65_fan_clearing"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/servo/server_grove.tscn" id="66_server_grove"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/servo/catwalk_nest.tscn" id="67_catwalk_nest"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/servo/capacitor_stand.tscn" id="68_capacitor_stand"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/servo/relay_junction.tscn" id="69_relay_junction"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/servo/trace_field.tscn" id="70_trace_field"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/servo/chip_plateau.tscn" id="71_chip_plateau"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/servo/socket_rise.tscn" id="72_socket_rise"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/servo/canopy_crown.tscn" id="73_canopy_crown"]
+[ext_resource type="Material" path="res://materials/servo_rack.tres" id="80_rack"]
+[ext_resource type="Material" path="res://materials/servo_board.tres" id="81_board"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/bug.tscn" id="82_bug"]
+[ext_resource type="Script" path="res://scripts/level/hall_section.gd" id="90_hall"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/cold/loading_bay.tscn" id="91_loading"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/cold/cryo_chamber.tscn" id="92_cryo"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/cold/parts_aisle.tscn" id="93_parts"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/cold/robot_lockers.tscn" id="94_lockers"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/cold/flash_freezer.tscn" id="95_freezer"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/cold/coolant_plant.tscn" id="96_coolant"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/cold/sorting_floor.tscn" id="97_sorting"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/cold/defrost_bay.tscn" id="98_defrost"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/cold/foreman_booth.tscn" id="99_booth"]
+[ext_resource type="Material" path="res://materials/cold_floor.tres" id="100_cold_floor"]
+[ext_resource type="Material" path="res://materials/cold_wall.tres" id="101_cold_wall"]
+[ext_resource type="Material" path="res://materials/cold_rack.tres" id="102_cold_rack"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/thawed.tscn" id="103_thawed"]
+[ext_resource type="Script" path="res://scripts/bosses/backup_body.gd" id="104_backup"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/scrapper.tscn" id="105_scrapper"]
+[ext_resource type="Script" path="res://scripts/level/line_section.gd" id="110_line"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/line/line_intake.tscn" id="111_line_intake"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/line/assembly_floor.tscn" id="112_assembly_floor"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/line/weld_station.tscn" id="113_weld_station"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/line/paint_booth.tscn" id="114_paint_booth"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/line/press_line.tscn" id="115_press_line"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/line/parts_hopper.tscn" id="116_parts_hopper"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/line/test_bench.tscn" id="117_test_bench"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/line/belt_junction.tscn" id="118_belt_junction"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/line/crate_stack.tscn" id="119_crate_stack"]
+[ext_resource type="Material" path="res://materials/line_floor.tres" id="120_line_floor"]
+[ext_resource type="Material" path="res://materials/line_wall.tres" id="121_line_wall"]
+[ext_resource type="Script" path="res://scripts/bosses/line_giant.gd" id="122_giant"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/amalgam.tscn" id="123_amalgam"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/skitter.tscn" id="124_skitter"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/bolter.tscn" id="125_bolter"]
+[ext_resource type="Script" path="res://scripts/level/proving_section.gd" id="130_proving"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/proving/proving_entry.tscn" id="131_proving_entry"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/proving/proving_exit.tscn" id="132_proving_exit"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/proving/firing_range.tscn" id="133_firing_range"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/proving/minefield.tscn" id="134_minefield"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/proving/obstacle_course.tscn" id="135_obstacle_course"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/proving/barricade_line.tscn" id="136_barricade_line"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/proving/drill_yard.tscn" id="137_drill_yard"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/proving/bunker_row.tscn" id="138_bunker_row"]
+[ext_resource type="Material" path="res://materials/proving_ground.tres" id="140_pg_floor"]
+[ext_resource type="Material" path="res://materials/proving_wall.tres" id="141_pg_wall"]
+[ext_resource type="Material" path="res://materials/pad.tres" id="142_pad"]
+[ext_resource type="PackedScene" path="res://scenes/level/checkpoint_gate.tscn" id="143_checkpoint"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/shipping/shipping_gate.tscn" id="150_shipping_gate"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/shipping/tower_bay.tscn" id="151_tower_bay"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/shipping/accounting_gate.tscn" id="152_accounting_gate"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/shipping/landing_pad_a.tscn" id="153_landing_pad_a"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/shipping/landing_pad_b.tscn" id="154_landing_pad_b"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/shipping/crane_yard.tscn" id="155_crane_yard"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/shipping/stack_maze.tscn" id="156_stack_maze"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/shipping/customs.tscn" id="157_customs"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/shipping/fuel_depot.tscn" id="158_fuel_depot"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/shipping/loading_dock.tscn" id="159_loading_dock"]
+[ext_resource type="Material" path="res://materials/asphalt.tres" id="160_asphalt"]
+[ext_resource type="Material" path="res://materials/yard_wall.tres" id="161_yard_wall"]
+[ext_resource type="Script" path="res://scripts/world/shifting_container.gd" id="162_shifter"]
+[ext_resource type="Script" path="res://scripts/bosses/control_tower.gd" id="163_tower"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/packer.tscn" id="164_packer"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/security_bot.tscn" id="165_security"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/accounting/lobby.tscn" id="170_lobby"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/accounting/records_vault.tscn" id="171_records_vault"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/accounting/executive_lift.tscn" id="172_executive_lift"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/accounting/cubicle_farm.tscn" id="173_cubicle_farm"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/accounting/conference_room.tscn" id="174_conference_room"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/accounting/break_room.tscn" id="175_break_room"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/accounting/copy_room.tscn" id="176_copy_room"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/accounting/payroll.tscn" id="177_payroll"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/accounting/audit_office.tscn" id="178_audit_office"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/accounting/server_closet.tscn" id="179_server_closet"]
+[ext_resource type="Material" path="res://materials/office_carpet.tres" id="180_carpet"]
+[ext_resource type="Material" path="res://materials/office_wall.tres" id="181_owall"]
+[ext_resource type="Script" path="res://scripts/level/accounting_office.gd" id="182_office"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/head_office/head_office.tscn" id="190_head_office"]
+[ext_resource type="Material" path="res://materials/exec_wall.tres" id="191_exec_wall"]
+[ext_resource type="Script" path="res://scripts/bosses/quota.gd" id="192_quota"]
+[ext_resource type="Script" path="res://scripts/game/egg_chain.gd" id="193_egg_chain"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
+sky_top_color = Color(0.42, 0.55, 0.72, 1)
+sky_horizon_color = Color(0.78, 0.66, 0.52, 1)
+ground_horizon_color = Color(0.78, 0.66, 0.52, 1)
+
+[sub_resource type="Sky" id="Sky_main"]
+sky_material = SubResource("ProceduralSkyMaterial_sky")
+
+[sub_resource type="Environment" id="Environment_main"]
+background_mode = 2
+sky = SubResource("Sky_main")
+ambient_light_source = 3
+tonemap_mode = 2
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_crucible"]
+filter_baking_aabb = AABB(-70, -5, -70, 140, 20, 140)
+cell_size = 0.25
+cell_height = 0.25
+agent_height = 2.0
+agent_radius = 0.5
+agent_max_climb = 0.25
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_pit"]
+height = 4.0
+radius = 18.0
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_section"]
+cell_size = 0.25
+cell_height = 0.25
+agent_height = 2.0
+agent_radius = 0.5
+agent_max_climb = 0.25
+
+[sub_resource type="Resource" id="SpawnEntry_slagger"]
+script = ExtResource("36_entry")
+scene = ExtResource("35_slagger")
+weight = 6.0
+weight_per_round = 0.5
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_chassis"]
+cell_size = 0.25
+cell_height = 0.25
+agent_height = 2.0
+agent_radius = 0.5
+agent_max_climb = 0.25
+
+[sub_resource type="Resource" id="SpawnEntry_dripper"]
+script = ExtResource("36_entry")
+scene = ExtResource("52_dripper")
+weight = 6.0
+weight_per_round = 0.5
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_servo"]
+cell_size = 0.25
+cell_height = 0.25
+agent_height = 2.0
+agent_radius = 0.5
+agent_max_climb = 0.25
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_cold"]
+filter_baking_aabb = AABB(-60, -5, -60, 120, 13, 120)
+cell_size = 0.25
+cell_height = 0.25
+agent_height = 2.0
+agent_radius = 0.5
+agent_max_climb = 0.25
+
+[sub_resource type="Resource" id="SpawnEntry_thawed"]
+script = ExtResource("36_entry")
+scene = ExtResource("103_thawed")
+weight = 6.0
+weight_per_round = 0.4
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_line"]
+filter_baking_aabb = AABB(-45, -5, -40, 90, 38, 75)
+cell_size = 0.25
+cell_height = 0.25
+agent_height = 2.0
+agent_radius = 0.5
+agent_max_climb = 0.25
+
+[sub_resource type="Resource" id="SpawnEntry_amalgam"]
+script = ExtResource("36_entry")
+scene = ExtResource("123_amalgam")
+weight = 6.0
+weight_per_round = 0.4
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_proving"]
+cell_size = 0.25
+cell_height = 0.25
+agent_height = 2.0
+agent_radius = 0.5
+agent_max_climb = 0.25
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_accounting"]
+cell_size = 0.25
+cell_height = 0.25
+agent_height = 2.0
+agent_radius = 0.5
+agent_max_climb = 0.25
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_head_office"]
+cell_size = 0.25
+cell_height = 0.25
+agent_height = 2.0
+agent_radius = 0.5
+agent_max_climb = 0.25
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_shipping"]
+cell_size = 0.25
+cell_height = 0.25
+agent_height = 2.0
+agent_radius = 0.5
+agent_max_climb = 0.25
+
+[sub_resource type="Resource" id="SpawnEntry_packer"]
+script = ExtResource("36_entry")
+scene = ExtResource("164_packer")
+weight = 5.0
+weight_per_round = 0.3
+
+[sub_resource type="Resource" id="SpawnEntry_security"]
+script = ExtResource("36_entry")
+scene = ExtResource("165_security")
+weight = 5.0
+weight_per_round = 0.3
+
+[sub_resource type="Resource" id="SpawnEntry_bug"]
+script = ExtResource("36_entry")
+scene = ExtResource("82_bug")
+weight = 5.0
+weight_per_round = 0.4
+
+[node name="Heap" type="Node3D"]
+script = ExtResource("12_level")
+section_paths = Array[NodePath]([NodePath("NavigationRegion3D/Section"), NodePath("CrucibleNav/Section"), NodePath("ChassisNav/Section"), NodePath("ServoNav/Section"), NodePath("ColdNav/Section"), NodePath("LineNav/Section"), NodePath("ProvingNav/Section"), NodePath("ShippingNav/Section"), NodePath("AccountingNav/Section"), NodePath("HeadOfficeNav/Section")])
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_main")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 40, 0)
+shadow_enabled = true
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+navigation_mesh = SubResource("NavigationMesh_section")
+script = ExtResource("2_nav")
+
+[node name="Section" type="Node3D" parent="NavigationRegion3D" groups=["section"]]
+script = ExtResource("3_section")
+start_room = ExtResource("4_landing")
+required_rooms = Array[PackedScene]([ExtResource("5_trade"), ExtResource("13_trailers")])
+optional_rooms = Array[PackedScene]([ExtResource("6_heap"), ExtResource("7_crusher"), ExtResource("8_conveyor"), ExtResource("13_trailers"), ExtResource("14_tires"), ExtResource("15_shed")])
+stairwell_room = ExtResource("16_stairs")
+crane_control_room = ExtResource("17_crane")
+floor_material = ExtResource("18_floor")
+gate_scene = ExtResource("9_gate")
+wall_material = ExtResource("10_wall")
+
+[node name="CrucibleNav" type="NavigationRegion3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -200, 0)
+navigation_mesh = SubResource("NavigationMesh_crucible")
+script = ExtResource("2_nav")
+
+[node name="Section" type="Node3D" parent="CrucibleNav" groups=["section"]]
+script = ExtResource("20_dome")
+landing_room = ExtResource("21_landing")
+exits = Array[Dictionary]([{"name": "Servo Works", "arrival": &"servo_from_crucible"}, {"name": "Chassis Yard", "arrival": &"chassis_from_crucible"}])
+section_door_scene = ExtResource("29_door")
+mound_material = ExtResource("28_slag")
+start_room = ExtResource("21_landing")
+required_rooms = Array[PackedScene]([ExtResource("22_kilns")])
+optional_rooms = Array[PackedScene]([ExtResource("22_kilns"), ExtResource("23_river"), ExtResource("24_furnace"), ExtResource("25_ingots"), ExtResource("26_racks"), ExtResource("27_pile")])
+is_start_section = false
+first_gate_cost = 750
+gate_scene = ExtResource("9_gate")
+wall_material = ExtResource("28_slag")
+floor_material = ExtResource("28_slag")
+spawn_table = Array[ExtResource("36_entry")]([SubResource("SpawnEntry_slagger")])
+
+[node name="ChassisNav" type="NavigationRegion3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -400, 0, 0)
+navigation_mesh = SubResource("NavigationMesh_chassis")
+script = ExtResource("2_nav")
+
+[node name="Section" type="Node3D" parent="ChassisNav" groups=["section"]]
+script = ExtResource("40_section")
+start_room = ExtResource("41_intake")
+optional_rooms = Array[PackedScene]([ExtResource("42_primer"), ExtResource("43_rinse"), ExtResource("44_coat"), ExtResource("45_deep"), ExtResource("46_racks"), ExtResource("47_press"), ExtResource("48_tongs"), ExtResource("49_channel")])
+end_room = ExtResource("50_outflow")
+room_count = 8
+gate_scene = ExtResource("9_gate")
+first_gate_cost = 1000
+gate_cost_step = 100
+is_start_section = false
+wall_material = ExtResource("51_plant_wall")
+spawn_table = Array[ExtResource("36_entry")]([SubResource("SpawnEntry_dripper")])
+
+[node name="ServoNav" type="NavigationRegion3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 400, 0, 0)
+navigation_mesh = SubResource("NavigationMesh_servo")
+script = ExtResource("2_nav")
+
+[node name="Section" type="Node3D" parent="ServoNav" groups=["section"]]
+script = ExtResource("60_tier")
+floor_rooms = Array[PackedScene]([ExtResource("62_root_tangle"), ExtResource("63_acid_swamp"), ExtResource("64_mist_hollow"), ExtResource("65_fan_clearing")])
+trunk_rooms = Array[PackedScene]([ExtResource("66_server_grove"), ExtResource("67_catwalk_nest"), ExtResource("68_capacitor_stand"), ExtResource("69_relay_junction")])
+canopy_rooms = Array[PackedScene]([ExtResource("70_trace_field"), ExtResource("71_chip_plateau"), ExtResource("72_socket_rise")])
+trunk_material = ExtResource("80_rack")
+floor_material = ExtResource("81_board")
+start_room = ExtResource("61_crucible_lift")
+required_rooms = Array[PackedScene]([ExtResource("63_acid_swamp")])
+end_room = ExtResource("73_canopy_crown")
+gate_scene = ExtResource("9_gate")
+first_gate_cost = 1000
+gate_cost_step = 100
+is_start_section = false
+wall_material = ExtResource("80_rack")
+spawn_table = Array[ExtResource("36_entry")]([SubResource("SpawnEntry_bug")])
+
+[node name="ColdNav" type="NavigationRegion3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 400)
+navigation_mesh = SubResource("NavigationMesh_cold")
+script = ExtResource("2_nav")
+
+[node name="Section" type="Node3D" parent="ColdNav" groups=["section"]]
+script = ExtResource("90_hall")
+center_room = ExtResource("92_cryo")
+rack_material = ExtResource("102_cold_rack")
+floor_material = ExtResource("100_cold_floor")
+start_room = ExtResource("91_loading")
+optional_rooms = Array[PackedScene]([ExtResource("93_parts"), ExtResource("94_lockers"), ExtResource("95_freezer"), ExtResource("96_coolant"), ExtResource("97_sorting"), ExtResource("98_defrost"), ExtResource("99_booth")])
+gate_scene = ExtResource("9_gate")
+first_gate_cost = 1250
+gate_cost_step = 125
+is_start_section = false
+wall_height = 10.0
+wall_material = ExtResource("101_cold_wall")
+spawn_table = Array[ExtResource("36_entry")]([SubResource("SpawnEntry_thawed")])
+
+[node name="BackupBody" type="Node3D" parent="ColdNav"]
+script = ExtResource("104_backup")
+wave_scenes = Array[PackedScene]([ExtResource("103_thawed"), ExtResource("105_scrapper")])
+display_name = "QUOTA'S BACKUP BODY"
+drop_flag = &"admin_badge"
+drop_text = "THE BACKUP BODY SHATTERS. IT DROPPED AN ADMIN BADGE"
+
+[node name="LineNav" type="NavigationRegion3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -400)
+navigation_mesh = SubResource("NavigationMesh_line")
+script = ExtResource("2_nav")
+
+[node name="Section" type="Node3D" parent="LineNav" groups=["section"]]
+script = ExtResource("110_line")
+floor_material = ExtResource("120_line_floor")
+start_room = ExtResource("111_line_intake")
+optional_rooms = Array[PackedScene]([ExtResource("113_weld_station"), ExtResource("114_paint_booth"), ExtResource("115_press_line"), ExtResource("116_parts_hopper"), ExtResource("117_test_bench"), ExtResource("118_belt_junction"), ExtResource("119_crate_stack")])
+end_room = ExtResource("112_assembly_floor")
+gate_scene = ExtResource("9_gate")
+first_gate_cost = 1500
+gate_cost_step = 150
+is_start_section = false
+wall_material = ExtResource("121_line_wall")
+spawn_table = Array[ExtResource("36_entry")]([SubResource("SpawnEntry_amalgam")])
+
+[node name="LineGiant" type="Node3D" parent="LineNav"]
+script = ExtResource("122_giant")
+built_scenes = Array[PackedScene]([ExtResource("105_scrapper"), ExtResource("124_skitter"), ExtResource("125_bolter"), ExtResource("35_slagger"), ExtResource("52_dripper"), ExtResource("82_bug"), ExtResource("103_thawed"), ExtResource("123_amalgam"), ExtResource("123_amalgam")])
+display_name = "THE LINE GIANT"
+requires_flag = &"staff_bot_on_line"
+drop_flag = &"staff_bot_awake"
+drop_text = "THE GIANT FALLS. THE STAFF BOT WAKES UP ON THE LINE"
+
+[node name="ProvingNav" type="NavigationRegion3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 400, 0, -400)
+navigation_mesh = SubResource("NavigationMesh_proving")
+script = ExtResource("2_nav")
+
+[node name="Section" type="Node3D" parent="ProvingNav" groups=["section"]]
+script = ExtResource("130_proving")
+gauntlet_scenes = Array[PackedScene]([ExtResource("105_scrapper"), ExtResource("105_scrapper"), ExtResource("124_skitter"), ExtResource("125_bolter"), ExtResource("35_slagger"), ExtResource("52_dripper"), ExtResource("82_bug"), ExtResource("103_thawed"), ExtResource("123_amalgam")])
+checkpoint_scene = ExtResource("143_checkpoint")
+pad_material = ExtResource("142_pad")
+floor_material = ExtResource("140_pg_floor")
+start_room = ExtResource("131_proving_entry")
+optional_rooms = Array[PackedScene]([ExtResource("133_firing_range"), ExtResource("134_minefield"), ExtResource("135_obstacle_course"), ExtResource("136_barricade_line"), ExtResource("137_drill_yard"), ExtResource("138_bunker_row")])
+end_room = ExtResource("132_proving_exit")
+gate_scene = ExtResource("9_gate")
+is_start_section = false
+wall_material = ExtResource("141_pg_wall")
+
+[node name="ShippingNav" type="NavigationRegion3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -900, 0, 0)
+navigation_mesh = SubResource("NavigationMesh_shipping")
+script = ExtResource("2_nav")
+
+[node name="Section" type="Node3D" parent="ShippingNav" groups=["section"]]
+script = ExtResource("90_hall")
+center_room = ExtResource("151_tower_bay")
+hall_height = 8.0
+rack_height = 5.2
+rack_thickness = 2.6
+rack_material = ExtResource("161_yard_wall")
+roofed = false
+far_room = ExtResource("152_accounting_gate")
+container_walls = true
+shifting_walls = 3
+extra_links = 1
+shifter_script = ExtResource("162_shifter")
+floor_material = ExtResource("160_asphalt")
+start_room = ExtResource("150_shipping_gate")
+optional_rooms = Array[PackedScene]([ExtResource("153_landing_pad_a"), ExtResource("154_landing_pad_b"), ExtResource("155_crane_yard"), ExtResource("156_stack_maze"), ExtResource("157_customs"), ExtResource("158_fuel_depot"), ExtResource("159_loading_dock")])
+gate_scene = ExtResource("9_gate")
+first_gate_cost = 1750
+gate_cost_step = 150
+is_start_section = false
+wall_material = ExtResource("161_yard_wall")
+spawn_table = Array[ExtResource("36_entry")]([SubResource("SpawnEntry_packer"), SubResource("SpawnEntry_security")])
+
+[node name="ControlTower" type="Node3D" parent="ShippingNav"]
+script = ExtResource("163_tower")
+pod_scene = ExtResource("165_security")
+display_name = "THE CONTROL TOWER"
+requires_flag = &"tower_base_crushed"
+drop_flag = &"landing_beacon"
+drop_text = "THE TOWER FALLS. ITS LANDING BEACON IS STILL BLINKING"
+
+[node name="AccountingNav" type="NavigationRegion3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 900, 0, 0)
+navigation_mesh = SubResource("NavigationMesh_accounting")
+script = ExtResource("2_nav")
+
+[node name="Section" type="Node3D" parent="AccountingNav" groups=["section"]]
+script = ExtResource("90_hall")
+center_room = ExtResource("171_records_vault")
+bay_size = 30.0
+hall_height = 5.0
+rack_height = 5.0
+rack_thickness = 0.6
+rack_material = ExtResource("181_owall")
+far_room = ExtResource("172_executive_lift")
+office_walls = true
+extra_links = 2
+floor_material = ExtResource("180_carpet")
+start_room = ExtResource("170_lobby")
+optional_rooms = Array[PackedScene]([ExtResource("173_cubicle_farm"), ExtResource("174_conference_room"), ExtResource("175_break_room"), ExtResource("176_copy_room"), ExtResource("177_payroll"), ExtResource("178_audit_office"), ExtResource("179_server_closet")])
+gate_scene = ExtResource("9_gate")
+first_gate_cost = 2000
+gate_cost_step = 150
+is_start_section = false
+wall_material = ExtResource("181_owall")
+
+[node name="Office" type="Node3D" parent="AccountingNav"]
+script = ExtResource("182_office")
+staff_scenes = Array[PackedScene]([ExtResource("105_scrapper"), ExtResource("125_bolter"), ExtResource("164_packer"), ExtResource("165_security")])
+
+[node name="HeadOfficeNav" type="NavigationRegion3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 900)
+navigation_mesh = SubResource("NavigationMesh_head_office")
+script = ExtResource("2_nav")
+
+[node name="Section" type="Node3D" parent="HeadOfficeNav" groups=["section"]]
+script = ExtResource("40_section")
+start_room = ExtResource("190_head_office")
+room_count = 0
+cell_size = 72.0
+wall_height = 20.0
+gate_scene = ExtResource("9_gate")
+is_start_section = false
+wall_material = ExtResource("191_exec_wall")
+
+[node name="Quota" type="Node3D" parent="HeadOfficeNav"]
+script = ExtResource("192_quota")
+wave_scenes = Array[PackedScene]([ExtResource("105_scrapper"), ExtResource("125_bolter"), ExtResource("164_packer"), ExtResource("165_security")])
+display_name = "QUOTA"
+
+[node name="EggChain" type="Node3D" parent="."]
+script = ExtResource("193_egg_chain")
+bug_scene = ExtResource("82_bug")
+
+[node name="PitDrop" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -21, 0)
+script = ExtResource("31_passage")
+arrival_id = &"crucible_landing"
+enabled = false
+
+[node name="Shape" type="CollisionShape3D" parent="PitDrop"]
+shape = SubResource("CylinderShape3D_pit")
+
+[node name="Arrivals" type="Node3D" parent="."]
+
+[node name="CrucibleLanding" type="Marker3D" parent="Arrivals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -188, 0)
+script = ExtResource("30_arrival")
+arrival_id = &"crucible_landing"
+
+[node name="HeapFromServo" type="Marker3D" parent="Arrivals"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -48, 3, 0)
+script = ExtResource("30_arrival")
+arrival_id = &"heap_from_servo"
+
+[node name="HeapFromChassis" type="Marker3D" parent="Arrivals"]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 48, 3, 0)
+script = ExtResource("30_arrival")
+arrival_id = &"heap_from_chassis"
+
+[node name="HeapFromLine" type="Marker3D" parent="Arrivals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40, 11, 27)
+script = ExtResource("30_arrival")
+arrival_id = &"heap_from_line"
+
+[node name="ScrapKing" type="Node3D" parent="."]
+script = ExtResource("37_king")
+pit_drop = NodePath("../PitDrop")
+display_name = "THE SCRAP KING"
+requires_flag = &"crane_overloaded"
+drop_flag = &"grab_magnet"
+drop_text = "THE SCRAP KING DROPS HIS MAGNET. GRAB MAGNET TAKEN"
+
+[node name="CrucibleGlow" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -182, 0)
+light_color = Color(1, 0.55, 0.25, 1)
+light_energy = 2.5
+omni_range = 75.0
+omni_attenuation = 0.6
+
+[node name="KilnMother" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -200, 0)
+script = ExtResource("32_kiln")
+feeder_scene = ExtResource("33_feeder")
+scrap_scene = ExtResource("34_scrap")
+display_name = "THE KILN MOTHER"
+requires_flag = &"grab_magnet"
+drop_flag = &"kiln_heart_left"
+drop_text = "THE KILN HEART GLOWS IN THE KILN. TOO HOT TO HOLD"
+
+[node name="Player" parent="." instance=ExtResource("1_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 52)
+
+[node name="MysteryBox" parent="." instance=ExtResource("19_box")]
+
+[node name="RoundManager" parent="." instance=ExtResource("11_rounds")]
+
+[node name="Spawned" type="Node3D" parent="." groups=["spawn_root"]]
+
+[node name="NetSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://scenes/enemies/scrapper.tscn", "res://scenes/enemies/skitter.tscn", "res://scenes/enemies/bolter.tscn", "res://scenes/enemies/warden.tscn", "res://scenes/pickups/scrap_pickup.tscn", "res://scenes/bosses/feeder_drone.tscn", "res://scenes/enemies/slagger.tscn", "res://scenes/enemies/dripper.tscn", "res://scenes/enemies/bug.tscn", "res://scenes/enemies/thawed.tscn", "res://scenes/enemies/amalgam.tscn", "res://scenes/enemies/packer.tscn", "res://scenes/enemies/security_bot.tscn")
+spawn_path = NodePath("../Spawned")

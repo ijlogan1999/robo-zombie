@@ -19,11 +19,14 @@ const ALL_SIDES: Array[Vector2i] = [Vector2i(0, 1), Vector2i(1, 0), Vector2i(0, 
 @export var start_room: PackedScene
 @export var required_rooms: Array[PackedScene] = [] ## Always in the run (like the shop).
 @export var optional_rooms: Array[PackedScene] = [] ## Drawn at random to fill the rest.
+@export var end_room: PackedScene ## Always last when set (holds the way on and the way back).
 @export var room_count := 4 ## Rooms after the start room.
 @export var gate_scene: PackedScene
 @export var first_gate_cost := 100
 @export var gate_cost_step := 50 ## Each gate deeper in costs this much more.
 @export var layout_seed := 0 ## 0 = new layout every run. Set a number to replay one layout.
+## The section players start in. With no players in any section, its start room still spawns.
+@export var is_start_section := true
 
 @export_group("Shape")
 @export var cell_size := 32.0 ## Every room is this wide and deep.
@@ -36,6 +39,14 @@ const ALL_SIDES: Array[Vector2i] = [Vector2i(0, 1), Vector2i(1, 0), Vector2i(0, 
 @export_group("Spawning")
 @export var spawn_reach := 1 ## Robots spawn in the players' rooms and this many rooms either side.
 @export var spawn_update_interval := 0.5
+@export var spawn_table: Array[SpawnEntry] = [] ## Robot types only this section spawns (its unique enemy).
+
+## Off: no robots spawn here at all (Accounting while the office is calm).
+var spawns_enabled := true:
+	set(value):
+		spawns_enabled = value
+		if is_inside_tree() and not rooms.is_empty():
+			_update_active_spawns()
 
 var rooms: Array[Room] = [] ## In path order; rooms[0] is the start room.
 var gates: Array[Gate] = [] ## gates[i] leads into rooms[i + 1].
@@ -45,6 +56,14 @@ var _rng := RandomNumberGenerator.new()
 var _room_at := {} # Vector2i cell -> Room
 var _cells: Array[Vector2i] = []
 var _spawn_update_left := 0.0
+
+
+## The section a node sits in, if any.
+static func containing(node: Node) -> Section:
+	var at := node.get_parent()
+	while at and not at is Section:
+		at = at.get_parent()
+	return at as Section
 
 
 func _ready() -> void:
@@ -64,7 +83,10 @@ func _physics_process(delta: float) -> void:
 
 
 func room_at_position(world_position: Vector3) -> Room:
-	var cell := Vector2i(roundi(world_position.x / cell_size), roundi(-world_position.z / cell_size))
+	var local := to_local(world_position)
+	if absf(local.y) > wall_height * 2.0:
+		return null # Another section stacked above or below.
+	var cell := Vector2i(roundi(local.x / cell_size), roundi(-local.z / cell_size))
 	return _room_at.get(cell)
 
 
@@ -75,6 +97,8 @@ func cell_to_world(cell: Vector2i) -> Vector3:
 func _build() -> void:
 	var scenes: Array[PackedScene] = [start_room]
 	scenes.append_array(_pick_rooms())
+	if end_room:
+		scenes.append(end_room)
 	var cell := Vector2i.ZERO
 	for i in scenes.size():
 		if i > 0:
@@ -110,7 +134,8 @@ func _pick_rooms() -> Array[PackedScene]:
 	for scene: PackedScene in optional:
 		if picked.size() >= room_count:
 			break
-		picked.append(scene)
+		if not picked.has(scene):
+			picked.append(scene)
 	_shuffle(picked)
 	return picked
 
@@ -192,17 +217,29 @@ func _open_room(room: Room) -> void:
 
 
 func _update_active_spawns() -> void:
-	var player_rooms: Array[int] = []
-	for player: Node3D in get_tree().get_nodes_in_group("players"):
-		var room := room_at_position(player.global_position)
-		if room:
-			player_rooms.append(room.index)
-	if player_rooms.is_empty():
-		player_rooms.append(0)
+	var player_rooms := _player_room_indices()
 	for room in rooms:
 		var near := false
 		for player_room in player_rooms:
 			if absi(room.index - player_room) <= spawn_reach:
 				near = true
 				break
-		room.set_spawns_active(room.is_open and near)
+		room.set_spawns_active(spawns_enabled and room.is_open and near)
+
+
+## Rooms of this section that players are standing in. Robots only spawn near players, so a
+## section nobody is in spawns nothing, unless nobody is in any section and it's the start.
+func _player_room_indices() -> Array[int]:
+	var found: Array[int] = []
+	var anyone_placed := false
+	for player: Node3D in get_tree().get_nodes_in_group("players"):
+		var room := room_at_position(player.global_position)
+		if room:
+			found.append(room.index)
+			continue
+		for section: Section in get_tree().get_nodes_in_group("section"):
+			if section != self and section.room_at_position(player.global_position):
+				anyone_placed = true
+	if found.is_empty() and is_start_section and not anyone_placed:
+		found.append(0)
+	return found

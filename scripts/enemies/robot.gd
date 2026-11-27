@@ -5,6 +5,8 @@ extends CharacterBody3D
 ## The swing has a wind-up (eyes flare) so players can read it and back off.
 ## Robots only think on the server; in co-op, clients will just see the results.
 
+signal struck(attacker: Node) ## Host only: something hit it.
+
 signal died(robot: Robot)
 
 @export var move_speed := 3.0
@@ -32,7 +34,14 @@ var _cooldown_left := 0.0
 var _windup_left := -1.0
 var _body_material: StandardMaterial3D
 var _body_color: Color
+var _base_color: Color
+var _frozen_left := 0.0
 var _eye_material: StandardMaterial3D
+## Docile robots (Accounting's office staff) ignore players and wander between their
+## points until something sets them off.
+var docile := false
+var wander_points: Array[Node3D] = []
+var _wander_to: Node3D
 
 @onready var health: HealthComponent = $HealthComponent
 @onready var _agent: NavigationAgent3D = $NavigationAgent3D
@@ -48,9 +57,11 @@ func configure(max_health: float, speed: float) -> void:
 
 
 func _ready() -> void:
+	collision_mask |= Layers.BLOCKER # Invisible walls stop bodies, not shots.
 	# Each robot gets its own materials so hit flashes and eye flares don't affect others.
 	_body_material = ($Meshes/Body as MeshInstance3D).get_active_material(0).duplicate()
 	_body_color = _body_material.albedo_color
+	_base_color = _body_color
 	_eye_material = ($Meshes/Eyes as MeshInstance3D).get_active_material(0).duplicate()
 	for mesh: MeshInstance3D in _meshes.get_children():
 		mesh.material_override = _eye_material if mesh.name == "Eyes" else _body_material
@@ -63,6 +74,8 @@ func _ready() -> void:
 func take_damage(amount: float, hit_position: Vector3, attacker: Node = null) -> bool:
 	if health.dead:
 		return false
+	if multiplayer.is_server():
+		struck.emit(attacker)
 	_body_material.albedo_color = Color.WHITE
 	create_tween().tween_property(_body_material, "albedo_color", _body_color, 0.12)
 	if not multiplayer.is_server():
@@ -81,11 +94,19 @@ func _physics_process(delta: float) -> void:
 		return
 	if not is_on_floor():
 		velocity.y -= _gravity * delta
+	if _frozen_left > 0.0:
+		_frozen_left -= delta
+		_set_horizontal_velocity(Vector3.ZERO)
+		_windup_left = -1.0
+		move_and_slide()
+		if _frozen_left <= 0.0:
+			_frost(false)
+		return
 	_cooldown_left -= delta
 	_repath_left -= delta
 	if _repath_left <= 0.0:
 		_repath_left = repath_interval
-		target = _find_nearest_player()
+		target = _wander_target() if docile else _find_nearest_player()
 		if target:
 			_agent.target_position = target.global_position
 
@@ -99,6 +120,13 @@ func _physics_process(delta: float) -> void:
 		_set_horizontal_velocity(Vector3.ZERO)
 		if _windup_left < 0.0:
 			_finish_attack()
+	elif docile:
+		if target and not _agent.is_navigation_finished():
+			var stroll := _agent.get_next_path_position() - global_position
+			stroll.y = 0.0
+			_set_horizontal_velocity(stroll.normalized() * minf(move_speed, 1.6))
+		else:
+			_set_horizontal_velocity(Vector3.ZERO)
 	elif target and flat_to_target.length() <= attack_range and _cooldown_left <= 0.0 and _can_attack():
 		_start_attack()
 		_set_horizontal_velocity(Vector3.ZERO)
@@ -129,6 +157,79 @@ func _separation() -> Vector3:
 		if distance < separation_radius and distance > 0.01:
 			push += away / distance * (1.0 - distance / separation_radius)
 	return push
+
+
+## Coolant: stops the robot dead for a few seconds (host decides).
+## Office staff mode: on, it wears a tie and minds its own business; off, it pulls out a
+## weapon and goes for the players.
+func set_docile(on: bool) -> void:
+	docile = on
+	_wander_to = null
+	_repath_left = 0.0
+	if Net.is_session():
+		_net_dress.rpc(on)
+	else:
+		_net_dress(on)
+
+
+func _wander_target() -> Node3D:
+	if wander_points.is_empty():
+		return null
+	if not is_instance_valid(_wander_to) or global_position.distance_to(_wander_to.global_position) < 1.5:
+		_wander_to = wander_points.pick_random()
+	return _wander_to
+
+
+@rpc("authority", "call_local", "reliable")
+func _net_dress(on: bool) -> void:
+	if on and not _meshes.has_node("Tie"):
+		var tie := MeshInstance3D.new()
+		tie.name = "Tie"
+		var box := BoxMesh.new()
+		box.size = Vector3(0.14, 0.5, 0.06)
+		tie.mesh = box
+		var mat := StandardMaterial3D.new()
+		mat.albedo_color = Color(0.6, 0.08, 0.1)
+		tie.material_override = mat
+		tie.position = Vector3(0, 1.15, -0.42)
+		_meshes.add_child(tie)
+	if not on and _meshes.has_node("Tie") and not _meshes.has_node("Weapon"):
+		var weapon := MeshInstance3D.new()
+		weapon.name = "Weapon"
+		var bar := BoxMesh.new()
+		bar.size = Vector3(0.12, 0.12, 0.9)
+		weapon.mesh = bar
+		var steel := StandardMaterial3D.new()
+		steel.albedo_color = Color(0.25, 0.25, 0.28)
+		steel.metallic = 0.8
+		weapon.material_override = steel
+		weapon.position = Vector3(0.5, 1.0, -0.4)
+		_meshes.add_child(weapon)
+
+
+func freeze(seconds: float) -> void:
+	if health.dead:
+		return
+	if _frozen_left <= 0.0:
+		_frost(true)
+	_frozen_left = maxf(_frozen_left, seconds)
+
+
+func is_frozen() -> bool:
+	return _frozen_left > 0.0
+
+
+func _frost(on: bool) -> void:
+	if Net.is_session():
+		_net_frost.rpc(on)
+	else:
+		_net_frost(on)
+
+
+@rpc("authority", "call_local", "reliable")
+func _net_frost(on: bool) -> void:
+	_body_color = Color(0.6, 0.85, 1.0) if on else _base_color
+	_body_material.albedo_color = _body_color
 
 
 ## Robot types override these to change how they fight (see RangedRobot).

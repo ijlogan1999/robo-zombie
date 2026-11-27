@@ -1,0 +1,134 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/level/room.gd" id="1_room"]
+[ext_resource type="Material" path="res://materials/line_floor.tres" id="2_floor"]
+[ext_resource type="Material" path="res://materials/line_wall.tres" id="3_wall"]
+[ext_resource type="Material" path="res://materials/belt.tres" id="4_belt"]
+[ext_resource type="Material" path="res://materials/line_yellow.tres" id="5_yellow"]
+[ext_resource type="Script" path="res://scripts/world/conveyor.gd" id="6_conveyor"]
+[ext_resource type="Material" path="res://materials/junk_prop.tres" id="7_prop"]
+[ext_resource type="Material" path="res://materials/hazard.tres" id="8_hazard"]
+[ext_resource type="Script" path="res://scripts/world/arrival.gd" id="10_arrival"]
+[ext_resource type="Script" path="res://scripts/world/passage.gd" id="11_passage"]
+[ext_resource type="PackedScene" path="res://scenes/world/section_door.tscn" id="12_door"]
+
+[sub_resource type="BoxShape3D" id="Shape_9"]
+size = Vector3(26, 1.0, 3.0)
+
+[sub_resource type="BoxShape3D" id="Shape_10"]
+size = Vector3(12, 1.0, 3.0)
+
+[sub_resource type="BoxShape3D" id="Shape_11"]
+size = Vector3(12, 1.0, 3.0)
+
+[node name="BeltJunction" type="Node3D"]
+script = ExtResource("1_room")
+display_name = "Belt Junction"
+can_rotate = false
+
+[node name="Lamp" type="OmniLight3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 6, 0)
+light_color = Color(1, 0.92, 0.8, 1)
+light_energy = 1.5
+omni_range = 22.0
+
+[node name="BeltABed" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.15, -5)
+use_collision = true
+size = Vector3(26, 0.3, 3.0)
+material = ExtResource("4_belt")
+
+[node name="BeltAEdgeA" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.2, -6.6)
+use_collision = true
+size = Vector3(26, 0.4, 0.2)
+material = ExtResource("5_yellow")
+
+[node name="BeltAEdgeB" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.2, -3.4)
+use_collision = true
+size = Vector3(26, 0.4, 0.2)
+material = ExtResource("5_yellow")
+
+[node name="BeltA" type="Area3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.8, -5)
+script = ExtResource("6_conveyor")
+speed = 3.0
+direction = Vector3(1, 0, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="BeltA"]
+shape = SubResource("Shape_9")
+
+[node name="BeltBBed" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -6, 0.15, 4)
+use_collision = true
+size = Vector3(12, 0.3, 3.0)
+material = ExtResource("4_belt")
+
+[node name="BeltBEdgeA" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -6, 0.2, 2.4)
+use_collision = true
+size = Vector3(12, 0.4, 0.2)
+material = ExtResource("5_yellow")
+
+[node name="BeltBEdgeB" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -6, 0.2, 5.6)
+use_collision = true
+size = Vector3(12, 0.4, 0.2)
+material = ExtResource("5_yellow")
+
+[node name="BeltB" type="Area3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -6, 0.8, 4)
+script = ExtResource("6_conveyor")
+speed = 3.0
+direction = Vector3(-1, 0, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="BeltB"]
+shape = SubResource("Shape_10")
+
+[node name="BeltCBed" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 6, 0.15, 4)
+use_collision = true
+size = Vector3(12, 0.3, 3.0)
+material = ExtResource("4_belt")
+
+[node name="BeltCEdgeA" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 6, 0.2, 2.4)
+use_collision = true
+size = Vector3(12, 0.4, 0.2)
+material = ExtResource("5_yellow")
+
+[node name="BeltCEdgeB" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 6, 0.2, 5.6)
+use_collision = true
+size = Vector3(12, 0.4, 0.2)
+material = ExtResource("5_yellow")
+
+[node name="BeltC" type="Area3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 6, 0.8, 4)
+script = ExtResource("6_conveyor")
+speed = 3.0
+direction = Vector3(1, 0, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="BeltC"]
+shape = SubResource("Shape_11")
+
+[node name="Junction" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.6, 4)
+use_collision = true
+size = Vector3(2, 1.2, 4)
+material = ExtResource("5_yellow")
+
+[node name="Spawns" type="Node3D" parent="."]
+
+[node name="Spawn0" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -11, 0.2, -9)
+
+[node name="Spawn1" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 11, 0.2, -9)
+
+[node name="Spawn2" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -11, 0.2, 10)
+
+[node name="Spawn3" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 11, 0.2, 10)

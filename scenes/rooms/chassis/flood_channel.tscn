@@ -1,0 +1,99 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/level/room.gd" id="1_room"]
+[ext_resource type="Material" path="res://materials/plant_floor.tres" id="2_floor"]
+[ext_resource type="Material" path="res://materials/plant_wall.tres" id="3_wall"]
+[ext_resource type="Material" path="res://materials/coating.tres" id="4_coat"]
+[ext_resource type="Material" path="res://materials/molten.tres" id="5_fire"]
+[ext_resource type="Script" path="res://scripts/world/dip_tank.gd" id="6_tank"]
+[ext_resource type="Script" path="res://scripts/world/floating_part.gd" id="7_float"]
+[ext_resource type="Material" path="res://materials/chassis_part.tres" id="8_part"]
+[ext_resource type="Material" path="res://materials/oil.tres" id="9_oil"]
+[ext_resource type="Script" path="res://scripts/world/arrival.gd" id="10_arrival"]
+[ext_resource type="Script" path="res://scripts/world/passage.gd" id="11_passage"]
+[ext_resource type="PackedScene" path="res://scenes/world/section_door.tscn" id="12_door"]
+[ext_resource type="Material" path="res://materials/hazard.tres" id="13_hazard"]
+
+[sub_resource type="BoxShape3D" id="Shape_23"]
+size = Vector3(21.8, 0.9, 4.8)
+
+[sub_resource type="BoxMesh" id="Mesh_24"]
+size = Vector3(22, 0.05, 5)
+
+[sub_resource type="BoxShape3D" id="Shape_25"]
+size = Vector3(3.0, 0.5, 2.0)
+
+[sub_resource type="BoxMesh" id="Mesh_26"]
+material = ExtResource("8_part")
+size = Vector3(3.0, 0.5, 2.0)
+
+[node name="FloodChannel" type="Node3D"]
+script = ExtResource("1_room")
+display_name = "Flood Channel"
+can_rotate = true
+
+[node name="Floor" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, -1.5, 0)
+use_collision = true
+size = Vector3(32, 3, 32)
+material = ExtResource("2_floor")
+
+[node name="ChannelHole" type="CSGBox3D" parent="Floor"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 1.5, 0)
+operation = 2
+size = Vector3(22, 1.4, 5)
+
+[node name="Channel" type="Area3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, -0.35, 0)
+script = ExtResource("6_tank")
+burns = false
+calm_material = ExtResource("4_coat")
+burn_material = ExtResource("5_fire")
+
+[node name="Shape" type="CollisionShape3D" parent="Channel"]
+shape = SubResource("Shape_23")
+
+[node name="Surface" type="MeshInstance3D" parent="Channel"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.15, 0)
+mesh = SubResource("Mesh_24")
+
+[node name="ChannelRaft" type="AnimatableBody3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -8, -0.05, 0)
+script = ExtResource("7_float")
+travel = Vector3(16, 0, 0)
+period = 10.0
+
+[node name="Shape" type="CollisionShape3D" parent="ChannelRaft"]
+shape = SubResource("Shape_25")
+
+[node name="Mesh" type="MeshInstance3D" parent="ChannelRaft"]
+mesh = SubResource("Mesh_26")
+
+[node name="Footbridge" type="CSGBox3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0.15, 0)
+use_collision = true
+size = Vector3(3, 0.3, 6)
+material = ExtResource("8_part")
+
+[node name="Lamp" type="OmniLight3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 7, 0)
+light_color = Color(0.6, 0.9, 1, 1)
+light_energy = 2.0
+omni_range = 14.0
+
+[node name="BoxSpot" type="Marker3D" parent="." groups=["box_spot"]]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 0, 0, 12)
+
+[node name="Spawns" type="Node3D" parent="."]
+
+[node name="Spawn0" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -12, 0.2, -12)
+
+[node name="Spawn1" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 12, 0.2, -12)
+
+[node name="Spawn2" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, -12, 0.2, 12)
+
+[node name="Spawn3" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1, 0, -0.0000, 0, 1.0000, 12, 0.2, 12)

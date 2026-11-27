@@ -1,0 +1,52 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/shops/mystery_box.gd" id="1_box"]
+[ext_resource type="Material" path="res://materials/junk_rust.tres" id="2_rust"]
+[ext_resource type="Material" path="res://materials/hazard.tres" id="3_hazard"]
+[ext_resource type="Resource" path="res://weapons/pipe_shotgun.tres" id="4_w1"]
+[ext_resource type="Resource" path="res://weapons/bolt_driver.tres" id="5_w2"]
+[ext_resource type="Resource" path="res://weapons/nail_spitter.tres" id="6_w3"]
+[ext_resource type="Resource" path="res://weapons/slag_cannon.tres" id="7_w4"]
+[ext_resource type="Resource" path="res://weapons/coil_rifle.tres" id="8_w5"]
+[ext_resource type="Resource" path="res://weapons/spark_scatter.tres" id="9_w6"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_box"]
+size = Vector3(2.2, 1.1, 1.1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_crate"]
+material = ExtResource("2_rust")
+size = Vector3(2.2, 0.9, 1.1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_lid"]
+material = ExtResource("3_hazard")
+size = Vector3(2.3, 0.2, 1.2)
+
+[node name="MysteryBox" type="StaticBody3D"]
+script = ExtResource("1_box")
+weapons = Array[Resource]([ExtResource("4_w1"), ExtResource("5_w2"), ExtResource("6_w3"), ExtResource("7_w4"), ExtResource("8_w5"), ExtResource("9_w6")])
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
+shape = SubResource("BoxShape3D_box")
+
+[node name="Crate" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+mesh = SubResource("BoxMesh_crate")
+
+[node name="Lid" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+mesh = SubResource("BoxMesh_lid")
+
+[node name="Light" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
+light_color = Color(0.4, 0.8, 1, 1)
+light_energy = 2.0
+omni_range = 6.0
+
+[node name="Sign" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9, 0)
+billboard = 1
+modulate = Color(0.5, 0.9, 1, 1)
+font_size = 48
+outline_size = 10
+text = "MYSTERY CRATE"

@@ -85,6 +85,15 @@ var _grace_left := 0.0
 var _net_position := Vector3.ZERO ## Where this player's own game last said the body is.
 var _net_has_state := false
 
+var _pull := Vector3.ZERO ## Set by pull(); added to movement while _pull_left lasts.
+var _pull_left := 0.0
+var grappling := false ## The grapple is pulling this player (no gravity).
+var grapple: Grapple
+var _grip := 1.0
+var _slow := 1.0
+var _slow_until := 0
+var _grip_until := 0
+
 @onready var health: HealthComponent = $HealthComponent
 @onready var weapon_holder: WeaponHolder = $Head/Camera3D/WeaponHolder
 @onready var _collision: CollisionShape3D = $CollisionShape3D
@@ -97,6 +106,7 @@ var _net_has_state := false
 
 
 func _ready() -> void:
+	collision_mask |= Layers.BLOCKER # Invisible walls stop bodies, not shots.
 	# Each player needs its own capsule so crouching doesn't resize everyone's.
 	_capsule = (_collision.shape as CapsuleShape3D).duplicate()
 	_collision.shape = _capsule
@@ -144,7 +154,7 @@ func _physics_process(delta: float) -> void:
 	var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	var wish_dir := (global_transform.basis * Vector3(input_dir.x, 0.0, input_dir.y)).normalized()
 
-	if state != State.WALL_RUN and not is_on_floor():
+	if state != State.WALL_RUN and not is_on_floor() and not grappling:
 		velocity.y -= _gravity * gravity_scale * delta
 
 	match state:
@@ -157,7 +167,11 @@ func _physics_process(delta: float) -> void:
 		State.WALL_RUN:
 			_wall_run_move(delta)
 
+	_pull_left -= delta
+	var pull_velocity := _pull if _pull_left > 0.0 else Vector3.ZERO
+	velocity += pull_velocity
 	move_and_slide()
+	velocity -= pull_velocity
 	if is_on_wall():
 		_wall_normal = get_wall_normal()
 
@@ -186,10 +200,12 @@ func _ground_move(delta: float, wish_dir: Vector3, input_dir: Vector2) -> void:
 		target_speed = crouch_speed
 	elif Input.is_action_pressed("sprint") and moving_forward and not weapon_holder.aiming:
 		target_speed = sprint_speed
+	target_speed *= speed_scale()
 	if weapon_holder.weapon:
 		target_speed *= lerpf(1.0, weapon_holder.weapon.ads_move_speed_multiplier, weapon_holder.aim_blend)
 
 	var rate := ground_acceleration if wish_dir != Vector3.ZERO else ground_deceleration
+	rate *= traction()
 	_set_horizontal_velocity(_horizontal_velocity().move_toward(wish_dir * target_speed, rate * delta))
 
 
@@ -213,7 +229,7 @@ func _slide_move(delta: float) -> void:
 		var floor_normal := get_floor_normal()
 		var downhill := Vector3(floor_normal.x, 0.0, floor_normal.z)
 		horizontal += downhill * slide_slope_acceleration * delta
-	var speed := maxf(horizontal.length() - slide_friction * delta, 0.0)
+	var speed := maxf(horizontal.length() - slide_friction * traction() * delta, 0.0)
 	_set_horizontal_velocity(horizontal.normalized() * speed)
 
 
@@ -326,6 +342,62 @@ func _update_camera(delta: float) -> void:
 
 ## Called by robots and hazards. Returns true if the hit took the player down.
 ## In co-op, damage is passed on to the game that owns this player.
+## Drags the player along for a moment (a boss's magnet). Keep calling it to keep pulling.
+## A taser or similar: slower for a few seconds. Passed to the player's own game.
+func slow(scale: float, seconds: float) -> void:
+	if not is_multiplayer_authority():
+		_net_slow.rpc_id(get_multiplayer_authority(), scale, seconds)
+		return
+	_slow = scale
+	_slow_until = Time.get_ticks_msec() + int(seconds * 1000.0)
+
+
+@rpc("any_peer", "reliable")
+func _net_slow(scale: float, seconds: float) -> void:
+	slow(scale, seconds)
+
+
+func speed_scale() -> float:
+	return _slow if Time.get_ticks_msec() < _slow_until else 1.0
+
+
+func has_grapple() -> bool:
+	return grapple != null
+
+
+## Personal unlock: only this player gets it.
+func give_grapple() -> void:
+	if grapple:
+		return
+	grapple = Grapple.new()
+	grapple.name = "Grapple"
+	grapple.player = self
+	add_child(grapple)
+
+
+## Ice: for a moment the player grips the floor this well (1 = normal, lower slides).
+func slip(grip: float, seconds := 0.3) -> void:
+	_grip = grip
+	_grip_until = Time.get_ticks_msec() + int(seconds * 1000.0)
+
+
+func traction() -> float:
+	return _grip if Time.get_ticks_msec() < _grip_until else 1.0
+
+
+func pull(pull_velocity: Vector3) -> void:
+	if not is_multiplayer_authority():
+		_net_pull.rpc_id(get_multiplayer_authority(), pull_velocity)
+		return
+	_pull = pull_velocity
+	_pull_left = 0.2
+
+
+@rpc("any_peer", "unreliable")
+func _net_pull(pull_velocity: Vector3) -> void:
+	pull(pull_velocity)
+
+
 func take_damage(amount: float, _from_position: Vector3, _attacker: Node = null) -> bool:
 	if not is_multiplayer_authority():
 		_net_take_damage.rpc_id(get_multiplayer_authority(), amount)
