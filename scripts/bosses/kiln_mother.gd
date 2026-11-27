@@ -30,22 +30,22 @@ enum Stage { ASLEEP, LADLE, KILN, GOLEM, DEAD }
 @export var lane_damage := 30.0
 
 @export_group("Kiln")
-@export var kiln_health := 3000.0
+@export var kiln_health := 2000.0
 @export var kiln_home := Vector3(0, 0, -10)
 @export var kiln_speed := 1.8
 @export var arena_radius := 11.0 ## The kiln and golem stay inside the landing zone.
 @export var stomp_range := 5.5
-@export var stomp_damage := 35.0
+@export var stomp_damage := 25.0
 @export var stomp_windup := 0.9
 @export var stomp_cooldown := 3.0
-@export var fireball_damage := 20.0
+@export var fireball_damage := 14.0
 @export var fireball_speed := 14.0
-@export var fireball_interval := 3.0
-@export var door_closed_time := 8.0
-@export var door_open_time := 3.5
-@export var feeder_interval := 7.0
-@export var max_feeders := 3
-@export var feed_heal := 0.06 ## Share of max health each delivery heals.
+@export var fireball_interval := 4.5
+@export var door_closed_time := 5.0
+@export var door_open_time := 5.0
+@export var feeder_interval := 10.0
+@export var max_feeders := 2
+@export var feed_heal := 0.03 ## Share of max health each delivery heals.
 
 @export_group("Golem")
 @export var golem_health := 2500.0
