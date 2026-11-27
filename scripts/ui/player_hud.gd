@@ -30,6 +30,9 @@ var _refused_left := 0.0
 @onready var _hack_charges: Label = $HackCharges
 @onready var _downed_info: Label = $DownedInfo
 
+var _egg_step: Label
+var _egg_left := 0.0
+
 
 func _ready() -> void:
 	_weapons.ammo_changed.connect(_on_ammo_changed)
@@ -49,6 +52,7 @@ func _ready() -> void:
 	_on_scrap_changed(_player.scrap)
 	_on_perks_changed()
 	_on_hack_charges_changed(_player.hack_charges)
+	_build_egg_tracker()
 
 
 func _process(delta: float) -> void:
@@ -66,6 +70,7 @@ func _process(delta: float) -> void:
 	_prompt.visible = prompt != ""
 	_prompt.text = prompt
 	_update_downed_info()
+	_update_egg_tracker(delta)
 	_refused_left -= delta
 	_prompt.modulate = LOW_AMMO_COLOR if _refused_left > 0.0 else Color.WHITE
 	if _weapons.reloading:
@@ -154,3 +159,32 @@ func _on_hit_confirmed(killed: bool) -> void:
 	_hit_marker_left = HIT_MARKER_TIME * (2.0 if killed else 1.0)
 	Sfx.play(&"kill" if killed else &"hit", -8.0 if killed else -12.0)
 	_hit_marker.modulate = LOW_AMMO_COLOR if killed else Color.WHITE
+
+
+# --- Easter egg tracker (testing aid; F1 hides it) ---------------------------------------
+
+func _build_egg_tracker() -> void:
+	_egg_step = Label.new()
+	_egg_step.name = "EggStep"
+	_egg_step.position = Vector2(16, 96)
+	_egg_step.size = Vector2(560, 60)
+	_egg_step.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_egg_step.add_theme_font_size_override("font_size", 16)
+	_egg_step.add_theme_color_override("font_color", Color(1.0, 0.85, 0.4))
+	_egg_step.add_theme_color_override("font_outline_color", Color.BLACK)
+	_egg_step.add_theme_constant_override("outline_size", 4)
+	add_child(_egg_step)
+
+
+func _update_egg_tracker(delta: float) -> void:
+	_egg_left -= delta
+	if _egg_left > 0.0:
+		return
+	_egg_left = 0.25
+	var chain := get_tree().get_first_node_in_group("egg_chain") as EggChain
+	_egg_step.text = "EGG NEXT: " + chain.next_step() if chain else ""
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_F1:
+		_egg_step.visible = not _egg_step.visible

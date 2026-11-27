@@ -93,6 +93,55 @@ func say(text: String) -> void:
 		rounds.announce(text)
 
 
+## What to do next, for the on-screen tracker (testing aid). Steps in chain order; the
+## first one whose flag isn't set yet is the next step.
+func next_step() -> String:
+	var fuses := 0
+	for i in 3:
+		if Egg.has(StringName("fuse_%d" % i)):
+			fuses += 1
+	var dips := PackedStringArray()
+	for hook in dip_order:
+		dips.append(hook.action_text.trim_prefix("[E] Dip the body in "))
+	var steps := [
+		[&"radio_fixed", "Heap: find 3 fuses (%d/3), then fix the radio by the spawn" % fuses],
+		[&"crane_keycard", "Heap: take the keycard from a trailer in Trailer Row (between rounds)"],
+		[&"crane_overloaded", "Heap: overload the crane controls in the crane room"],
+		[&"grab_magnet", "Heap: beat the Scrap King"],
+		[&"kiln_heart_left", "Crucible: beat the Kiln Mother"],
+		[&"tongs_dropped", "Chassis Yard: kill Drippers by the marked tank in Tong Rack (%d/%d)" % [_tong_kills, tong_kills]],
+		[&"quench_tongs", "Chassis Yard: pick up the quench tongs by the marked tank"],
+		[&"blank_board", "Chassis Yard: fish the blank board out of the Deep Tank"],
+		[&"kiln_heart", "Crucible: pull the Kiln Heart out of the kiln in Kiln Row"],
+		[&"staff_body_pressed", "Chassis Yard: forge the body at the Hot Press"],
+		[&"staff_bot_body", "Chassis Yard: dip the body in order: %s (%d done)" % [", ".join(dips), dip_done]],
+		[&"board_etched", "Servo Works: etch the blank board in the Acid Swamp"],
+		[&"staff_bot_circuits", "Servo Works: solder the circuits in the Canopy Crown"],
+		[&"staff_bot_assembled", "Cold Storage: assemble the Staff Bot on the rack in the Cryo Chamber"],
+		[&"staff_bot_on_line", "The Line: send the Staff Bot down the belt in Line Intake"],
+		[&"staff_bot_awake", "The Line: beat the Line Giant"],
+		[&"staff_bot_certified", "Proving Grounds: walk the Staff Bot past every checkpoint (%d/%d stamped)" % [stamped.size(), checkpoints.size()]],
+		[&"staff_bot_cleared", "Accounting: enter the Staff Bot in QUOTA's Ledger (Records Vault)"],
+		[&"tower_base_crushed", "Shipping Bay: drop a container on the tower's base (crane by the tower)"],
+		[&"landing_beacon", "Shipping Bay: beat the Control Tower"],
+		[&"rigged_part", "Half 2  -  Heap: open the supervisor booth by the spawn (or beat QUOTA now for the plain win)"],
+		[&"heating_coil", "Half 2  -  Chassis Yard: rip the heating coil out of a dip tank"],
+		[&"thaw_coil", "Half 2  -  Crucible: charge the coil in a kiln in Kiln Row"],
+		[&"thaw_board", "Half 2  -  Servo Works: solder the boot board in the Canopy Crown"],
+		[&"coil_installed", "Half 2  -  Cold Storage: install the thaw coil in the Cryo Chamber"],
+		[&"board_installed", "Half 2  -  Cold Storage: install the boot board in the Cryo Chamber"],
+		[&"admin_badge", "Half 2  -  Cold Storage: throw the thaw switch and beat QUOTA's backup body"],
+		[&"line_override", "Half 2  -  The Line: swipe the admin badge at the override panel (Assembly Floor)"],
+		[&"override_chip", "Half 2  -  The Line: beat the Line Giant Mk II"],
+		[&"kill_code", "Half 2  -  The Line: ride the Assembly Floor conveyor down to the Heap"],
+		[&"upload_cut", "Head Office: cut QUOTA's upload line at its console"],
+	]
+	for step in steps:
+		if not Egg.has(step[0]):
+			return step[1]
+	return "Head Office: beat QUOTA for the true ending"
+
+
 # --- Per section --------------------------------------------------------------------------
 
 func _build_heap(heap: Section) -> void:

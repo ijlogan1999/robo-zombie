@@ -64,6 +64,12 @@ func _ready() -> void:
 	check(missing.is_empty(), "every egg station is built %s" % str(missing))
 	check(lost.is_empty(), "and each one sits inside a section's rooms %s" % str(lost))
 
+	# The on-screen tracker.
+	check(chain.next_step().contains("3 fuses (0/3)"), "the tracker starts at the fuses")
+	var hud_step: Label = player.get_node("HUD/EggStep")
+	await get_tree().create_timer(0.3).timeout
+	check(hud_step.text.begins_with("EGG NEXT: Heap"), "and it's on screen: %s" % hud_step.text)
+
 	# 1. Fuses and the radio.
 	check(not use("Radio"), "the radio is dead without its fuses")
 	for i in 3:
@@ -154,6 +160,9 @@ func _ready() -> void:
 	player.global_position = chute.global_position
 	await frames(6)
 	check(Egg.has(&"kill_code"), "ride the Line's conveyor down and Dot decodes the kill code")
+	for f in [&"crane_overloaded", &"landing_beacon", &"coil_installed", &"board_installed"]:
+		Egg.set_flag(f) # Set by boss fights and Cold Storage sockets, tested elsewhere.
+	check(chain.next_step().contains("upload line"), "the tracker's last step is cutting the upload line")
 
 	print("\n%d/%d checks passed" % [checks - fails, checks])
 	get_tree().quit(1 if fails else 0)
